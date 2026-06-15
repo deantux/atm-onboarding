@@ -383,6 +383,53 @@ tr:hover td{background:rgba(0,180,216,.03)}
 
 </div><!-- /wrap -->
 
+<!-- PRE-SEND DOCUSIGN REVIEW MODAL -->
+<div id="presend-modal" class="overlay hidden">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-hd">
+      <div>
+        <div class="modal-title">✉ Review Before Sending DocuSign</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:2px" id="presend-ref"></div>
+      </div>
+      <button class="close-btn" onclick="closePresend()">✕ Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert al-i" style="margin-bottom:18px">ℹ️ Review and adjust commercial terms before the contract is sent. DocuSign will go to <strong>your email first</strong> to sign, then to the merchant to countersign.</div>
+      <div style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:18px">
+        <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Merchant Summary</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+          <div><span style="color:var(--muted)">Trading Name</span><br><strong id="ps-trading"></strong></div>
+          <div><span style="color:var(--muted)">Reference</span><br><strong id="ps-ref2" style="color:var(--teal)"></strong></div>
+          <div><span style="color:var(--muted)">Province</span><br><strong id="ps-address"></strong></div>
+          <div><span style="color:var(--muted)">Merchant Email</span><br><strong id="ps-email"></strong></div>
+        </div>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px">Commercial Terms — Adjust if Required</div>
+      <div class="g2" style="gap:12px">
+        <div class="f"><label>Monthly Service Fee (ex VAT) <span class="req">*</span></label><div class="money-wrap"><span class="money-pre">R</span><input type="number" id="ps-fee" placeholder="6500"/></div></div>
+        <div class="f"><label>ATM Type <span class="req">*</span></label><select id="ps-atm"><option value="">Select...</option><option>Standard Slimline Wrap</option><option>Illuminated Shroud</option><option>Through-the-Wall Wing</option><option>Through-the-Wall Wing on Rails</option><option>TTW Wing on Rails with Slide &amp; Rotate</option></select></div>
+        <div class="f"><label>Rebate Deal</label><select id="ps-rebate"><option>Reward Deal</option><option>Standard Deal</option><option>Custom Deal</option></select></div>
+        <div class="f"><label>Rebate per Withdrawal (ex VAT)</label><div class="money-wrap"><span class="money-pre">R</span><input type="number" id="ps-rebval" value="0.88" step="0.01"/></div></div>
+        <div class="f"><label>Annual Escalation %</label><input type="number" id="ps-esc" value="6"/></div>
+        <div class="f"><label>Contract Period (months)</label><input type="number" id="ps-period" value="60"/></div>
+        <div class="f"><label>Payment Option</label><select id="ps-payment"><option>Advance</option><option>Arrears</option></select></div>
+        <div class="f"><label>Key Account Holder</label><input type="text" id="ps-kah" placeholder="e.g. ASTRON, Engen"/></div>
+        <div class="f s2"><label>Cassette Denominations</label><input type="text" id="ps-cass" value="R200 / R100 / R50 / R20"/></div>
+        <div class="f s2"><label>Rep Notes (internal only)</label><textarea id="ps-notes" placeholder="Any last-minute notes before sending..."></textarea></div>
+      </div>
+      <div style="margin-top:18px;padding:12px 16px;background:rgba(0,180,216,.06);border:1px solid var(--teal-b);border-radius:var(--r);font-size:12px;line-height:2">
+        <div style="color:var(--teal);font-weight:700;margin-bottom:4px">📧 DocuSign Signing Order</div>
+        <div><span style="color:var(--sub)">Step 1 — Rep signs:</span> <strong id="ps-rep-email" style="color:var(--white)"></strong></div>
+        <div><span style="color:var(--sub)">Step 2 — Merchant signs:</span> <strong id="ps-merch-email" style="color:var(--white)"></strong></div>
+      </div>
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-s" onclick="closePresend()">Cancel</button>
+        <button class="btn btn-g" id="ps-confirm-btn" onclick="confirmAndSendDocuSign()">✅ Confirm &amp; Send DocuSign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- COMMERCIAL MODAL -->
 <div id="comm-modal" class="overlay hidden">
   <div class="modal">
@@ -440,7 +487,7 @@ let uploadedDocs = {};
 let fv = { // form values
   trading_name:'',registered_name:'',registration_number:'',vat_number:'',entity_type:'',nature_of_business:'',
   site_address:'',suburb:'',city:'',province:'',postal_code:'',gps_lat:'',gps_lng:'',site_type:'',operating_days:'Monday to Sunday',trading_hours:'',
-  fin_year:'',turnover_2m:false,assets_2m:false,daily_cash:'',monthly_cash:'',
+  fin_year:'',turnover_2m:'',assets_2m:'',daily_cash:'',monthly_cash:'',
   sig_fname:'',sig_lname:'',sig_email:'',sig_phone:'',sig_mobile:'',sig_id:'',sig_pos:'',sig_country:'South Africa',
   con_fname:'',con_lname:'',con_email:'',con_phone:'',con_mobile:'',con_pos:'',con_id:'',
   d1_name:'',d1_id:'',d1_shares:'',d1_addr:'',
@@ -651,10 +698,22 @@ function getStepHTML(step){
       <div class="sec-desc">Required for the Smart ATM site agreement</div>
     </div></div><div class="sec-body"><div class="g2">
       ${selectField('Financial Year-End Month','fin_year',FYE,true)}
-      <div class="f"><label>Business Size</label>
-        <div class="chk-row">
-          <label class="chk-item"><input type="checkbox" ${fv.turnover_2m?'checked':''} onchange="fv.turnover_2m=this.checked"/> Turnover below R2M p/a</label>
-          <label class="chk-item"><input type="checkbox" ${fv.assets_2m?'checked':''} onchange="fv.assets_2m=this.checked"/> Gross assets below R2M</label>
+      <div class="f s2" style="margin-top:4px">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:14px">
+            <div style="font-size:12px;color:var(--text);font-weight:500;margin-bottom:10px;line-height:1.6">Total turnover is less than R2 Million (Two Million Rand) per annum:</div>
+            <div style="display:flex;gap:28px">
+              <label class="chk-item"><input type="radio" name="turnover_2m" value="yes" ${fv.turnover_2m==='yes'?'checked':''} onchange="fv.turnover_2m=this.value"/> <strong>Yes</strong></label>
+              <label class="chk-item"><input type="radio" name="turnover_2m" value="no" ${fv.turnover_2m==='no'?'checked':''} onchange="fv.turnover_2m=this.value"/> <strong>No</strong></label>
+            </div>
+          </div>
+          <div style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:14px">
+            <div style="font-size:12px;color:var(--text);font-weight:500;margin-bottom:10px;line-height:1.6">Gross value of assets is less than R2 Million (Two Million Rand) per annum:</div>
+            <div style="display:flex;gap:28px">
+              <label class="chk-item"><input type="radio" name="assets_2m" value="yes" ${fv.assets_2m==='yes'?'checked':''} onchange="fv.assets_2m=this.value"/> <strong>Yes</strong></label>
+              <label class="chk-item"><input type="radio" name="assets_2m" value="no" ${fv.assets_2m==='no'?'checked':''} onchange="fv.assets_2m=this.value"/> <strong>No</strong></label>
+            </div>
+          </div>
         </div>
       </div>
       ${moneyField('Estimated Daily ATM Cash Deposit','daily_cash','e.g. 40000 = R40,000/day',true)}
@@ -939,8 +998,8 @@ async function submitForm(){
     trading_hours:         fv.trading_hours  || null,
     // Part C — Turnover
     financial_year_end:    fv.fin_year       || null,
-    turnover_below_2m:     fv.turnover_2m    || false,
-    gross_assets_below_2m: fv.assets_2m      || false,
+    turnover_below_2m:     fv.turnover_2m === 'yes',
+    gross_assets_below_2m: fv.assets_2m === 'yes',
     estimated_daily_cash:  fv.daily_cash     ? parseFloat(fv.daily_cash)   : null,
     estimated_monthly_cash:fv.monthly_cash   ? parseFloat(fv.monthly_cash) : null,
     // Part D — Signatory
@@ -1037,6 +1096,80 @@ function showSuccess(ref) {
     </div>`;
   document.getElementById('nav-btns').innerHTML = '';
   document.getElementById('progress-bar').innerHTML = '';
+}
+
+// ── PRE-SEND REVIEW MODAL ────────────────────────────────────────────────
+let presendAppId = null;
+
+function sendDocuSign(appId) {
+  presendAppId = appId;
+  const app = APPS.find(x => x.id === appId);
+  if (!app) return;
+  document.getElementById('presend-ref').textContent = app.ref + ' · ' + app.merchant;
+  document.getElementById('ps-trading').textContent = app.merchant || '—';
+  document.getElementById('ps-ref2').textContent = app.ref || '—';
+  document.getElementById('ps-address').textContent = app.province || '—';
+  document.getElementById('ps-email').textContent = app.email || '—';
+  document.getElementById('ps-fee').value = app.fee || '';
+  document.getElementById('ps-atm').value = app.atm_type || '';
+  document.getElementById('ps-rebate').value = app.rebate_deal || 'Reward Deal';
+  document.getElementById('ps-rebval').value = app.rebate_per_withdrawal || '0.88';
+  document.getElementById('ps-esc').value = app.annual_escalation || '6';
+  document.getElementById('ps-period').value = app.contract_period_months || '60';
+  document.getElementById('ps-cass').value = app.cassette_denominations || 'R200 / R100 / R50 / R20';
+  document.getElementById('ps-kah').value = app.key_account_holder || '';
+  document.getElementById('ps-notes').value = app.rep_notes || '';
+  document.getElementById('ps-rep-email').textContent = currentRep?.email || 'rep@atmsolutions.co.za';
+  document.getElementById('ps-merch-email').textContent = app.email || '—';
+  document.getElementById('presend-modal').classList.remove('hidden');
+}
+
+function closePresend() {
+  document.getElementById('presend-modal').classList.add('hidden');
+  presendAppId = null;
+}
+
+async function confirmAndSendDocuSign() {
+  const btn = document.getElementById('ps-confirm-btn');
+  btn.textContent = '⏳ Sending...';
+  btn.disabled = true;
+  const updatedTerms = {
+    service_fee:            parseFloat(document.getElementById('ps-fee').value) || null,
+    atm_type:               document.getElementById('ps-atm').value,
+    rebate_deal:            document.getElementById('ps-rebate').value,
+    rebate_per_withdrawal:  parseFloat(document.getElementById('ps-rebval').value) || null,
+    annual_escalation:      parseFloat(document.getElementById('ps-esc').value) || 6,
+    contract_period_months: parseInt(document.getElementById('ps-period').value) || 60,
+    cassette_denominations: document.getElementById('ps-cass').value,
+    key_account_holder:     document.getElementById('ps-kah').value,
+    rep_notes:              document.getElementById('ps-notes').value,
+    payment_option:         document.getElementById('ps-payment').value,
+  };
+  try {
+    await sbUpdate('applications', presendAppId, updatedTerms);
+    const res = await fetch(
+      'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/send-docusign',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d' },
+        body: JSON.stringify({ application_id: presendAppId, rep_email: currentRep?.email || '' }),
+      }
+    );
+    const data = await res.json();
+    if (data.success) {
+      const app = APPS.find(x => x.id === presendAppId);
+      if (app) { app.status = 'docusign_sent'; app.fee = updatedTerms.service_fee; }
+      renderAppTable();
+      closePresend();
+      alert('✅ DocuSign sent!\n\nSigning order:\n1. ' + (currentRep?.email||'Rep') + ' (signs first)\n2. ' + (document.getElementById('ps-merch-email').textContent) + ' (countersigns)\n\nEnvelope ID: ' + data.envelope_id);
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  } catch(err) {
+    btn.textContent = '✅ Confirm & Send DocuSign';
+    btn.disabled = false;
+    alert('❌ DocuSign failed: ' + err.message);
+  }
 }
 
 // ── LOAD REAL APPLICATIONS FOR REP DASHBOARD ─────────────────────────────
