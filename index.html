@@ -680,20 +680,39 @@ async function saveAndOpenDocuSign() {
         }
       );
       const data = await res.json();
+
       if (data.success) {
+        // ✅ Full success - DocuSign sent with all fields pre-populated
         alert(
           '✅ DocuSign sent successfully!\n\n' +
           'Envelope ID: ' + data.envelope_id + '\n\n' +
           'Signing order:\n' +
-          '1. ' + (currentRep?.email || 'Rep') + ' receives contract first\n' +
-          '2. Merchant receives after rep signs\n\n' +
-          'Check your email inbox now.'
+          '1. ' + (currentRep?.email || 'Rep') + ' — check your inbox now\n' +
+          '2. ' + (data.merchant_email || 'Merchant') + ' — receives after you sign\n\n' +
+          'All fields have been pre-populated from the application data.'
         );
+
+      } else if (data.consent_required) {
+        // ⚠️ Need to grant consent first - show clear instructions
+        const go = confirm(
+          '⚠️ DocuSign Consent Required\n\n' +
+          'This is a one-time step. You need to grant permission for\n' +
+          'ATM Solutions portal to send DocuSign contracts on your behalf.\n\n' +
+          'Steps:\n' +
+          '1. Click OK — DocuSign consent page opens in a new tab\n' +
+          '2. Log in with your DocuSign credentials\n' +
+          '3. Click ACCEPT on the consent screen\n' +
+          '4. You will see a page that says "localhost refused to connect" — that is NORMAL\n' +
+          '5. Come back here and click Send DocuSign again\n\n' +
+          'Click OK to open the consent page now.'
+        );
+        if (go) {
+          window.open(data.consent_url, '_blank');
+        }
+
       } else {
-        // If API fails fall back to PowerForm
-        console.warn('API send failed, opening PowerForm:', data.error);
-        const app = await sbSelect('applications', `id=eq.${commAppId}&select=*`).then(r => r[0]);
-        openDocuSignURL(app, patch, currentRep?.email);
+        // ❌ Other error
+        alert('❌ DocuSign Error:\n\n' + data.error + '\n\nPlease try again or contact support.');
       }
     } else {
       // Demo mode — open PowerForm
