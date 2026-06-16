@@ -632,6 +632,14 @@ async function saveAndOpenDocuSign() {
   const btn = document.getElementById('comm-save-btn');
   btn.textContent = '⏳ Saving...'; btn.disabled = true;
 
+  // Capture appId immediately before any async ops
+  const appId = commAppId;
+  if (!appId) {
+    alert('Error: No application selected. Please close and try again.');
+    btn.textContent = '✅ Save & Open DocuSign'; btn.disabled = false;
+    return;
+  }
+
   const fee = parseFloat(document.getElementById('m-fee').value) || null;
   const patch = {
     service_fee:            fee,
@@ -647,14 +655,17 @@ async function saveAndOpenDocuSign() {
     status:                 'rep_approved',
   };
 
+  const repEmail = currentRep?.email || 'deant@atmsolutions.co.za';
+  const repName  = currentRep?.name  || 'ATM Solutions Representative';
+
   try {
     // Save commercial terms to Supabase
-    if (!commAppId.startsWith('demo')) {
-      await sbUpdate('applications', commAppId, patch);
+    if (!appId.startsWith('demo')) {
+      await sbUpdate('applications', appId, patch);
     }
 
     // Update local state
-    const local = APPS.find(x => x.id === commAppId);
+    const local = APPS.find(x => x.id === appId);
     if (local) { local.status = 'docusign_sent'; local.fee = fee; }
     renderTable();
     closeComm();
@@ -663,7 +674,7 @@ async function saveAndOpenDocuSign() {
     btn.textContent = '⏳ Sending DocuSign...';
 
     // Call Edge Function to send DocuSign with full pre-population
-    if (!commAppId.startsWith('demo')) {
+    if (!appId.startsWith('demo')) {
       const res = await fetch(
         'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/send-docusign',
         {
@@ -673,9 +684,9 @@ async function saveAndOpenDocuSign() {
             'apikey': 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d',
           },
           body: JSON.stringify({
-            application_id: commAppId,
-            rep_email:      currentRep?.email || 'deant@atmsolutions.co.za',
-            rep_name:       currentRep?.name  || 'ATM Solutions Representative',
+            application_id: appId,
+            rep_email:      repEmail,
+            rep_name:       repName,
           }),
         }
       );
@@ -716,16 +727,16 @@ async function saveAndOpenDocuSign() {
       }
     } else {
       // Demo mode — open PowerForm
-      const a = APPS.find(x => x.id === commAppId);
-      openDocuSignURL(a, patch, currentRep?.email);
+      const a = APPS.find(x => x.id === appId);
+      openDocuSignURL(a, patch, repEmail);
     }
 
   } catch(e) {
     btn.textContent = '✅ Save & Open DocuSign';
     btn.disabled = false;
     alert('❌ Error: ' + e.message + '\n\nTrying to open DocuSign directly...');
-    const a = APPS.find(x => x.id === commAppId);
-    if (a) openDocuSignURL(a, patch, currentRep?.email);
+    const a = APPS.find(x => x.id === appId);
+    if (a) openDocuSignURL(a, patch, repEmail);
   }
 }
 
@@ -1175,11 +1186,4 @@ function showSuccess(ref) {
         <div class="ns"><div class="ns-num">1</div><div>Your rep reviews your application and sets commercial terms</div></div>
         <div class="ns"><div class="ns-num">2</div><div>DocuSign contract sent to your rep to sign first</div></div>
         <div class="ns"><div class="ns-num">3</div><div>Contract forwarded to <strong>${fv.sig_email||'your signatory'}</strong> to countersign</div></div>
-        <div class="ns"><div class="ns-num">4</div><div>Site survey and ATM installation — typically 5–10 business days</div></div>
-      </div>
-      <div style="margin-top:20px;font-size:11px;color:var(--muted)">ATM Solutions · A division of Paycorp Group (Pty) Ltd · Reg. No. 2013/077629/07</div>
-    </div>`;
-}
-</script>
-</body>
-</html>
+        <div class="ns"><div class="ns-num">4</div><div>Site survey and A
