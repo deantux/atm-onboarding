@@ -225,8 +225,8 @@ tr:hover td{background:rgba(0,180,216,.02)}
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab-btn active" id="tab-client" onclick="showTab('client')">Client Application</button>
-    <button class="tab-btn" id="tab-rep" onclick="showTab('rep')">Rep Portal</button>
+    <button class="tab-btn active" id="tab-client" type="button">Client Application</button>
+    <button class="tab-btn" id="tab-rep" type="button">Rep Portal</button>
   </div>
 
   <!-- ══════════════ CLIENT PAGE ══════════════ -->
@@ -1186,4 +1186,26 @@ function showSuccess(ref) {
         <div class="ns"><div class="ns-num">1</div><div>Your rep reviews your application and sets commercial terms</div></div>
         <div class="ns"><div class="ns-num">2</div><div>DocuSign contract sent to your rep to sign first</div></div>
         <div class="ns"><div class="ns-num">3</div><div>Contract forwarded to <strong>${fv.sig_email||'your signatory'}</strong> to countersign</div></div>
-        <div class="ns"><div class="ns-num">4</div><div>Site survey and A
+        <div class="ns"><div class="ns-num">4</div><div>Site survey and ATM installation — typically 5–10 business days</div></div>
+      </div>
+      <div style="margin-top:20px;font-size:11px;color:var(--muted)">ATM Solutions · A division of Paycorp Group (Pty) Ltd · Reg. No. 2013/077629/07</div>
+    </div>`;
+}
+// ── TAB EVENT LISTENERS (more reliable than onclick) ──
+document.addEventListener('DOMContentLoaded', function() {
+  var btnClient = document.getElementById('tab-client');
+  var btnRep = document.getElementById('tab-rep');
+  if (btnClient) btnClient.addEventListener('click', function(e) { e.preventDefault(); showTab('client'); });
+  if (btnRep) btnRep.addEventListener('click', function(e) { e.preventDefault(); showTab('rep'); });
+});
+
+// Also attach immediately in case DOMContentLoaded already fired
+(function() {
+  var btnClient = document.getElementById('tab-client');
+  var btnRep = document.getElementById('tab-rep');
+  if (btnClient) btnClient.onclick = function(e) { e.preventDefault(); showTab('client'); };
+  if (btnRep) btnRep.onclick = function(e) { e.preventDefault(); showTab('rep'); };
+})();
+</script>
+</body>
+</html>
