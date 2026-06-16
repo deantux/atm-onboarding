@@ -6,216 +6,201 @@
 <title>ATM Solutions — Smart ATM Site Application</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0A1628;--navy2:#112040;--navy3:#1A3060;
-  --teal:#00B4D8;--teal2:#0096C7;--teal-l:rgba(0,180,216,.1);--teal-b:rgba(0,180,216,.25);
-  --red:#C8102E;--white:#fff;--text:#E8EDF5;--sub:#8FA3BF;--muted:#4A6080;
-  --border:#1E3555;--border2:#243D63;--card:#0F1E38;--card2:#142440;
-  --green:#00C896;--orange:#F5A623;--r:8px;
+  --navy:#0A1628;--navy2:#112040;--card:#0F1E38;--card2:#142440;
+  --teal:#00B4D8;--teal2:#0096C7;--tl:rgba(0,180,216,.1);--tb:rgba(0,180,216,.25);
+  --border:#1E3555;--border2:#243D63;--text:#E8EDF5;--sub:#8FA3BF;--muted:#4A6080;
+  --green:#00C896;--orange:#F5A623;--red:#C8102E;--white:#fff;--r:8px;
 }
 body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min-height:100vh}
-.hidden{display:none!important}
 
-/* ── HEADER ── */
-.hdr{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.35)}
-.hdr-brand{display:flex;align-items:center;gap:12px}
-.logo-box{width:34px;height:34px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:var(--navy)}
-.hdr-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;color:var(--white);letter-spacing:.3px}
-.hdr-div{font-size:10px;color:var(--teal);text-transform:uppercase;letter-spacing:2px;font-weight:600}
-.hdr-sep{width:1px;height:26px;background:var(--border2)}
-.hdr-sub{font-size:10px;color:var(--sub)}
-.hdr-badge{background:var(--teal-l);border:1px solid var(--teal-b);color:var(--teal);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
+/* HEADER */
+.hdr{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:9}
+.hdr-l{display:flex;align-items:center;gap:12px}
+.logo{width:34px;height:34px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:var(--navy);flex-shrink:0}
+.hdr-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;color:var(--white)}
+.hdr-sub{font-size:10px;color:var(--teal);text-transform:uppercase;letter-spacing:1.5px}
+.badge{background:var(--tl);border:1px solid var(--tb);color:var(--teal);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase}
 
-/* ── WRAP ── */
-.wrap{max-width:880px;margin:0 auto;padding:36px 20px 80px}
+/* WRAP */
+.wrap{max-width:860px;margin:0 auto;padding:32px 20px 80px;position:relative;z-index:10}
 
-/* ── TABS ── */
-.tabs{display:flex;gap:2px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:36px;width:fit-content}
-.tab{padding:8px 22px;border-radius:6px;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;color:var(--sub);background:transparent;transition:.15s}
-.tab.on{background:var(--teal);color:var(--navy);font-weight:700}
-.tab:hover:not(.on){color:var(--white);background:var(--border)}
+/* TABS */
+.tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:32px;width:fit-content;position:relative;z-index:20}
+.tab-btn{padding:9px 24px;border-radius:6px;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer!important;color:var(--sub);background:transparent;transition:.15s;position:relative;z-index:21;pointer-events:all}
+.tab-btn.active{background:var(--teal);color:var(--navy)}
+.tab-btn:hover:not(.active){color:var(--white)}
 
-/* ── ACCESS GATE ── */
-.gate-wrap{max-width:420px;margin:60px auto}
-.gate-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:40px}
-.gate-logo{width:52px;height:52px;background:var(--teal);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:var(--navy);margin-bottom:20px}
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+/* GATE */
+.gate{max-width:420px;margin:40px auto}
+.gate-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px}
+.gate-logo{width:50px;height:50px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:var(--navy);margin-bottom:18px}
 .gate-card h2{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:900;color:var(--white);margin-bottom:4px}
-.gate-card p{font-size:12px;color:var(--sub);margin-bottom:24px;line-height:1.6}
-.gate-roles{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.role-btn{flex:1;min-width:100px;padding:10px 8px;border-radius:var(--r);border:1.5px solid var(--border2);background:var(--card2);color:var(--sub);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:.15s}
-.role-btn.sel{border-color:var(--teal);background:var(--teal-l);color:var(--teal)}
-.role-btn:hover:not(.sel){border-color:var(--border);color:var(--text)}
-.access-note{font-size:11px;color:var(--muted);margin-top:16px;padding-top:14px;border-top:1px solid var(--border);line-height:1.6}
-.access-note strong{color:var(--sub)}
+.gate-card p{font-size:12px;color:var(--sub);margin-bottom:22px;line-height:1.6}
+.sec-note{background:rgba(200,16,46,.05);border:1px solid rgba(200,16,46,.2);border-radius:var(--r);padding:12px 14px;font-size:12px;color:#ffaaaa;margin-bottom:20px;line-height:1.6}
+.sec-note strong{color:var(--white);display:block;margin-bottom:3px}
+.access-note{font-size:11px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);line-height:1.7}
 
-/* ── HERO ── */
-.hero{margin-bottom:28px}
-.eyebrow{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
-.hero h1{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:900;color:var(--white);letter-spacing:-.5px;line-height:1.15;margin-bottom:8px}
-.hero h1 span{color:var(--teal)}
-.hero p{font-size:13px;color:var(--sub);max-width:520px}
-
-/* ── PROGRESS ── */
-.prog{display:flex;align-items:center;margin-bottom:28px;overflow-x:auto;padding-bottom:4px;gap:0}
-.ps{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.pd{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid var(--border2);background:var(--card);color:var(--muted);flex-shrink:0;transition:.15s}
-.pd.on{border-color:var(--teal);background:var(--teal);color:var(--navy)}
-.pd.done{border-color:var(--green);background:var(--green);color:var(--navy)}
-.pl{font-size:11px;font-weight:500;color:var(--muted);white-space:nowrap}
-.pl.on{color:var(--white);font-weight:600}
-.pl.done{color:var(--green)}
-.pc{width:22px;height:2px;background:var(--border2);margin:0 4px;flex-shrink:0}
-.pc.done{background:var(--green)}
-
-/* ── SECTIONS ── */
-.sec{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:18px;overflow:hidden}
-.sec-hd{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.sec-ico{width:30px;height:30px;border-radius:7px;background:var(--teal-l);border:1px solid var(--teal-b);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.sec-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--white)}
-.sec-desc{font-size:11px;color:var(--sub);margin-top:1px}
-.sec-body{padding:22px}
-
-/* ── GRID ── */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.s2{grid-column:span 2}
-.s3{grid-column:span 3}
-.divdr{grid-column:1/-1;height:1px;background:var(--border);margin:4px 0}
-
-/* ── FIELDS ── */
-.f{display:flex;flex-direction:column;gap:5px}
-.f label{font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+/* FIELDS */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field label{font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select,.field textarea{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;transition:.15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,180,216,.1)}
+.field input::placeholder{color:var(--muted)}
+.field select option{background:var(--card2)}
 .req{color:var(--teal)}
-.f input,.f select,.f textarea{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:9px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:.15s;width:100%}
-.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--teal);background:var(--navy2);box-shadow:0 0 0 3px rgba(0,180,216,.1)}
-.f input::placeholder,.f textarea::placeholder{color:var(--muted)}
-.f select option{background:var(--card2);color:var(--text)}
-.f textarea{resize:vertical;min-height:70px}
 .hint{font-size:10px;color:var(--muted);font-style:italic}
-.money-wrap{position:relative}
-.money-wrap input{padding-left:26px}
-.money-pre{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--sub);font-size:13px;font-weight:600;pointer-events:none}
-.chk-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
-.chk-item{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text);cursor:pointer}
-.chk-item input{width:15px;height:15px;accent-color:var(--teal);cursor:pointer}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.span2{grid-column:span 2}
+.money{position:relative}
+.money input{padding-left:26px}
+.money-sym{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--sub);font-size:13px;font-weight:600;pointer-events:none}
 
-/* ── DOC UPLOAD ── */
-.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-.doc-cat{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px}
-.doc-card{background:var(--card2);border:1.5px dashed var(--border2);border-radius:10px;padding:16px;cursor:pointer;transition:.15s;position:relative;overflow:hidden}
-.doc-card:hover{border-color:var(--teal);background:var(--navy2)}
-.doc-card.done{border-style:solid;border-color:var(--green);background:rgba(0,200,150,.05)}
-.doc-card input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.doc-icon{font-size:22px;margin-bottom:6px}
-.doc-title{font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px}
-.doc-sub{font-size:11px;color:var(--sub)}
-.doc-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px;margin-top:6px}
-.tag-r{background:rgba(200,16,46,.15);color:#ff8a9a;border:1px solid rgba(200,16,46,.2)}
-.tag-o{background:var(--teal-l);color:var(--teal);border:1px solid var(--teal-b)}
-.doc-ok{font-size:11px;font-weight:600;color:var(--green);margin-top:6px}
-.doc-fn{font-size:10px;color:var(--sub);margin-top:2px;word-break:break-all}
+/* ALERT */
+.alert{padding:10px 14px;border-radius:var(--r);font-size:12px;margin-bottom:14px;line-height:1.6}
+.alert-w{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:var(--orange)}
+.alert-i{background:var(--tl);border:1px solid var(--tb);color:var(--sub)}
+.alert-r{background:rgba(200,16,46,.08);border:1px solid rgba(200,16,46,.2);color:#ff8a9a}
+.alert-g{background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);color:var(--green)}
 
-/* ── ALERTS ── */
-.alert{padding:11px 14px;border-radius:var(--r);font-size:12px;margin-bottom:14px;display:flex;align-items:flex-start;gap:9px;line-height:1.6}
-.al-w{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:var(--orange)}
-.al-i{background:var(--teal-l);border:1px solid var(--teal-b);color:var(--sub)}
-.al-g{background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);color:var(--green)}
-.al-r{background:rgba(200,16,46,.08);border:1px solid rgba(200,16,46,.15);color:#ff8a9a}
-.al-sec{background:rgba(200,16,46,.04);border:1px solid rgba(200,16,46,.15);color:#ffaaaa;padding:14px 18px;border-radius:10px;margin-bottom:20px}
-.al-sec strong{color:var(--white);display:block;margin-bottom:4px;font-family:'Montserrat',sans-serif;font-size:13px}
+/* BUTTONS */
+.btn{padding:11px 24px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn-teal{background:var(--teal);color:var(--navy);font-weight:700;width:100%;justify-content:center}
+.btn-teal:hover{background:var(--teal2)}
+.btn-dark{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
+.btn-dark:hover{background:var(--border)}
+.btn-green{background:var(--green);color:var(--navy);font-weight:700}
+.btn-green:hover{background:#00a87d}
+.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}
 
-/* ── BUTTONS ── */
-.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap;align-items:center}
-.btn{padding:10px 24px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s;display:inline-flex;align-items:center;gap:7px}
-.btn-p{background:var(--teal);color:var(--navy);font-weight:700}
-.btn-p:hover{background:var(--teal2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,180,216,.3)}
-.btn-s{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
-.btn-s:hover{background:var(--border)}
-.btn-g{background:var(--green);color:var(--navy);font-weight:700}
-.btn-g:hover{background:#00a87d}
-.btn-r{background:var(--red);color:#fff}
-.btn-r:hover{background:#a50d25}
+/* SECTION CARDS */
+.sec{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.sec-hd{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sec-ico{width:28px;height:28px;border-radius:6px;background:var(--tl);border:1px solid var(--tb);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.sec-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--white)}
+.sec-desc{font-size:11px;color:var(--sub)}
+.sec-body{padding:20px}
 
-/* ── REVIEW ── */
-.rv-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
-.rv-row:last-child{border-bottom:none}
-.rv-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;min-width:140px;padding-top:2px}
+/* PROGRESS */
+.prog{display:flex;align-items:center;margin-bottom:24px;overflow-x:auto;padding-bottom:4px;gap:0;flex-wrap:nowrap}
+.p-step{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.p-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid var(--border2);background:var(--card);color:var(--muted);flex-shrink:0}
+.p-dot.on{border-color:var(--teal);background:var(--teal);color:var(--navy)}
+.p-dot.done{border-color:var(--green);background:var(--green);color:var(--navy)}
+.p-label{font-size:11px;color:var(--muted);white-space:nowrap}
+.p-label.on{color:var(--white);font-weight:600}
+.p-label.done{color:var(--green)}
+.p-line{width:20px;height:2px;background:var(--border2);margin:0 4px;flex-shrink:0}
+.p-line.done{background:var(--green)}
+
+/* HERO */
+.hero{margin-bottom:24px}
+.eyebrow{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:2px;margin-bottom:5px}
+.hero h1{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:900;color:var(--white);margin-bottom:6px;letter-spacing:-.5px}
+.hero h1 span{color:var(--teal)}
+.hero p{font-size:13px;color:var(--sub)}
+
+/* RADIO */
+.radio-box{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:13px;margin-bottom:10px}
+.radio-box p{font-size:12px;color:var(--text);font-weight:500;margin-bottom:10px;line-height:1.5}
+.radio-row{display:flex;gap:24px}
+.radio-row label{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;cursor:pointer}
+.radio-row input{accent-color:var(--teal);width:15px;height:15px}
+
+/* REVIEW */
+.rv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
+.rv:last-child{border-bottom:none}
+.rv-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;min-width:130px}
 .rv-val{color:var(--text);text-align:right}
 .rv-empty{color:var(--muted);font-style:italic;font-size:12px;text-align:right}
-.rv-section{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;padding:12px 0 4px;border-top:1px solid var(--border);margin-top:8px}
-.rv-editbtn{font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--teal-b);background:var(--teal-l);color:var(--teal);cursor:pointer;font-weight:600;margin-left:8px}
+.rv-sec{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:6px}
+.rv-sec button{font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--tb);background:var(--tl);color:var(--teal);cursor:pointer;margin-left:8px;font-weight:600}
 
-/* ── SUCCESS ── */
-.success{text-align:center;padding:70px 30px}
-.sico{width:72px;height:72px;background:rgba(0,200,150,.1);border:2px solid var(--green);border-radius:50%;font-size:28px;line-height:72px;margin:0 auto 22px}
-.success h2{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:900;color:var(--white);margin-bottom:10px}
-.success p{color:var(--sub);font-size:13px;max-width:400px;margin:0 auto 8px}
-.ref-pill{display:inline-block;background:var(--card2);border:1px solid var(--teal-b);border-radius:8px;padding:8px 24px;font-family:'Montserrat',sans-serif;font-size:20px;font-weight:900;color:var(--teal);margin:16px 0;letter-spacing:2px}
-.what-next{max-width:380px;margin:20px auto 0;text-align:left}
-.wn-step{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--sub);margin-bottom:10px}
-.wn-num{width:20px;height:20px;background:var(--teal);color:var(--navy);border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+/* DOC UPLOAD */
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.doc-cat{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px}
+.doc-card{background:var(--card2);border:1.5px dashed var(--border2);border-radius:10px;padding:14px;cursor:pointer;transition:.15s;position:relative;overflow:hidden;min-height:100px}
+.doc-card:hover{border-color:var(--teal)}
+.doc-card.uploaded{border-style:solid;border-color:var(--green);background:rgba(0,200,150,.04)}
+.doc-card input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.doc-icon{font-size:20px;margin-bottom:6px}
+.doc-title{font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px}
+.doc-sub{font-size:11px;color:var(--sub);line-height:1.4}
+.doc-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;margin-top:5px}
+.tag-r{background:rgba(200,16,46,.15);color:#ff8a9a;border:1px solid rgba(200,16,46,.2)}
+.tag-o{background:var(--tl);color:var(--teal);border:1px solid var(--tb)}
+.doc-ok{font-size:11px;color:var(--green);margin-top:5px;font-weight:600}
 
-/* ── STATS ── */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px}
-.stat-l{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.stat-v{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:900;color:var(--white);letter-spacing:-1px}
-.tv{color:var(--teal)}.gv{color:var(--green)}.ov{color:var(--orange)}
+/* SUCCESS */
+.success{text-align:center;padding:60px 30px}
+.s-ico{width:68px;height:68px;background:rgba(0,200,150,.1);border:2px solid var(--green);border-radius:50%;font-size:26px;line-height:68px;margin:0 auto 20px}
+.success h2{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:900;color:var(--white);margin-bottom:8px}
+.success p{color:var(--sub);font-size:13px;max-width:380px;margin:0 auto 8px}
+.ref-pill{display:inline-block;background:var(--card2);border:1px solid var(--tb);border-radius:8px;padding:7px 22px;font-family:'Montserrat',sans-serif;font-size:18px;font-weight:900;color:var(--teal);margin:14px 0;letter-spacing:2px}
+.next-steps{max-width:360px;margin:18px auto 0;text-align:left}
+.ns{display:flex;gap:10px;margin-bottom:10px;font-size:12px;color:var(--sub)}
+.ns-num{width:20px;height:20px;background:var(--teal);color:var(--navy);border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 
-/* ── TABLE ── */
-.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
-.tbl-hd{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.stat-l{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.stat-v{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:900;color:var(--white)}
+.stat-v.t{color:var(--teal)}.stat-v.g{color:var(--green)}.stat-v.o{color:var(--orange)}
+
+/* TABLE */
+.tbl{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.tbl-hd{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .tbl-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--white)}
 table{width:100%;border-collapse:collapse}
-th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:10px 20px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.15)}
-td{padding:12px 20px;font-size:13px;color:var(--text);border-bottom:1px solid rgba(30,53,85,.5);vertical-align:middle}
+th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;padding:9px 18px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.15)}
+td{padding:11px 18px;font-size:13px;border-bottom:1px solid rgba(30,53,85,.5);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(0,180,216,.03)}
-.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+tr:hover td{background:rgba(0,180,216,.02)}
+.badge2{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase}
 .b-sub{background:rgba(245,166,35,.1);color:var(--orange);border:1px solid rgba(245,166,35,.2)}
-.b-apr{background:var(--teal-l);color:var(--teal);border:1px solid var(--teal-b)}
+.b-apr{background:var(--tl);color:var(--teal);border:1px solid var(--tb)}
 .b-ds{background:rgba(100,150,255,.1);color:#7aa4ff;border:1px solid rgba(100,150,255,.2)}
 .b-sgn{background:rgba(0,200,150,.12);color:var(--green);border:1px solid rgba(0,200,150,.2)}
 .b-crm{background:rgba(0,200,150,.2);color:var(--green);border:1px solid rgba(0,200,150,.3)}
-.abtn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--card2);color:var(--text);transition:.15s;white-space:nowrap}
+.abtn{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--card2);color:var(--text);transition:.15s;white-space:nowrap}
 .abtn:hover{background:var(--border)}
-.abtn.t{border-color:var(--teal-b);color:var(--teal)}.abtn.t:hover{background:var(--teal-l)}
+.abtn.t{border-color:var(--tb);color:var(--teal)}.abtn.t:hover{background:var(--tl)}
 .abtn.g{border-color:rgba(0,200,150,.3);color:var(--green)}.abtn.g:hover{background:rgba(0,200,150,.08)}
-.abtn.b{border-color:rgba(100,150,255,.3);color:#7aa4ff}.abtn.b:hover{background:rgba(100,150,255,.08)}
 
-/* ── LINK BOX ── */
-.link-box{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:11px 14px;font-size:12px;color:var(--sub);font-family:monospace;word-break:break-all;margin-top:10px}
-
-/* ── FOOTER ── */
-.form-footer{text-align:center;margin-top:30px;padding-top:22px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:2}
-.form-footer a{color:var(--teal);text-decoration:none}
-
-/* ── MODAL ── */
+/* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:720px;max-height:90vh;overflow-y:auto}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto}
 .modal-hd{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:1}
 .modal-title{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;color:var(--white)}
 .modal-body{padding:22px}
-.close-btn{background:var(--card2);border:1px solid var(--border2);color:var(--sub);border-radius:6px;padding:5px 12px;cursor:pointer;font-size:12px}
-.close-btn:hover{color:var(--text)}
+.close-btn{background:var(--card2);border:1px solid var(--border2);color:var(--sub);border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px}
 
-/* ── DIR BLOCKS ── */
-.dir-block{padding-top:16px;border-top:1px solid var(--border);margin-top:16px}
+/* LINK BOX */
+.link-box{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--sub);font-family:monospace;word-break:break-all;margin-top:8px}
+
+/* FOOTER */
+.footer{text-align:center;margin-top:28px;padding-top:20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:2}
+.footer a{color:var(--teal);text-decoration:none}
+
+/* DIR BLOCK */
+.dir-block{padding-top:14px;border-top:1px solid var(--border);margin-top:14px}
 .dir-block:first-child{padding-top:0;border-top:none;margin-top:0}
-.dir-lbl{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px}
-.dir-lbl.m{color:var(--muted)}
-
-/* ── EDIT BANNER ── */
-.edit-banner{background:rgba(0,180,216,.08);border:1px solid var(--teal-b);border-radius:var(--r);padding:10px 16px;margin-bottom:18px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--teal);flex-wrap:wrap}
+.dir-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
+.dir-lbl.req-col{color:var(--teal)}
+.dir-lbl.opt-col{color:var(--muted)}
 
 @media(max-width:640px){
-  .g2,.g3,.doc-grid{grid-template-columns:1fr}
-  .s2,.s3{grid-column:span 1}
+  .grid2,.doc-grid{grid-template-columns:1fr}
+  .span2{grid-column:span 1}
   .stats{grid-template-columns:1fr 1fr}
   .wrap{padding:18px 12px 60px}
-  .sec-body{padding:16px}
-  .prog{gap:0}
+  .sec-body{padding:14px}
 }
 </style>
 </head>
@@ -223,18 +208,16 @@ tr:hover td{background:rgba(0,180,216,.03)}
 
 <!-- HEADER -->
 <header class="hdr">
-  <div class="hdr-brand">
-    <div class="logo-box">ATM</div>
+  <div class="hdr-l">
+    <div class="logo">ATM</div>
     <div>
       <div class="hdr-name">ATM SOLUTIONS</div>
-      <div class="hdr-div">Smart ATM Onboarding</div>
+      <div class="hdr-sub">Smart ATM Onboarding</div>
     </div>
-    <div class="hdr-sep"></div>
-    <div class="hdr-sub">A Paycorp Group Division</div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <span id="hdr-rep" style="font-size:11px;color:var(--sub);display:none"></span>
-    <span class="hdr-badge">Pay Your Way</span>
+    <span id="hdr-rep-name" style="font-size:11px;color:var(--sub);display:none"></span>
+    <span class="badge">Pay Your Way</span>
   </div>
 </header>
 
@@ -242,249 +225,204 @@ tr:hover td{background:rgba(0,180,216,.03)}
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab on" onclick="switchTab('client')">Client Application</button>
-    <button class="tab" onclick="switchTab('rep')">Rep Portal</button>
+    <button class="tab-btn active" id="tab-client" onclick="showTab('client')">Client Application</button>
+    <button class="tab-btn" id="tab-rep" onclick="showTab('rep')">Rep Portal</button>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       CLIENT SECTION
-  ═══════════════════════════════════════════ -->
-  <div id="sec-client">
+  <!-- ══════════════ CLIENT PAGE ══════════════ -->
+  <div class="page active" id="page-client">
 
-    <!-- ACCESS GATE (client) -->
-    <div id="gate-client">
-      <div class="gate-wrap">
+    <!-- CLIENT GATE -->
+    <div id="client-gate">
+      <div class="gate">
         <div class="gate-card">
           <div class="gate-logo">ATM</div>
           <h2>Smart ATM Application</h2>
-          <p>This is a secure portal for <strong style="color:var(--text)">ATM Solutions clients</strong> to apply for a new Smart ATM installation. Please enter your access code to continue.</p>
-          <div class="al-sec">
+          <p>Secure portal for <strong style="color:var(--white)">ATM Solutions clients</strong>. Enter your access code from your sales rep to continue.</p>
+          <div class="sec-note">
             <strong>🔒 Secure Access</strong>
-            This portal is private. Only people with a valid access code (provided by your ATM Solutions sales representative) can submit an application.
+            Only people with a valid access code can submit an application.
           </div>
-          <div class="f" style="margin-bottom:14px">
+          <div class="field">
             <label>Your Name</label>
-            <input type="text" id="client-name" placeholder="e.g. Leon Erasmus"/>
+            <input type="text" id="c-name" placeholder="Your full name"/>
           </div>
-          <div class="f" style="margin-bottom:14px">
+          <div class="field">
             <label>Access Code <span class="req">*</span></label>
-            <input type="text" id="client-code" placeholder="Enter code from your rep" style="text-transform:uppercase;letter-spacing:2px" maxlength="10"/>
+            <input type="text" id="c-code" placeholder="Enter code e.g. ATM2025" style="text-transform:uppercase;letter-spacing:2px"/>
           </div>
-          <div id="client-err" class="alert al-r hidden">⚠️ Invalid access code. Please contact your ATM Solutions rep.</div>
-          <button class="btn btn-p" style="width:100%;justify-content:center" onclick="clientLogin()">Continue to Application →</button>
+          <div id="c-err" class="alert alert-r" style="display:none">⚠️ Invalid access code. Contact your ATM Solutions rep.</div>
+          <button class="btn btn-teal" onclick="clientLogin()" style="margin-top:4px">Continue to Application →</button>
           <div class="access-note">
-            <strong>Don't have a code?</strong><br>
-            Contact your ATM Solutions sales representative or call <strong>+27 11 531 5300</strong>.<br><br>
-            <strong>Privacy:</strong> Your information is processed in accordance with POPIA (Act No. 4 of 2013) and is used only to prepare your Smart ATM site agreement.
+            <strong style="color:var(--sub)">Don't have a code?</strong><br>
+            Call <strong>+27 11 531 5300</strong> or contact your sales rep.<br><br>
+            Your data is processed under POPIA (Act No. 4 of 2013).
           </div>
         </div>
       </div>
     </div>
 
-    <!-- CLIENT FORM (hidden until auth) -->
-    <div id="form-client" class="hidden">
+    <!-- CLIENT FORM -->
+    <div id="client-form" style="display:none">
       <div class="hero">
         <div class="eyebrow">Smart ATM · New Site Application</div>
         <h1>Apply for a <span>Smart ATM</span></h1>
-        <p id="client-greeting">Complete all sections. Your information will pre-populate your site agreement.</p>
+        <p id="c-greeting">Complete all sections — your info will pre-populate your site agreement.</p>
       </div>
-      <div id="edit-banner" class="edit-banner hidden">
-        ✏️ <strong>Edit Mode</strong> — Update any field below then click Save Changes.
-        <button class="btn btn-s" style="margin-left:auto;padding:5px 12px;font-size:12px" onclick="toggleEdit()">Exit Edit Mode</button>
-      </div>
-      <!-- PROGRESS -->
-      <div class="prog" id="progress-bar"></div>
-      <!-- STEP CONTENT -->
+      <div class="prog" id="prog"></div>
       <div id="step-content"></div>
-      <!-- NAV -->
-      <div class="btn-row" id="nav-btns"></div>
-      <div class="form-footer">
-        ATM Solutions · A division of <a href="https://www.paycorp.co.za" target="_blank">Paycorp Group (Pty) Ltd</a> · Reg. No. 2013/077629/07<br>
-        Sandhaven Office Park, 14 Pongola Crescent, Eastgate Ext 17, Sandton, 2196 · +27 11 531 5300<br>
+      <div class="btn-row" id="step-nav"></div>
+      <div class="footer">
+        ATM Solutions · A division of <a href="https://www.paycorp.co.za" target="_blank">Paycorp Group (Pty) Ltd</a> · Reg No. 2013/077629/07<br>
+        Sandhaven Office Park, 14 Pongola Crescent, Eastgate Ext 17, Sandton · +27 11 531 5300<br>
         <a href="https://www.paycorp.co.za/wp-content/uploads/2024/03/Smart-ATM-Ts-and-Cs_2024-1.pdf" target="_blank">Smart ATM T&Cs</a> ·
         <a href="https://www.paycorp.co.za/wp-content/uploads/2024/03/POPIA-Privacy-Policy_2024.pdf" target="_blank">Privacy Policy</a>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       REP SECTION
-  ═══════════════════════════════════════════ -->
-  <div id="sec-rep" class="hidden">
+  <!-- ══════════════ REP PAGE ══════════════ -->
+  <div class="page" id="page-rep">
 
-    <!-- REP LOGIN -->
-    <div id="gate-rep">
-      <div class="gate-wrap">
+    <!-- REP GATE -->
+    <div id="rep-gate">
+      <div class="gate">
         <div class="gate-card">
           <div class="gate-logo">ATM</div>
           <h2>Rep Portal</h2>
-          <p>Secure access for ATM Solutions sales representatives and administrators only.</p>
-          <div class="al-sec">
+          <p>Secure access for <strong style="color:var(--white)">ATM Solutions staff</strong> only.</p>
+          <div class="sec-note">
             <strong>🔒 Staff Only</strong>
-            This portal is restricted to authorised ATM Solutions / Paycorp staff. Unauthorised access attempts are logged.
+            Restricted to authorised ATM Solutions representatives and administrators.
           </div>
-          <div class="f" style="margin-bottom:14px">
+          <div class="field">
             <label>Email Address</label>
-            <input type="email" id="rep-email" placeholder="you@atmsolutions.co.za" onkeydown="if(event.key==='Enter')repLogin()"/>
+            <input type="email" id="r-email" placeholder="you@atmsolutions.co.za" onkeydown="if(event.key==='Enter')repLogin()"/>
           </div>
-          <div class="f" style="margin-bottom:14px">
+          <div class="field">
             <label>PIN</label>
-            <input type="password" id="rep-pin" placeholder="4-digit PIN" maxlength="4" onkeydown="if(event.key==='Enter')repLogin()"/>
+            <input type="password" id="r-pin" placeholder="4-digit PIN" maxlength="4" onkeydown="if(event.key==='Enter')repLogin()"/>
           </div>
-          <div id="rep-err" class="alert al-r hidden">⚠️ Invalid credentials. Please try again.</div>
-          <button class="btn btn-p" style="width:100%;justify-content:center" onclick="repLogin()">Sign In →</button>
-          <div class="access-note">Demo: <strong>deant@atmsolutions.co.za</strong> / PIN: <strong>1234</strong><br>Admin: <strong>admin@atmsolutions.co.za</strong> / PIN: <strong>9999</strong></div>
+          <div id="r-err" class="alert alert-r" style="display:none">⚠️ Invalid credentials. Please try again.</div>
+          <button class="btn btn-teal" onclick="repLogin()" style="margin-top:4px">Sign In →</button>
+          <div class="access-note" style="text-align:center">
+            Demo: <strong>deant@atmsolutions.co.za</strong> / PIN: <strong>1234</strong>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- REP DASHBOARD -->
-    <div id="dash-rep" class="hidden">
-      <div class="hero" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+    <div id="rep-dash" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:24px">
         <div>
           <div class="eyebrow" id="rep-eyebrow">Rep Portal</div>
-          <h1>Welcome, <span id="rep-firstname">Rep</span></h1>
-          <p>Manage Smart ATM site applications and DocuSign contracts.</p>
+          <h1 style="font-family:Montserrat,sans-serif;font-size:26px;font-weight:900;color:var(--white)">Welcome, <span id="rep-fn" style="color:var(--teal)"></span></h1>
+          <p style="font-size:13px;color:var(--sub)">Manage Smart ATM site applications</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <button class="btn btn-p" onclick="genLink()">+ Generate Client Link</button>
-          <button class="btn btn-s" onclick="repLogout()">Sign Out</button>
+          <button class="btn btn-teal" style="width:auto" onclick="genLink()">+ Generate Client Link</button>
+          <button class="btn btn-dark" onclick="repLogout()">Sign Out</button>
         </div>
       </div>
+
       <div class="stats">
-        <div class="stat"><div class="stat-l">Total Applications</div><div class="stat-v" id="s-total">3</div></div>
-        <div class="stat"><div class="stat-l">Needs Action</div><div class="stat-v ov" id="s-action">1</div></div>
-        <div class="stat"><div class="stat-l">At DocuSign</div><div class="stat-v tv" id="s-ds">1</div></div>
-        <div class="stat"><div class="stat-l">Fully Signed</div><div class="stat-v gv" id="s-signed">1</div></div>
+        <div class="stat"><div class="stat-l">Total</div><div class="stat-v" id="s-tot">0</div></div>
+        <div class="stat"><div class="stat-l">Needs Review</div><div class="stat-v o" id="s-rev">0</div></div>
+        <div class="stat"><div class="stat-l">At DocuSign</div><div class="stat-v t" id="s-ds">0</div></div>
+        <div class="stat"><div class="stat-l">Signed</div><div class="stat-v g" id="s-sgn">0</div></div>
       </div>
-      <!-- Link generator -->
-      <div id="link-sec" class="sec hidden" style="margin-bottom:20px">
-        <div class="sec-hd"><div class="sec-ico">🔗</div><div><div class="sec-title">Client Application Link</div><div class="sec-desc">Share via WhatsApp or email — expires in 7 days</div></div></div>
+
+      <div id="link-panel" class="sec" style="display:none;margin-bottom:16px">
+        <div class="sec-hd"><div class="sec-ico">🔗</div><div><div class="sec-title">Client Application Link</div><div class="sec-desc">Share via WhatsApp or email — expires 7 days</div></div></div>
         <div class="sec-body">
           <div class="link-box" id="link-val"></div>
-          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-            <button class="btn btn-s" onclick="copyLink()">📋 Copy</button>
-            <button class="btn btn-s" id="wa-btn">💬 WhatsApp</button>
-            <button class="btn btn-s" id="em-btn">✉️ Email</button>
-            <button class="btn btn-s" style="margin-left:auto" onclick="document.getElementById('link-sec').classList.add('hidden')">✕</button>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn btn-dark" onclick="copyLink()">📋 Copy</button>
+            <button class="btn btn-dark" id="wa-link">💬 WhatsApp</button>
+            <button class="btn btn-dark" id="em-link">✉️ Email</button>
+            <button class="btn btn-dark" style="margin-left:auto" onclick="document.getElementById('link-panel').style.display='none'">✕</button>
           </div>
         </div>
       </div>
-      <!-- Applications table -->
-      <div class="tbl-wrap">
-        <div class="tbl-hd"><div class="tbl-title">Site Applications</div><span style="font-size:11px;color:var(--muted)">3 total</span></div>
-        <table>
-          <thead><tr><th>Reference</th><th>Merchant</th><th>Province</th><th>Docs</th><th>Fee p/m</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="app-rows"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 
-</div><!-- /wrap -->
-
-<!-- PRE-SEND DOCUSIGN REVIEW MODAL -->
-<div id="presend-modal" class="overlay hidden">
-  <div class="modal" style="max-width:640px">
-    <div class="modal-hd">
-      <div>
-        <div class="modal-title">✉ Review Before Sending DocuSign</div>
-        <div style="font-size:11px;color:var(--sub);margin-top:2px" id="presend-ref"></div>
-      </div>
-      <button class="close-btn" onclick="closePresend()">✕ Close</button>
-    </div>
-    <div class="modal-body">
-      <div class="alert al-i" style="margin-bottom:18px">ℹ️ Review and adjust commercial terms before the contract is sent. DocuSign will go to <strong>your email first</strong> to sign, then to the merchant to countersign.</div>
-      <div style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:18px">
-        <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Merchant Summary</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
-          <div><span style="color:var(--muted)">Trading Name</span><br><strong id="ps-trading"></strong></div>
-          <div><span style="color:var(--muted)">Reference</span><br><strong id="ps-ref2" style="color:var(--teal)"></strong></div>
-          <div><span style="color:var(--muted)">Province</span><br><strong id="ps-address"></strong></div>
-          <div><span style="color:var(--muted)">Merchant Email</span><br><strong id="ps-email"></strong></div>
+      <div class="tbl">
+        <div class="tbl-hd"><div class="tbl-title">Site Applications</div><span id="app-count" style="font-size:11px;color:var(--muted)"></span></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr>
+              <th>Reference</th><th>Merchant</th><th>Province</th><th>Fee p/m</th><th>Status</th><th>Action</th>
+            </tr></thead>
+            <tbody id="app-tbody"></tbody>
+          </table>
         </div>
       </div>
-      <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px">Commercial Terms — Adjust if Required</div>
-      <div class="g2" style="gap:12px">
-        <div class="f"><label>Monthly Service Fee (ex VAT) <span class="req">*</span></label><div class="money-wrap"><span class="money-pre">R</span><input type="number" id="ps-fee" placeholder="6500"/></div></div>
-        <div class="f"><label>ATM Type <span class="req">*</span></label><select id="ps-atm"><option value="">Select...</option><option>Standard Slimline Wrap</option><option>Illuminated Shroud</option><option>Through-the-Wall Wing</option><option>Through-the-Wall Wing on Rails</option><option>TTW Wing on Rails with Slide &amp; Rotate</option></select></div>
-        <div class="f"><label>Rebate Deal</label><select id="ps-rebate"><option>Reward Deal</option><option>Standard Deal</option><option>Custom Deal</option></select></div>
-        <div class="f"><label>Rebate per Withdrawal (ex VAT)</label><div class="money-wrap"><span class="money-pre">R</span><input type="number" id="ps-rebval" value="0.88" step="0.01"/></div></div>
-        <div class="f"><label>Annual Escalation %</label><input type="number" id="ps-esc" value="6"/></div>
-        <div class="f"><label>Contract Period (months)</label><input type="number" id="ps-period" value="60"/></div>
-        <div class="f"><label>Payment Option</label><select id="ps-payment"><option>Advance</option><option>Arrears</option></select></div>
-        <div class="f"><label>Key Account Holder</label><input type="text" id="ps-kah" placeholder="e.g. ASTRON, Engen"/></div>
-        <div class="f s2"><label>Cassette Denominations</label><input type="text" id="ps-cass" value="R200 / R100 / R50 / R20"/></div>
-        <div class="f s2"><label>Rep Notes (internal only)</label><textarea id="ps-notes" placeholder="Any last-minute notes before sending..."></textarea></div>
-      </div>
-      <div style="margin-top:18px;padding:12px 16px;background:rgba(0,180,216,.06);border:1px solid var(--teal-b);border-radius:var(--r);font-size:12px;line-height:2">
-        <div style="color:var(--teal);font-weight:700;margin-bottom:4px">📧 DocuSign Signing Order</div>
-        <div><span style="color:var(--sub)">Step 1 — Rep signs:</span> <strong id="ps-rep-email" style="color:var(--white)"></strong></div>
-        <div><span style="color:var(--sub)">Step 2 — Merchant signs:</span> <strong id="ps-merch-email" style="color:var(--white)"></strong></div>
-      </div>
-      <div class="btn-row" style="margin-top:20px">
-        <button class="btn btn-s" onclick="closePresend()">Cancel</button>
-        <button class="btn btn-g" id="ps-confirm-btn" onclick="confirmAndSendDocuSign()">✅ Save &amp; Open DocuSign</button>
-      </div>
     </div>
   </div>
+
 </div>
 
 <!-- COMMERCIAL MODAL -->
-<div id="comm-modal" class="overlay hidden">
+<div class="overlay" id="comm-modal" style="display:none" onclick="if(event.target===this)closeComm()">
   <div class="modal">
     <div class="modal-hd">
-      <div>
-        <div class="modal-title">⚙ Commercial Terms — Rep Only</div>
-        <div style="font-size:11px;color:var(--sub);margin-top:2px" id="modal-ref"></div>
-      </div>
-      <button class="close-btn" onclick="closeModal()">✕ Close</button>
+      <div><div class="modal-title">⚙ Commercial Terms</div><div style="font-size:11px;color:var(--sub);margin-top:2px" id="comm-ref"></div></div>
+      <button class="close-btn" onclick="closeComm()">✕ Close</button>
     </div>
     <div class="modal-body">
-      <div class="alert al-i" style="margin-bottom:16px">ℹ️ These fields populate Part E (Fees) and the Annexure in the DocuSign contract. Not visible to the merchant.</div>
-      <div class="g2" style="gap:14px">
-        <div class="f"><label>Monthly Service Fee (ex VAT) <span class="req">*</span></label><div class="money-wrap"><span class="money-pre">R</span><input type="number" id="m-fee" placeholder="6500"/></div></div>
-        <div class="f"><label>ATM Type <span class="req">*</span></label><select id="m-atm"><option value="">Select...</option><option>Standard Slimline Wrap</option><option>Illuminated Shroud</option><option>Through-the-Wall Wing</option><option>Through-the-Wall Wing on Rails</option><option>TTW Wing on Rails with Slide &amp; Rotate</option></select></div>
-        <div class="f"><label>Rebate Deal</label><select id="m-rebate"><option>Reward Deal</option><option>Standard Deal</option><option>Custom Deal</option></select></div>
-        <div class="f"><label>Monthly Withdrawal Threshold</label><input type="text" id="m-thresh" placeholder="1+" value="1+"/></div>
-        <div class="f"><label>Rebate per Withdrawal (ex VAT)</label><div class="money-wrap"><span class="money-pre">R</span><input type="number" id="m-rebval" value="0.88" step="0.01"/></div></div>
-        <div class="f"><label>Annual Escalation %</label><input type="number" id="m-esc" value="6"/></div>
-        <div class="f"><label>Contract Period (months)</label><input type="number" id="m-period" value="60"/></div>
-        <div class="f"><label>Cassette Denominations</label><input type="text" id="m-cass" value="R200 / R100 / R50 / R20"/></div>
-        <div class="f s2"><label>Key Account Holder</label><input type="text" id="m-kah" placeholder="e.g. ASTRON, Engen, Shoprite"/></div>
-        <div class="f s2"><label>Internal Rep Notes</label><textarea id="m-notes" placeholder="Deal notes, site conditions, negotiated terms..."></textarea></div>
+      <div class="alert alert-i" style="margin-bottom:16px">ℹ️ Rep-only fields — used to populate Part E (Fees) and the Annexure in DocuSign. Not visible to merchant.</div>
+      <div class="grid2" style="gap:12px">
+        <div class="field"><label>Monthly Service Fee (ex VAT) <span class="req">*</span></label><div class="money"><span class="money-sym">R</span><input type="number" id="m-fee" placeholder="6500"/></div></div>
+        <div class="field"><label>ATM Type <span class="req">*</span></label>
+          <select id="m-atm"><option value="">Select...</option><option>Standard Slimline Wrap</option><option>Illuminated Shroud</option><option>Through-the-Wall Wing</option><option>Through-the-Wall Wing on Rails</option><option>TTW Wing on Rails with Slide &amp; Rotate</option></select>
+        </div>
+        <div class="field"><label>Rebate Deal</label><select id="m-rebate"><option>Reward Deal</option><option>Standard Deal</option><option>Custom Deal</option></select></div>
+        <div class="field"><label>Rebate per Withdrawal (ex VAT)</label><div class="money"><span class="money-sym">R</span><input type="number" id="m-rebval" value="0.88" step="0.01"/></div></div>
+        <div class="field"><label>Annual Escalation %</label><input type="number" id="m-esc" value="6"/></div>
+        <div class="field"><label>Contract Period (months)</label><input type="number" id="m-period" value="60"/></div>
+        <div class="field"><label>Payment Option</label><select id="m-pay"><option>Advance</option><option>Arrears</option></select></div>
+        <div class="field"><label>Key Account Holder</label><input type="text" id="m-kah" placeholder="e.g. ASTRON, Engen"/></div>
+        <div class="field span2"><label>Cassette Denominations</label><input type="text" id="m-cass" value="R200 / R100 / R50 / R20"/></div>
+        <div class="field span2"><label>Internal Rep Notes</label><textarea id="m-notes" style="min-height:60px" placeholder="Deal notes, site conditions, negotiated terms..."></textarea></div>
+      </div>
+      <div style="margin-top:18px;padding:12px 16px;background:rgba(0,180,216,.06);border:1px solid var(--tb);border-radius:var(--r);font-size:12px;line-height:2">
+        <div style="color:var(--teal);font-weight:700;margin-bottom:4px">📧 DocuSign Signing Order</div>
+        <div><span style="color:var(--sub)">Step 1 — Rep signs:</span> <strong id="m-rep-email" style="color:var(--white)"></strong></div>
+        <div><span style="color:var(--sub)">Step 2 — Merchant signs:</span> <strong id="m-merch-email" style="color:var(--white)"></strong></div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-s" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-g" onclick="saveComm()">✓ Save &amp; Approve for DocuSign</button>
+        <button class="btn btn-dark" onclick="closeComm()">Cancel</button>
+        <button class="btn btn-green" id="comm-save-btn" onclick="saveAndOpenDocuSign()">✅ Save &amp; Open DocuSign</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+const CODES = ['ATM2025','DEMO1234','PAYCORP1','SMARTATM'];
 const REPS = [
-  {id:'1',name:'Dean Tucker',email:'deant@atmsolutions.co.za',pin:'1234',branch:'Head Office',role:'rep'},
-  {id:'2',name:'Gavin Reubenson',email:'gavin@atmsolutions.co.za',pin:'5678',branch:'Cape Town',role:'rep'},
-  {id:'3',name:'Admin User',email:'admin@atmsolutions.co.za',pin:'9999',branch:'Head Office',role:'admin'},
+  {id:'1',name:'Dean Tucker',email:'deant@atmsolutions.co.za',pin:'1234',branch:'Head Office'},
+  {id:'2',name:'Gavin Reubenson',email:'gavin@atmsolutions.co.za',pin:'5678',branch:'Cape Town'},
+  {id:'3',name:'Admin User',email:'admin@atmsolutions.co.za',pin:'9999',branch:'Head Office'},
 ];
-// Valid client access codes (in production these are generated per-rep per-client)
-const CLIENT_CODES = ['ATM2025','DEMO1234','PAYCORP1','SMARTATM'];
+const SUPA = 'https://cxyntiiegbwmgslwyfmn.supabase.co';
+const SKEY = 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d';
+const DS_TEMPLATE = '6b8a3ae7-f5bb-4a4e-8b96-439a5cda8e57';
+const DS_BASE = 'https://apps.docusign.com/send/templates/details';
 
-const APPS = [
-  {id:'a1',ref:'ATM-2025-01001',merchant:'Sunshine Spaza',province:'Gauteng',nature:'Retail - FMCG',status:'submitted',email:'owner@sunshine.co.za',date:'2025-06-10',fee:null,docs:1},
-  {id:'a2',ref:'ATM-2025-01002',merchant:'AE Rawsonville',province:'Western Cape',nature:'Petroleum / Fuel',status:'rep_approved',email:'leon@lerasmus.co.za',date:'2025-06-09',fee:6500,docs:4},
-  {id:'a3',ref:'ATM-2025-01003',merchant:'Cape Fuels Bellville',province:'Western Cape',nature:'Petroleum / Fuel',status:'client_signed',email:'ops@capefuels.co.za',date:'2025-06-08',fee:5500,docs:4},
-];
-
-// ── FORM STATE ────────────────────────────────────────────────────────────
-let currentStep = 1;
-let editMode = false;
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
 let currentRep = null;
-let modalAppId = null;
+let currentStep = 1;
 let uploadedDocs = {};
-let fv = { // form values
+let commAppId = null;
+let APPS = [];
+
+const fv = {
   trading_name:'',registered_name:'',registration_number:'',vat_number:'',entity_type:'',nature_of_business:'',
   site_address:'',suburb:'',city:'',province:'',postal_code:'',gps_lat:'',gps_lng:'',site_type:'',operating_days:'Monday to Sunday',trading_hours:'',
   fin_year:'',turnover_2m:'',assets_2m:'',daily_cash:'',monthly_cash:'',
@@ -503,833 +441,725 @@ const BANKS=['Absa','African Bank','Capitec','Discovery Bank','FNB (First Nation
 const ACC_TYPES=['Platinum Business','Business Cheque / Current','Business Savings','Personal Cheque','Personal Savings'];
 const FYE=['February','March','June','August','October','December'];
 const NATURE=['Petroleum / Fuel','Retail - FMCG','Retail - General','Food & Beverage','Hospitality','Transport','Financial Services','Healthcare','Government / Public Administration','Other'];
+const STEPS=[{id:1,l:'Business'},{id:2,l:'Site & ATM'},{id:3,l:'Contacts'},{id:4,l:'Directors'},{id:5,l:'Banking'},{id:6,l:'Documents'},{id:7,l:'Review'}];
 
-const STEPS=[
-  {id:1,label:'Business'},{id:2,label:'Site & ATM'},{id:3,label:'Contacts'},
-  {id:4,label:'Directors'},{id:5,label:'Banking'},{id:6,label:'Documents'},{id:7,label:'Review'},
-];
-
-// ── TAB SWITCH ────────────────────────────────────────────────────────────
-function switchTab(t){
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',i===(t==='client'?0:1)));
-  document.getElementById('sec-client').classList.toggle('hidden',t!=='client');
-  document.getElementById('sec-rep').classList.toggle('hidden',t!=='rep');
+// ══════════════════════════════════════════════
+// SUPABASE HELPERS
+// ══════════════════════════════════════════════
+async function sbInsert(table, data) {
+  const r = await fetch(`${SUPA}/rest/v1/${table}`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SKEY,'Authorization':`Bearer ${SKEY}`,'Prefer':'return=representation'},
+    body:JSON.stringify(data)
+  });
+  if(!r.ok){const e=await r.json().catch(()=>({message:r.statusText}));throw new Error(e.message||r.statusText);}
+  return r.json();
+}
+async function sbUpdate(table, id, data) {
+  const r = await fetch(`${SUPA}/rest/v1/${table}?id=eq.${id}`, {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json','apikey':SKEY,'Authorization':`Bearer ${SKEY}`,'Prefer':'return=representation'},
+    body:JSON.stringify(data)
+  });
+  if(!r.ok){const e=await r.json().catch(()=>({message:r.statusText}));throw new Error(e.message||r.statusText);}
+  return r.json();
+}
+async function sbSelect(table, query='') {
+  const r = await fetch(`${SUPA}/rest/v1/${table}?${query}`, {
+    headers:{'apikey':SKEY,'Authorization':`Bearer ${SKEY}`}
+  });
+  if(!r.ok) throw new Error(r.statusText);
+  return r.json();
 }
 
-// ── CLIENT AUTH ───────────────────────────────────────────────────────────
-function clientLogin(){
-  const code = document.getElementById('client-code').value.trim().toUpperCase();
-  const name = document.getElementById('client-name').value.trim();
-  const err = document.getElementById('client-err');
-  if(!CLIENT_CODES.includes(code)){
-    err.classList.remove('hidden'); return;
+// ══════════════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════════════
+function showTab(t) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+t).classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// CLIENT AUTH
+// ══════════════════════════════════════════════
+function clientLogin() {
+  const code = document.getElementById('c-code').value.trim().toUpperCase();
+  const name = document.getElementById('c-name').value.trim();
+  const err = document.getElementById('c-err');
+  if(!CODES.includes(code)){
+    err.style.display='block'; return;
   }
-  err.classList.add('hidden');
-  document.getElementById('gate-client').classList.add('hidden');
-  document.getElementById('form-client').classList.remove('hidden');
-  if(name) document.getElementById('client-greeting').textContent =
-    `Welcome ${name}. Complete all sections — your information will pre-populate your Smart ATM site agreement.`;
+  err.style.display='none';
+  document.getElementById('client-gate').style.display='none';
+  document.getElementById('client-form').style.display='block';
+  if(name) document.getElementById('c-greeting').textContent = `Welcome ${name}. Complete all sections — your information will pre-populate your Smart ATM site agreement.`;
+  currentStep=1;
   renderStep();
 }
 
-// ── REP AUTH ──────────────────────────────────────────────────────────────
-function repLogin(){
-  const email = document.getElementById('rep-email').value.trim();
-  const pin = document.getElementById('rep-pin').value.trim();
+// ══════════════════════════════════════════════
+// REP AUTH
+// ══════════════════════════════════════════════
+function repLogin() {
+  const email = document.getElementById('r-email').value.trim();
+  const pin = document.getElementById('r-pin').value.trim();
   const rep = REPS.find(r=>r.email===email && r.pin===pin);
-  const err = document.getElementById('rep-err');
-  if(!rep){ err.classList.remove('hidden'); return; }
-  err.classList.add('hidden');
-  currentRep = rep;
-  document.getElementById('gate-rep').classList.add('hidden');
-  document.getElementById('dash-rep').classList.remove('hidden');
-  document.getElementById('rep-firstname').textContent = rep.name.split(' ')[0];
-  document.getElementById('rep-eyebrow').textContent = `Rep Portal · ${rep.branch}${rep.role==='admin'?' · Administrator':''}`;
-  document.getElementById('hdr-rep').textContent = `Signed in: ${rep.name}`;
-  document.getElementById('hdr-rep').style.display='block';
-  loadApplications();
+  if(!rep){document.getElementById('r-err').style.display='block';return;}
+  document.getElementById('r-err').style.display='none';
+  currentRep=rep;
+  document.getElementById('rep-gate').style.display='none';
+  document.getElementById('rep-dash').style.display='block';
+  document.getElementById('rep-fn').textContent=rep.name.split(' ')[0];
+  document.getElementById('rep-eyebrow').textContent=`Rep Portal · ${rep.branch}`;
+  document.getElementById('hdr-rep-name').textContent=`Signed in: ${rep.name}`;
+  document.getElementById('hdr-rep-name').style.display='inline';
+  loadApps();
 }
-function repLogout(){
+function repLogout() {
   currentRep=null;
-  document.getElementById('gate-rep').classList.remove('hidden');
-  document.getElementById('dash-rep').classList.add('hidden');
-  document.getElementById('rep-email').value='';
-  document.getElementById('rep-pin').value='';
-  document.getElementById('hdr-rep').style.display='none';
-  document.getElementById('link-sec').classList.add('hidden');
+  document.getElementById('rep-gate').style.display='block';
+  document.getElementById('rep-dash').style.display='none';
+  document.getElementById('r-email').value='';
+  document.getElementById('r-pin').value='';
+  document.getElementById('hdr-rep-name').style.display='none';
 }
 
-// ── LINK GENERATOR ────────────────────────────────────────────────────────
-function genLink(){
-  const tok = Math.random().toString(36).substring(2,12).toUpperCase();
-  const code = CLIENT_CODES[Math.floor(Math.random()*CLIENT_CODES.length)];
-  const url = `https://atm-onboarding.vercel.app/apply?token=${tok}&code=${code}&rep=${currentRep?.id}`;
-  document.getElementById('link-val').textContent = url;
-  document.getElementById('link-sec').classList.remove('hidden');
-  document.getElementById('wa-btn').onclick = ()=>window.open(`https://wa.me/?text=${encodeURIComponent('Please complete your Smart ATM site application: '+url)}`);
-  document.getElementById('em-btn').onclick = ()=>window.open(`mailto:?subject=Smart ATM Site Application - ATM Solutions&body=Please complete your site application via this link: ${url}`);
-}
-function copyLink(){
-  navigator.clipboard.writeText(document.getElementById('link-val').textContent);
-  const b = event.target; b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy',2000);
+// ══════════════════════════════════════════════
+// LOAD APPLICATIONS
+// ══════════════════════════════════════════════
+async function loadApps() {
+  try {
+    const data = await sbSelect('applications','select=id,reference_number,trading_name,nature_of_business,province,status,signatory_email,submitted_at,service_fee&order=created_at.desc&limit=50');
+    if(data && data.length>0) {
+      APPS = data.map(a=>({
+        id:a.id, ref:a.reference_number||'—',
+        merchant:a.trading_name||'Unnamed',
+        province:a.province||'—',
+        nature:a.nature_of_business||'—',
+        status:a.status||'submitted',
+        email:a.signatory_email||'',
+        fee:a.service_fee||null,
+      }));
+    } else {
+      // Demo data fallback
+      APPS = [
+        {id:'demo1',ref:'ATM-2026-01000',merchant:'Dean Service Station',province:'Gauteng',nature:'Petroleum / Fuel',status:'rep_approved',email:'tucker.dean14@gmail.com',fee:6500},
+        {id:'demo2',ref:'ATM-2026-01001',merchant:'Cape Fuels Bellville',province:'Western Cape',nature:'Petroleum / Fuel',status:'submitted',email:'ops@capefuels.co.za',fee:null},
+      ];
+    }
+  } catch(e) {
+    APPS = [
+      {id:'demo1',ref:'ATM-2026-01000',merchant:'Dean Service Station',province:'Gauteng',nature:'Petroleum / Fuel',status:'rep_approved',email:'tucker.dean14@gmail.com',fee:6500},
+    ];
+  }
+  renderTable();
 }
 
-// ── APP TABLE ─────────────────────────────────────────────────────────────
-const STATUS_BADGE = {
-  submitted:`<span class="badge b-sub">Submitted</span>`,
-  rep_approved:`<span class="badge b-apr">Approved</span>`,
-  docusign_sent:`<span class="badge b-ds">DocuSign Sent</span>`,
-  rep_signed:`<span class="badge b-ds">Rep Signed</span>`,
-  client_signed:`<span class="badge b-sgn">Client Signed</span>`,
-  crm_created:`<span class="badge b-crm">CRM Created</span>`,
-};
-function renderAppTable(){
-  const tbody = document.getElementById('app-rows');
-  tbody.innerHTML = APPS.map(a=>{
-    let actions = '';
-    if(a.status==='submitted') actions=`<button class="abtn t" onclick="openModal('${a.id}')">⚙ Review + Set Fees</button>`;
-    else if(a.status==='rep_approved') actions=`<button class="abtn b" onclick="sendDocuSign('${a.id}')">✉ Send DocuSign</button>`;
-    else if(a.status==='docusign_sent') actions=`<span style="font-size:11px;color:#7aa4ff">⏳ Awaiting rep sig</span>`;
-    else if(a.status==='rep_signed') actions=`<span style="font-size:11px;color:var(--orange)">⏳ Awaiting merchant</span>`;
-    else if(a.status==='client_signed') actions=`<button class="abtn g" onclick="setStatus('${a.id}','crm_created')">↗ Create CRM Lead</button>`;
-    else if(a.status==='crm_created') actions=`<span style="font-size:11px;color:var(--green)">✓ Complete</span>`;
-    const docCol = `<span style="font-size:11px;color:${a.docs>=4?'var(--green)':a.docs>=2?'var(--orange)':'var(--muted)'}">${a.docs} file${a.docs!==1?'s':''}</span>`;
-    const feeCol = a.fee ? `<span style="font-family:monospace;font-size:12px;color:var(--green)">R${Number(a.fee).toLocaleString('en-ZA')}</span>` : `<span style="color:var(--muted);font-size:11px">— pending</span>`;
+// ══════════════════════════════════════════════
+// RENDER TABLE
+// ══════════════════════════════════════════════
+function renderTable() {
+  const STATUS = {
+    submitted:`<span class="badge2 b-sub">Submitted</span>`,
+    rep_approved:`<span class="badge2 b-apr">Approved</span>`,
+    docusign_sent:`<span class="badge2 b-ds">DocuSign Sent</span>`,
+    rep_signed:`<span class="badge2 b-ds">Rep Signed</span>`,
+    client_signed:`<span class="badge2 b-sgn">Client Signed</span>`,
+    crm_created:`<span class="badge2 b-crm">CRM Created</span>`,
+  };
+  document.getElementById('app-count').textContent=`${APPS.length} total`;
+  const counts=APPS.reduce((a,x)=>{a[x.status]=(a[x.status]||0)+1;return a;},{});
+  document.getElementById('s-tot').textContent=APPS.length;
+  document.getElementById('s-rev').textContent=(counts.submitted||0)+(counts.rep_approved||0);
+  document.getElementById('s-ds').textContent=(counts.docusign_sent||0)+(counts.rep_signed||0);
+  document.getElementById('s-sgn').textContent=(counts.client_signed||0)+(counts.crm_created||0);
+
+  document.getElementById('app-tbody').innerHTML = APPS.map(a=>{
+    let act='';
+    if(a.status==='submitted') act=`<button class="abtn t" onclick="openComm('${a.id}')">⚙ Review + Set Fees</button>`;
+    else if(a.status==='rep_approved') act=`<button class="abtn t" onclick="openComm('${a.id}')">✉ Send DocuSign</button>`;
+    else if(a.status==='docusign_sent') act=`<span style="font-size:11px;color:#7aa4ff">⏳ Awaiting rep sig</span>`;
+    else if(a.status==='rep_signed') act=`<span style="font-size:11px;color:var(--orange)">⏳ Awaiting merchant</span>`;
+    else if(a.status==='client_signed') act=`<button class="abtn g" onclick="createCRMLead('${a.id}')">↗ Create CRM Lead</button>`;
+    else if(a.status==='crm_created') act=`<span style="font-size:11px;color:var(--green)">✓ Complete</span>`;
+    const fee=a.fee?`<span style="font-family:monospace;font-size:12px;color:var(--green)">R${Number(a.fee).toLocaleString('en-ZA')}</span>`:`<span style="color:var(--muted);font-size:11px">—</span>`;
     return `<tr>
       <td style="font-family:monospace;font-size:11px;color:var(--teal);font-weight:700">${a.ref}</td>
       <td><div style="font-weight:600">${a.merchant}</div><div style="font-size:11px;color:var(--muted)">${a.nature}</div></td>
       <td style="color:var(--sub);font-size:12px">${a.province}</td>
-      <td>${docCol}</td><td>${feeCol}</td>
-      <td>${STATUS_BADGE[a.status]||a.status}</td>
-      <td>${actions}</td>
+      <td>${fee}</td>
+      <td>${STATUS[a.status]||a.status}</td>
+      <td>${act}</td>
     </tr>`;
   }).join('');
-  // update stats
-  const counts = APPS.reduce((a,x)=>{a[x.status]=(a[x.status]||0)+1;return a;},{});
-  document.getElementById('s-total').textContent = APPS.length;
-  document.getElementById('s-action').textContent = (counts.submitted||0);
-  document.getElementById('s-ds').textContent = (counts.rep_approved||0)+(counts.docusign_sent||0)+(counts.rep_signed||0);
-  document.getElementById('s-signed').textContent = (counts.client_signed||0)+(counts.crm_created||0);
-}
-function setStatus(id,st){
-  const a = APPS.find(x=>x.id===id);
-  if(a){ a.status=st; renderAppTable(); }
 }
 
-// ── MODAL ─────────────────────────────────────────────────────────────────
-function openModal(id){
-  modalAppId=id;
+// ══════════════════════════════════════════════
+// LINK GENERATOR
+// ══════════════════════════════════════════════
+function genLink() {
+  const tok=Math.random().toString(36).substring(2,12).toUpperCase();
+  const url=`https://atm-onboarding.vercel.app/?code=ATM2025&token=${tok}&rep=${currentRep?.id}`;
+  document.getElementById('link-val').textContent=url;
+  document.getElementById('link-panel').style.display='block';
+  document.getElementById('wa-link').onclick=()=>window.open(`https://wa.me/?text=${encodeURIComponent('Please complete your Smart ATM site application: '+url)}`);
+  document.getElementById('em-link').onclick=()=>window.open(`mailto:?subject=Smart ATM Application - ATM Solutions&body=Please complete: ${url}`);
+}
+function copyLink(){
+  navigator.clipboard.writeText(document.getElementById('link-val').textContent);
+  const b=event.target;b.textContent='✓ Copied!';setTimeout(()=>b.textContent='📋 Copy',2000);
+}
+
+// ══════════════════════════════════════════════
+// COMMERCIAL MODAL
+// ══════════════════════════════════════════════
+function openComm(id) {
+  commAppId=id;
   const a=APPS.find(x=>x.id===id);
-  document.getElementById('modal-ref').textContent=`${a.ref} · ${a.merchant}`;
+  if(!a) return;
+  document.getElementById('comm-ref').textContent=`${a.ref} · ${a.merchant}`;
   document.getElementById('m-fee').value=a.fee||'';
-  document.getElementById('comm-modal').classList.remove('hidden');
+  document.getElementById('m-rep-email').textContent=currentRep?.email||'deant@atmsolutions.co.za';
+  document.getElementById('m-merch-email').textContent=a.email||'—';
+  document.getElementById('comm-modal').style.display='flex';
 }
-function closeModal(){ document.getElementById('comm-modal').classList.add('hidden'); }
-function saveComm(){
-  const a=APPS.find(x=>x.id===modalAppId);
-  if(a){
-    a.fee=parseFloat(document.getElementById('m-fee').value)||null;
-    a.status='rep_approved';
-    renderAppTable();
+function closeComm(){document.getElementById('comm-modal').style.display='none';commAppId=null;}
+
+async function saveAndOpenDocuSign() {
+  const btn = document.getElementById('comm-save-btn');
+  btn.textContent = '⏳ Saving...'; btn.disabled = true;
+
+  const fee = parseFloat(document.getElementById('m-fee').value) || null;
+  const patch = {
+    service_fee:            fee,
+    atm_type:               document.getElementById('m-atm').value,
+    rebate_deal:            document.getElementById('m-rebate').value,
+    rebate_per_withdrawal:  parseFloat(document.getElementById('m-rebval').value) || null,
+    annual_escalation:      parseFloat(document.getElementById('m-esc').value) || 6,
+    contract_period_months: parseInt(document.getElementById('m-period').value) || 60,
+    payment_option:         document.getElementById('m-pay').value,
+    key_account_holder:     document.getElementById('m-kah').value,
+    cassette_denominations: document.getElementById('m-cass').value,
+    rep_notes:              document.getElementById('m-notes').value,
+    status:                 'rep_approved',
+  };
+
+  try {
+    // Save commercial terms to Supabase
+    if (!commAppId.startsWith('demo')) {
+      await sbUpdate('applications', commAppId, patch);
+    }
+
+    // Update local state
+    const local = APPS.find(x => x.id === commAppId);
+    if (local) { local.status = 'docusign_sent'; local.fee = fee; }
+    renderTable();
+    closeComm();
+
+    // Show sending status
+    btn.textContent = '⏳ Sending DocuSign...';
+
+    // Call Edge Function to send DocuSign with full pre-population
+    if (!commAppId.startsWith('demo')) {
+      const res = await fetch(
+        'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/send-docusign',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d',
+          },
+          body: JSON.stringify({
+            application_id: commAppId,
+            rep_email:      currentRep?.email || 'deant@atmsolutions.co.za',
+            rep_name:       currentRep?.name  || 'ATM Solutions Representative',
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        alert(
+          '✅ DocuSign sent successfully!\n\n' +
+          'Envelope ID: ' + data.envelope_id + '\n\n' +
+          'Signing order:\n' +
+          '1. ' + (currentRep?.email || 'Rep') + ' receives contract first\n' +
+          '2. Merchant receives after rep signs\n\n' +
+          'Check your email inbox now.'
+        );
+      } else {
+        // If API fails fall back to PowerForm
+        console.warn('API send failed, opening PowerForm:', data.error);
+        const app = await sbSelect('applications', `id=eq.${commAppId}&select=*`).then(r => r[0]);
+        openDocuSignURL(app, patch, currentRep?.email);
+      }
+    } else {
+      // Demo mode — open PowerForm
+      const a = APPS.find(x => x.id === commAppId);
+      openDocuSignURL(a, patch, currentRep?.email);
+    }
+
+  } catch(e) {
+    btn.textContent = '✅ Save & Open DocuSign';
+    btn.disabled = false;
+    alert('❌ Error: ' + e.message + '\n\nTrying to open DocuSign directly...');
+    const a = APPS.find(x => x.id === commAppId);
+    if (a) openDocuSignURL(a, patch, currentRep?.email);
   }
-  closeModal();
 }
 
-// ── FORM RENDERING ────────────────────────────────────────────────────────
-function field(label,key,placeholder,required=false,hint='',type='text',cls=''){
-  const v = fv[key]||'';
-  return `<div class="f ${cls}">
-    <label>${label}${required?` <span class="req">*</span>`:''}</label>
-    <input type="${type}" value="${v}" placeholder="${placeholder}" oninput="fv['${key}']=this.value"/>
-    ${hint?`<span class="hint">${hint}</span>`:''}
-  </div>`;
-}
-function selectField(label,key,options,required=false,cls=''){
-  const v=fv[key]||'';
-  const opts=options.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('');
-  return `<div class="f ${cls}">
-    <label>${label}${required?` <span class="req">*</span>`:''}</label>
-    <select onchange="fv['${key}']=this.value"><option value="">Select...</option>${opts}</select>
-  </div>`;
-}
-function moneyField(label,key,hint='',required=false,cls=''){
-  const v=fv[key]||'';
-  return `<div class="f ${cls}">
-    <label>${label}${required?` <span class="req">*</span>`:''}</label>
-    <div class="money-wrap"><span class="money-pre">R</span>
-    <input type="number" value="${v}" placeholder="0.00" oninput="fv['${key}']=this.value"/></div>
-    ${hint?`<span class="hint">${hint}</span>`:''}
-  </div>`;
+function openDocuSignURL(app, terms, repEmail) {
+  const s = v => v ? String(v) : '';
+  const m = v => v ? 'R' + Number(v).toLocaleString('en-ZA') : '';
+
+  // Build signer details
+  const repName  = currentRep?.name || 'ATM Solutions Representative';
+  const repEmail2 = repEmail || 'deant@atmsolutions.co.za';
+  const merchantName  = (s(app.signatory_first_name) + ' ' + s(app.signatory_last_name)).trim() || s(app.merchant) || s(app.trading_name);
+  const merchantEmail = s(app.signatory_email || app.email);
+
+  // Build PowerForm pre-population URL
+  // DocuSign PowerForm format: RoleName_UserName=value&RoleName_Email=value
+  const POWERFORM_BASE = 'https://eu.docusign.net/Member/PowerFormSigning.aspx';
+  const params = new URLSearchParams({
+    PowerFormId: '1871d9ce-6fed-4d4a-ba27-2b73dff10e24',
+    env:         'eu',
+    acct:        '0829f8ba-5922-4613-9f41-39f8a872c1b5',
+    v:           '2',
+    // Signer 1 — ATM Solutions Rep (signs first)
+    'ATM SOLUTIONS REP_UserName': repName,
+    'ATM SOLUTIONS REP_Email':    repEmail2,
+    // Signer 2 — Client/Merchant Signatory (signs second)
+    'CLIENT/MERCHANT SIGNATORY_UserName': merchantName,
+    'CLIENT/MERCHANT SIGNATORY_Email':    merchantEmail,
+  });
+
+  const powerFormURL = POWERFORM_BASE + '?' + params.toString();
+
+  // Show data card with the pre-populated URL
+  const d = {
+    ref:          s(app.reference_number || app.ref),
+    tradingName:  s(app.trading_name || app.merchant),
+    merchantName, merchantEmail,
+    repName, repEmail: repEmail2,
+    regNo:        s(app.registration_number),
+    vat:          s(app.vat_number),
+    address:      [s(app.site_address),s(app.suburb),s(app.city),s(app.province)].filter(Boolean).join(', '),
+    bank:         s(app.bank_name || app.bank),
+    accHolder:    s(app.account_holder || app.acc_holder),
+    accNum:       s(app.account_number || app.acc_num),
+    branchCode:   s(app.branch_code),
+    serviceFee:   m(terms.service_fee || app.fee),
+    escalation:   (terms.annual_escalation || 6) + '%',
+    period:       (terms.contract_period_months || 60) + ' months',
+    rebate:       s(terms.rebate_deal),
+    atm_type:     s(terms.atm_type || app.atm_type),
+    cassettes:    s(terms.cassette_denominations || app.cassette_denominations),
+    payOption:    s(terms.payment_option),
+  };
+
+  showDataCard(d, powerFormURL);
 }
 
-function getStepHTML(step){
-  if(step===1) return `
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">🏢</div><div>
-      <div class="sec-title">Business Details</div>
-      <div class="sec-desc">Legal entity and CIPC registration — must match official documents</div>
-    </div></div><div class="sec-body"><div class="g2">
-      ${field('Trading Name','trading_name','e.g. AE Rawsonville',true)}
-      ${field('Registered Company Name','registered_name','e.g. Springbok Dienstasie Rawsonville (Pty) Ltd')}
-      ${selectField('Legal Entity Type','entity_type',ENTITIES,true)}
-      ${selectField('Nature of Business','nature_of_business',NATURE,true)}
-      ${field('CIPC Registration Number','registration_number','2016/218866/07',false,'Leave blank for sole proprietors')}
-      ${field('VAT Registration Number','vat_number','4420284962',false,'Only if VAT registered')}
-    </div></div></div>`;
+function showDataCard(d, docusignURL) {
+  // Remove existing modal if any
+  const existing = document.getElementById('data-card-modal');
+  if(existing) existing.remove();
 
-  if(step===2) return `
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">📍</div><div>
-      <div class="sec-title">ATM Site & Location</div>
-      <div class="sec-desc">Where the Smart ATM will be installed (Part A & D of your agreement)</div>
-    </div></div><div class="sec-body"><div class="g2">
-      ${field('Street Address','site_address','28 Van Riebeeck Street',true,'','text','s2')}
-      ${field('Suburb','suburb','Rawsonville',true)}
-      ${field('City / Town','city','Rawsonville',true)}
-      ${selectField('Province','province',PROVINCES,true)}
-      ${field('Postal Code','postal_code','6845')}
-      <div class="divdr"></div>
-      ${selectField('Premises Type','site_type',SITE_TYPES,true)}
-      ${field('Operating Days','operating_days','Monday to Sunday',true)}
-      ${field('Operating Hours','trading_hours','e.g. 24hours or 06:00–22:00',true)}
-      ${field('GPS Latitude','gps_lat','-33.6552',false,'Optional — assists with site survey','number')}
-      ${field('GPS Longitude','gps_lng','19.3241',false,'','number')}
-    </div></div></div>
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">💰</div><div>
-      <div class="sec-title">Turnover Declaration (Part C)</div>
-      <div class="sec-desc">Required for the Smart ATM site agreement</div>
-    </div></div><div class="sec-body"><div class="g2">
-      ${selectField('Financial Year-End Month','fin_year',FYE,true)}
-      <div class="f s2" style="margin-top:4px">
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:14px">
-            <div style="font-size:12px;color:var(--text);font-weight:500;margin-bottom:10px;line-height:1.6">Total turnover is less than R2 Million (Two Million Rand) per annum:</div>
-            <div style="display:flex;gap:28px">
-              <label class="chk-item"><input type="radio" name="turnover_2m" value="yes" ${fv.turnover_2m==='yes'?'checked':''} onchange="fv.turnover_2m=this.value"/> <strong>Yes</strong></label>
-              <label class="chk-item"><input type="radio" name="turnover_2m" value="no" ${fv.turnover_2m==='no'?'checked':''} onchange="fv.turnover_2m=this.value"/> <strong>No</strong></label>
+  const modal = document.createElement('div');
+  modal.id = 'data-card-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px';
+
+  modal.innerHTML = `
+    <div style="background:#0F1E38;border:1px solid #1E3555;border-radius:14px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto">
+      <div style="padding:18px 22px;border-bottom:1px solid #1E3555;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#0F1E38;z-index:1">
+        <div>
+          <div style="font-family:Montserrat,sans-serif;font-size:15px;font-weight:800;color:#fff">📋 Merchant Data Card</div>
+          <div style="font-size:11px;color:#8FA3BF;margin-top:2px">${d.ref} · ${d.tradingName} · Copy these details into DocuSign</div>
+        </div>
+        <button onclick="document.getElementById('data-card-modal').remove()" style="background:#142440;border:1px solid #243D63;color:#8FA3BF;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px">✕ Close</button>
+      </div>
+      <div style="padding:22px">
+
+        <div style="background:rgba(0,180,216,.08);border:1px solid rgba(0,180,216,.25);border-radius:8px;padding:14px;margin-bottom:18px;font-size:12px;color:#8FA3BF;line-height:1.8">
+          ✅ <strong style="color:#fff">Pre-populated!</strong> DocuSign will open with signer names and emails already filled in. Review the data below, then click Open DocuSign. The contract will be sent to the rep first, then the merchant.
+        </div>
+
+        <!-- SIGNERS -->
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📧 Signers — Enter in DocuSign</div>
+        <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+            <div>
+              <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 1 — ATM Solutions Rep (signs first)</div>
+              <div style="font-weight:600;color:#fff">${d.repName}</div>
+              <div style="color:#00B4D8;font-family:monospace;font-size:12px">${d.repEmail}</div>
             </div>
-          </div>
-          <div style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:14px">
-            <div style="font-size:12px;color:var(--text);font-weight:500;margin-bottom:10px;line-height:1.6">Gross value of assets is less than R2 Million (Two Million Rand) per annum:</div>
-            <div style="display:flex;gap:28px">
-              <label class="chk-item"><input type="radio" name="assets_2m" value="yes" ${fv.assets_2m==='yes'?'checked':''} onchange="fv.assets_2m=this.value"/> <strong>Yes</strong></label>
-              <label class="chk-item"><input type="radio" name="assets_2m" value="no" ${fv.assets_2m==='no'?'checked':''} onchange="fv.assets_2m=this.value"/> <strong>No</strong></label>
+            <div>
+              <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 2 — Merchant (countersigns)</div>
+              <div style="font-weight:600;color:#fff">${d.merchantName}</div>
+              <div style="color:#00B4D8;font-family:monospace;font-size:12px">${d.merchantEmail}</div>
             </div>
           </div>
         </div>
-      </div>
-      ${moneyField('Estimated Daily ATM Cash Deposit','daily_cash','e.g. 40000 = R40,000/day',true)}
-      ${moneyField('Estimated Monthly ATM Cash Deposit','monthly_cash','e.g. 2500000 = R2.5M/month',true)}
-    </div></div></div>`;
 
-  if(step===3) return `
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">✍️</div><div>
-      <div class="sec-title">Authorised Signatory</div>
-      <div class="sec-desc">Person authorised to sign the ATM agreement — director, owner or trustee</div>
-    </div></div><div class="sec-body">
-      <div class="alert al-w">⚠️ The DocuSign contract will be emailed to this address. Please double-check it is correct.</div>
-      <div class="g2">
-        ${field('First Name','sig_fname','Leon',true)}
-        ${field('Last Name / Surname','sig_lname','Van Rensburg Erasmus',true)}
-        ${field('Email Address (DocuSign will be sent here)','sig_email','leon@lerasmus.co.za',true,'','email','s2')}
-        ${field('Work Telephone','sig_phone','082 324 7905')}
-        ${field('Mobile / Cellphone','sig_mobile','082 324 7905',true)}
-        ${field('SA ID Number','sig_id','9802255169088',false,'13-digit South African ID')}
-        ${field('Capacity / Position','sig_pos','e.g. Director, Owner, Trustee',true)}
-        ${field('Country of Residence','sig_country','South Africa')}
-      </div>
-    </div></div>
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">👤</div><div>
-      <div class="sec-title">On-site Manager / Contact Person</div>
-      <div class="sec-desc">Day-to-day ATM contact (can be same as signatory)</div>
-    </div></div><div class="sec-body"><div class="g2">
-      ${field('First Name','con_fname','Sandra',true)}
-      ${field('Last Name','con_lname','Erasmus',true)}
-      ${field('Email Address','con_email','sandraleroux98@gmail.com',true,'','email','s2')}
-      ${field('Mobile Number','con_mobile','071 568 6019',true)}
-      ${field('Work Telephone','con_phone','082 324 7905')}
-      ${field('Position / Role','con_pos','e.g. Director, Store Manager')}
-      ${field('SA ID Number','con_id','9808290230082',false,'Required if different from signatory')}
-    </div></div></div>`;
+        <!-- BUSINESS DETAILS -->
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏢 Business Details</div>
+        <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
+          ${dataRow('Trading Name', d.tradingName)}
+          ${dataRow('Registration No.', d.regNo)}
+          ${dataRow('VAT Number', d.vat)}
+          ${dataRow('Site Address', d.address)}
+        </div>
 
-  if(step===4) return `
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">📋</div><div>
-      <div class="sec-title">Shareholders / Directors / Members</div>
-      <div class="sec-desc">All controlling parties — required for FICA compliance (Act No. 38 of 2001)</div>
-    </div></div><div class="sec-body">
-      <div class="alert al-i">ℹ️ List all directors, members or trustees with a controlling interest. At least Director 1 is required.</div>
-      ${[1,2,3].map(n=>`
-        <div class="dir-block">
-          <div class="dir-lbl ${n>1?'m':''}">${n===1?'🔵':'⚪'} Director / Member ${n} ${n===1?'(required)':'(if applicable)'}</div>
-          <div class="g2">
-            ${field('Full Name',`d${n}_name`,'Leon Van Rensburg Erasmus',n===1)}
-            ${field('SA ID Number',`d${n}_id`,'9802255169088',n===1)}
-            ${field('% Shareholding / Interest',`d${n}_shares`,'49','number')}
-            ${field('Residential Address',`d${n}_addr`,'28 Van Riebeeck Street, Rawsonville, WC, 6845')}
-          </div>
-        </div>`).join('')}
-    </div></div>`;
+        <!-- COMMERCIAL TERMS -->
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">💰 Commercial Terms</div>
+        <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
+          ${dataRow('Monthly Service Fee (ex VAT)', d.serviceFee)}
+          ${dataRow('Annual Escalation', d.escalation)}
+          ${dataRow('Contract Period', d.period)}
+          ${dataRow('Rebate Deal', d.rebate)}
+          ${dataRow('ATM Type', d.atm_type)}
+          ${dataRow('Cassette Denominations', d.cassettes)}
+        </div>
 
-  if(step===5) return `
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">🏦</div><div>
-      <div class="sec-title">Merchant Bank Account Details (Part F)</div>
-      <div class="sec-desc">ATM Solutions will debit service fees and settle cash deposits to this account</div>
-    </div></div><div class="sec-body">
-      <div class="alert al-w">⚠️ By signing the agreement you authorise ATM Solutions to debit monthly fees from this account. Verify all details carefully — errors delay installation.</div>
-      <div class="g2">
-        ${selectField('Bank','bank',BANKS,true)}
-        ${selectField('Account Type','acc_type',ACC_TYPES,true)}
-        ${field('Account Holder Name','acc_holder','As it appears on the bank account',true,'','text','s2')}
-        ${field('Account Number','acc_num','62805818830',true)}
-        ${field('Branch Name','branch_name','e.g. Klipfontein Agency 696')}
-        ${field('Branch Code','branch_code','254005',false,'Universal or specific branch code')}
-      </div>
-    </div></div>`;
+        <!-- BANKING -->
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏦 Banking Details</div>
+        <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:20px">
+          ${dataRow('Bank', d.bank)}
+          ${dataRow('Account Holder', d.accHolder)}
+          ${dataRow('Account Number', d.accNum)}
+        </div>
 
-  if(step===6) return `
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">📁</div><div>
-      <div class="sec-title">Supporting Documents</div>
-      <div class="sec-desc">Upload supporting documents — required docs must be uploaded before DocuSign can be sent</div>
-    </div></div><div class="sec-body">
-      <div class="alert al-i">ℹ️ Accepted: PDF, JPG, PNG. Max 10MB per file. Stored securely in accordance with POPIA.</div>
-      <div class="doc-cat">Identity Documents</div>
-      <div class="doc-grid">
-        ${docCard('dir1_id','Director 1 — SA ID Document','Clear copy of SA ID book or Smart Card (front & back)',true)}
-        ${docCard('dir2_id','Director 2 — SA ID Document','Required if Director 2 is listed',false)}
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button onclick="document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#142440;color:#E8EDF5;border:1px solid #243D63;font-size:13px;font-weight:600;cursor:pointer">Cancel</button>
+          <button onclick="window.open('${docusignURL}','_blank');document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#00B4D8;color:#0A1628;border:none;font-size:13px;font-weight:700;cursor:pointer">✉ Open Pre-filled DocuSign →</button>
+        </div>
       </div>
-      <div class="doc-cat">Company Documents</div>
-      <div class="doc-grid">
-        ${docCard('cipc','CIPC Registration Certificate','COR14.3 or CoR15.1A — company registration document',true)}
-        ${docCard('bank_proof','Proof of Bank Account','Bank statement or official bank letter showing account name, number and branch code',true)}
-      </div>
-      <div class="doc-cat">Authority Documents</div>
-      <div class="doc-grid">
-        ${docCard('resolution','Board Resolution / Authority Letter','Required if signatory is NOT a director listed on CIPC — authorises them to sign',false)}
-        ${docCard('vat_cert','VAT Registration Certificate','SARS VAT certificate — only if VAT registered',false)}
-      </div>
-      <div class="doc-cat">Additional (Optional)</div>
-      <div class="doc-grid">
-        ${docCard('lease','Lease Agreement / Proof of Ownership','Confirms right to install ATM at the premises',false)}
-        ${docCard('other','Other Supporting Document','Any additional document relevant to your application',false)}
-      </div>
-      <div id="doc-counter" style="margin-top:16px;padding:12px 16px;background:var(--card2);border-radius:var(--r);border:1px solid var(--border2);font-size:12px;color:var(--sub)">
-        Documents uploaded: <strong style="color:var(--text)">0</strong> — Please upload at minimum your Director ID and Proof of Bank Account.
-      </div>
-    </div></div>`;
+    </div>`;
 
-  if(step===7) return `
-    <div class="sec"><div class="sec-hd"><div class="sec-ico">📄</div><div>
-      <div class="sec-title">Review & Confirm</div>
-      <div class="sec-desc">Check all details below — click any section heading to go back and edit</div>
-    </div></div><div class="sec-body">
-      <div class="rv-section">Business <button class="rv-editbtn" onclick="goToStep(1)">✏ Edit</button></div>
-      ${rv('Trading Name',fv.trading_name)}${rv('Registered Name',fv.registered_name)}
-      ${rv('Entity Type',fv.entity_type)}${rv('Nature of Business',fv.nature_of_business)}
-      ${rv('Registration No.',fv.registration_number)}${rv('VAT Number',fv.vat_number)}
-      <div class="rv-section">Site & Location <button class="rv-editbtn" onclick="goToStep(2)">✏ Edit</button></div>
-      ${rv('Address',[fv.site_address,fv.suburb,fv.city,fv.province,fv.postal_code].filter(Boolean).join(', '))}
-      ${rv('Site Type',fv.site_type)}${rv('Operating Days',fv.operating_days)}${rv('Operating Hours',fv.trading_hours)}
-      ${rv('Fin. Year-End',fv.fin_year)}
-      ${rv('Est. Daily Cash',fv.daily_cash?'R '+Number(fv.daily_cash).toLocaleString('en-ZA')+'/day':'')}
-      ${rv('Est. Monthly Cash',fv.monthly_cash?'R '+Number(fv.monthly_cash).toLocaleString('en-ZA')+'/month':'')}
-      <div class="rv-section">Authorised Signatory <button class="rv-editbtn" onclick="goToStep(3)">✏ Edit</button></div>
-      ${rv('Name',(fv.sig_fname+' '+fv.sig_lname).trim())}
-      ${rv('Position',fv.sig_pos)}${rv('DocuSign Email',fv.sig_email)}${rv('Mobile',fv.sig_mobile)}${rv('SA ID',fv.sig_id)}
-      <div class="rv-section">On-site Contact <button class="rv-editbtn" onclick="goToStep(3)">✏ Edit</button></div>
-      ${rv('Name',(fv.con_fname+' '+fv.con_lname).trim())}${rv('Email',fv.con_email)}${rv('Mobile',fv.con_mobile)}
-      <div class="rv-section">Director 1 <button class="rv-editbtn" onclick="goToStep(4)">✏ Edit</button></div>
-      ${rv('Full Name',fv.d1_name)}${rv('SA ID',fv.d1_id)}${rv('% Shares',fv.d1_shares?fv.d1_shares+'%':'')}
-      <div class="rv-section">Banking <button class="rv-editbtn" onclick="goToStep(5)">✏ Edit</button></div>
-      ${rv('Bank',fv.bank)}${rv('Account Type',fv.acc_type)}${rv('Account Holder',fv.acc_holder)}
-      ${rv('Account Number',fv.acc_num?'••••'+fv.acc_num.slice(-4):'')}${rv('Branch Code',fv.branch_code)}
-      <div class="rv-section">Documents <button class="rv-editbtn" onclick="goToStep(6)">✏ Edit</button></div>
-      <div class="rv-row"><span class="rv-label">Files Uploaded</span>
-        <span class="${Object.keys(uploadedDocs).length>=2?'rv-val':'rv-empty'}" style="color:${Object.keys(uploadedDocs).length>=2?'var(--green)':'var(--orange)'}">
-          ${Object.keys(uploadedDocs).length} document${Object.keys(uploadedDocs).length!==1?'s':''} ${Object.keys(uploadedDocs).length>=2?'✓':'— minimum 2 required'}
-        </span>
-      </div>
-    </div></div>
-    <div class="alert al-i">ℹ️ By submitting, you confirm all information is accurate and consent to ATM Solutions processing your data under <strong>POPIA (Act No. 4 of 2013)</strong> and <strong>FICA (Act No. 38 of 2001)</strong>. You authorise ATM Solutions to conduct credit and trade reference checks.</div>`;
-
-  return '';
+  document.body.appendChild(modal);
 }
 
-function docCard(key,title,sub,required){
-  const done = uploadedDocs[key];
-  return `<div class="doc-card ${done?'done':''}" onclick="triggerUpload('${key}')">
-    <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload('${key}',this)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%"/>
+function dataRow(label, value) {
+  return `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,53,85,.5);font-size:13px;gap:12px">
+    <span style="font-size:10px;font-weight:600;color:#4A6080;text-transform:uppercase;letter-spacing:.4px;min-width:140px;padding-top:2px">${label}</span>
+    <span style="color:${value?'#E8EDF5':'#4A6080'};font-style:${value?'normal':'italic'};text-align:right">${value||'Not provided'}</span>
+  </div>`;
+}
+
+async function createCRMLead(id) {
+  if(!id.startsWith('demo')) {
+    try { await sbUpdate('applications',id,{status:'crm_created',dynamics_created_at:new Date().toISOString()}); } catch(e){}
+  }
+  const a=APPS.find(x=>x.id===id);
+  if(a) a.status='crm_created';
+  renderTable();
+  alert('✅ CRM Lead created!\n\nDynamics 365 integration coming soon.\nFor now, the application has been marked as complete.');
+}
+
+// ══════════════════════════════════════════════
+// FORM RENDERING
+// ══════════════════════════════════════════════
+function f(label,key,placeholder='',required=false,hint='',type='text',cls='') {
+  const v=fv[key]||'';
+  return `<div class="field ${cls}"><label>${label}${required?'<span class="req"> *</span>':''}</label>
+    <input type="${type}" value="${v.replace(/"/g,'&quot;')}" placeholder="${placeholder}" oninput="fv['${key}']=this.value"/>
+    ${hint?`<span class="hint">${hint}</span>`:''}</div>`;
+}
+function sel(label,key,opts,required=false,cls='') {
+  const v=fv[key]||'';
+  const os=opts.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('');
+  return `<div class="field ${cls}"><label>${label}${required?'<span class="req"> *</span>':''}</label>
+    <select onchange="fv['${key}']=this.value"><option value="">Select...</option>${os}</select></div>`;
+}
+function mf(label,key,hint='',required=false,cls='') {
+  const v=fv[key]||'';
+  return `<div class="field ${cls}"><label>${label}${required?'<span class="req"> *</span>':''}</label>
+    <div class="money"><span class="money-sym">R</span><input type="number" value="${v}" placeholder="0.00" oninput="fv['${key}']=this.value"/></div>
+    ${hint?`<span class="hint">${hint}</span>`:''}</div>`;
+}
+function docCard(key,title,sub,required) {
+  const done=uploadedDocs[key];
+  return `<div class="doc-card ${done?'uploaded':''}">
+    <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleDoc('${key}',this)"/>
     <div class="doc-icon">${done?'✅':'📄'}</div>
     <div class="doc-title">${title}</div>
     <div class="doc-sub">${sub}</div>
     <span class="doc-tag ${required?'tag-r':'tag-o'}">${required?'Required':'Optional'}</span>
-    ${done?`<div class="doc-ok">✓ Uploaded</div><div class="doc-fn">${done}</div>`:'<div style="font-size:10px;color:var(--muted);margin-top:6px">Click to upload · PDF, JPG or PNG</div>'}
+    ${done?`<div class="doc-ok">✓ ${done}</div>`:'<div style="font-size:10px;color:var(--muted);margin-top:5px">Click to upload · PDF JPG PNG</div>'}
   </div>`;
 }
-function handleUpload(key,input){
-  if(input.files[0]){
-    uploadedDocs[key]=input.files[0].name;
-    renderStep();
-    updateDocCounter();
-  }
-}
-function updateDocCounter(){
-  const c=document.getElementById('doc-counter');
-  if(!c) return;
-  const n=Object.keys(uploadedDocs).length;
-  c.innerHTML=`Documents uploaded: <strong style="color:var(--text)">${n}</strong> — ${n>=2?`<span style="color:var(--green)">Minimum requirements met ✓</span>`:`<span style="color:var(--orange)">Please upload at minimum Director ID and Proof of Bank Account</span>`}`;
+function handleDoc(key,input){if(input.files[0]){uploadedDocs[key]=input.files[0].name;renderStep();}}
+function rv(lbl,val){return `<div class="rv"><span class="rv-lbl">${lbl}</span><span class="${val?'rv-val':'rv-empty'}">${val||'Not provided'}</span></div>`;}
+
+function getStepHTML(s) {
+  if(s===1) return `
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">🏢</div><div><div class="sec-title">Business Details</div><div class="sec-desc">Legal entity and CIPC registration</div></div></div>
+    <div class="sec-body"><div class="grid2">
+      ${f('Trading Name','trading_name','e.g. AE Rawsonville',true)}
+      ${f('Registered Company Name','registered_name','e.g. Springbok Dienstasie (Pty) Ltd')}
+      ${sel('Legal Entity Type','entity_type',ENTITIES,true)}
+      ${sel('Nature of Business','nature_of_business',NATURE,true)}
+      ${f('CIPC Registration Number','registration_number','2016/218866/07',false,'Leave blank for sole proprietors')}
+      ${f('VAT Registration Number','vat_number','4420284962',false,'Only if VAT registered')}
+    </div></div></div>`;
+
+  if(s===2) return `
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">📍</div><div><div class="sec-title">ATM Site & Location</div><div class="sec-desc">Where the Smart ATM will be installed</div></div></div>
+    <div class="sec-body"><div class="grid2">
+      ${f('Street Address','site_address','28 Van Riebeeck Street',true,'','text','span2')}
+      ${f('Suburb','suburb','Rawsonville',true)}
+      ${f('City / Town','city','Rawsonville',true)}
+      ${sel('Province','province',PROVINCES,true)}
+      ${f('Postal Code','postal_code','6845')}
+      <div style="grid-column:1/-1;height:1px;background:var(--border);margin:4px 0"></div>
+      ${sel('Premises Type','site_type',SITE_TYPES,true)}
+      ${f('Operating Days','operating_days','Monday to Sunday',true)}
+      ${f('Operating Hours','trading_hours','e.g. 24hours or 06:00–22:00',true)}
+      ${f('GPS Latitude','gps_lat','-33.6552',false,'Optional','number')}
+      ${f('GPS Longitude','gps_lng','19.3241',false,'Optional','number')}
+    </div></div></div>
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">💰</div><div><div class="sec-title">Turnover Declaration (Part C)</div><div class="sec-desc">Required for the Smart ATM agreement</div></div></div>
+    <div class="sec-body">
+      ${sel('Financial Year-End Month','fin_year',FYE,true)}
+      <div style="margin-top:14px">
+        <div class="radio-box">
+          <p>Total turnover is less than R2 Million (Two Million Rand) per annum:</p>
+          <div class="radio-row">
+            <label><input type="radio" name="t2m" value="yes" ${fv.turnover_2m==='yes'?'checked':''} onchange="fv.turnover_2m=this.value"/> <strong>Yes</strong></label>
+            <label><input type="radio" name="t2m" value="no" ${fv.turnover_2m==='no'?'checked':''} onchange="fv.turnover_2m=this.value"/> <strong>No</strong></label>
+          </div>
+        </div>
+        <div class="radio-box">
+          <p>Gross value of assets is less than R2 Million (Two Million Rand) per annum:</p>
+          <div class="radio-row">
+            <label><input type="radio" name="a2m" value="yes" ${fv.assets_2m==='yes'?'checked':''} onchange="fv.assets_2m=this.value"/> <strong>Yes</strong></label>
+            <label><input type="radio" name="a2m" value="no" ${fv.assets_2m==='no'?'checked':''} onchange="fv.assets_2m=this.value"/> <strong>No</strong></label>
+          </div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        ${mf('Estimated Daily ATM Cash Deposit','daily_cash','e.g. R40,000 per day',true)}
+        ${mf('Estimated Monthly ATM Cash Deposit','monthly_cash','e.g. R2,500,000 per month',true)}
+      </div>
+    </div></div>`;
+
+  if(s===3) return `
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">✍️</div><div><div class="sec-title">Authorised Signatory</div><div class="sec-desc">Person authorised to sign — DocuSign contract sent to this email</div></div></div>
+    <div class="sec-body">
+      <div class="alert alert-w" style="margin-bottom:16px">⚠️ DocuSign will be emailed to the address below. Please double-check it is correct.</div>
+      <div class="grid2">
+        ${f('First Name','sig_fname','Leon',true)}
+        ${f('Last Name / Surname','sig_lname','Van Rensburg Erasmus',true)}
+        ${f('Email Address (DocuSign sent here)','sig_email','leon@business.co.za',true,'','email','span2')}
+        ${f('Work Telephone','sig_phone','082 324 7905')}
+        ${f('Mobile / Cellphone','sig_mobile','082 324 7905',true)}
+        ${f('SA ID Number','sig_id','9802255169088',false,'13-digit SA ID')}
+        ${f('Capacity / Position','sig_pos','e.g. Director, Owner, Trustee',true)}
+        ${f('Country of Residence','sig_country','South Africa')}
+      </div>
+    </div></div>
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">👤</div><div><div class="sec-title">On-site Manager / Contact Person</div><div class="sec-desc">Day-to-day ATM site contact</div></div></div>
+    <div class="sec-body"><div class="grid2">
+      ${f('First Name','con_fname','Sandra',true)}
+      ${f('Last Name','con_lname','Erasmus',true)}
+      ${f('Email Address','con_email','sandra@business.co.za',true,'','email','span2')}
+      ${f('Mobile Number','con_mobile','071 568 6019',true)}
+      ${f('Work Telephone','con_phone','082 324 7905')}
+      ${f('Position / Role','con_pos','e.g. Store Manager')}
+      ${f('SA ID Number','con_id','9808290230082',false,'Required if different from signatory')}
+    </div></div></div>`;
+
+  if(s===4) return `
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">📋</div><div><div class="sec-title">Shareholders / Directors / Members</div><div class="sec-desc">All controlling parties — required for FICA compliance</div></div></div>
+    <div class="sec-body">
+      <div class="alert alert-i" style="margin-bottom:16px">ℹ️ FICA (Act No. 38 of 2001) requires ATM Solutions to identify all controlling parties. At least Director 1 is required.</div>
+      ${[1,2,3].map(n=>`
+        <div class="dir-block">
+          <div class="dir-lbl ${n===1?'req-col':'opt-col'}">${n===1?'🔵':'⚪'} Director / Member ${n} ${n===1?'(required)':'(if applicable)'}</div>
+          <div class="grid2">
+            ${f('Full Name',`d${n}_name`,'Leon Van Rensburg Erasmus',n===1)}
+            ${f('SA ID Number',`d${n}_id`,'9802255169088',n===1)}
+            ${f('% Shareholding',`d${n}_shares`,'49','','','number')}
+            ${f('Residential Address',`d${n}_addr`,'28 Van Riebeeck Street, Rawsonville, WC, 6845')}
+          </div>
+        </div>`).join('')}
+    </div></div>`;
+
+  if(s===5) return `
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">🏦</div><div><div class="sec-title">Merchant Bank Account Details (Part F)</div><div class="sec-desc">For debit orders and cash deposit settlements</div></div></div>
+    <div class="sec-body">
+      <div class="alert alert-w" style="margin-bottom:16px">⚠️ By signing the agreement you authorise ATM Solutions to debit monthly fees from this account. Verify all details carefully.</div>
+      <div class="grid2">
+        ${sel('Bank','bank',BANKS,true)}
+        ${sel('Account Type','acc_type',ACC_TYPES,true)}
+        ${f('Account Holder Name','acc_holder','As it appears on the bank account',true,'','text','span2')}
+        ${f('Account Number','acc_num','62805818830',true)}
+        ${f('Branch Name','branch_name','e.g. Klipfontein Agency 696')}
+        ${f('Branch Code','branch_code','254005',false,'Universal or specific branch code')}
+      </div>
+    </div></div>`;
+
+  if(s===6) return `
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">📁</div><div><div class="sec-title">Supporting Documents</div><div class="sec-desc">Upload to speed up processing. Required docs needed before DocuSign can be sent.</div></div></div>
+    <div class="sec-body">
+      <div class="alert alert-i" style="margin-bottom:16px">ℹ️ Accepted: PDF, JPG, PNG · Max 10MB each · Stored securely under POPIA</div>
+      <div class="doc-cat">Identity Documents</div>
+      <div class="doc-grid">
+        ${docCard('dir1_id','Director 1 — SA ID','Clear copy of SA ID book or Smart Card',true)}
+        ${docCard('dir2_id','Director 2 — SA ID','Required if Director 2 listed',false)}
+      </div>
+      <div class="doc-cat">Company Documents</div>
+      <div class="doc-grid">
+        ${docCard('cipc','CIPC Registration Certificate','COR14.3 or CoR15.1A',true)}
+        ${docCard('bank_proof','Proof of Bank Account','Bank statement or official bank letter',true)}
+      </div>
+      <div class="doc-cat">Authority Documents</div>
+      <div class="doc-grid">
+        ${docCard('resolution','Board Resolution / Authority Letter','Required if signatory is NOT a CIPC director',false)}
+        ${docCard('vat_cert','VAT Registration Certificate','Only if VAT registered',false)}
+      </div>
+      <div class="doc-cat">Additional (Optional)</div>
+      <div class="doc-grid">
+        ${docCard('lease','Lease / Proof of Ownership','Confirms right to install ATM',false)}
+        ${docCard('other','Other Document','Any additional supporting document',false)}
+      </div>
+      <div style="margin-top:14px;padding:12px 14px;background:var(--card2);border-radius:var(--r);border:1px solid var(--border2);font-size:12px;color:var(--sub)">
+        Documents uploaded: <strong style="color:var(--white)">${Object.keys(uploadedDocs).length}</strong>
+        ${Object.keys(uploadedDocs).length>=2?'<span style="color:var(--green)"> — Minimum requirements met ✓</span>':'<span style="color:var(--orange)"> — Please upload at minimum Director ID and Proof of Bank Account</span>'}
+      </div>
+    </div></div>`;
+
+  if(s===7) return `
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">📄</div><div><div class="sec-title">Review & Confirm</div><div class="sec-desc">Check all details before submitting</div></div></div>
+    <div class="sec-body">
+      <div class="rv-sec">Business <button onclick="goStep(1)">✏ Edit</button></div>
+      ${rv('Trading Name',fv.trading_name)}${rv('Registered Name',fv.registered_name)}
+      ${rv('Entity Type',fv.entity_type)}${rv('Nature of Business',fv.nature_of_business)}
+      ${rv('Registration No.',fv.registration_number)}${rv('VAT Number',fv.vat_number)}
+      <div class="rv-sec">Site & Location <button onclick="goStep(2)">✏ Edit</button></div>
+      ${rv('Address',[fv.site_address,fv.suburb,fv.city,fv.province].filter(Boolean).join(', '))}
+      ${rv('Site Type',fv.site_type)}${rv('Operating',fv.operating_days+' · '+fv.trading_hours)}
+      ${rv('Fin. Year-End',fv.fin_year)}
+      ${rv('Turnover < R2M',fv.turnover_2m?fv.turnover_2m.charAt(0).toUpperCase()+fv.turnover_2m.slice(1):'')}
+      ${rv('Assets < R2M',fv.assets_2m?fv.assets_2m.charAt(0).toUpperCase()+fv.assets_2m.slice(1):'')}
+      ${rv('Est. Daily Cash',fv.daily_cash?'R'+Number(fv.daily_cash).toLocaleString('en-ZA'):'')}
+      ${rv('Est. Monthly Cash',fv.monthly_cash?'R'+Number(fv.monthly_cash).toLocaleString('en-ZA'):'')}
+      <div class="rv-sec">Signatory <button onclick="goStep(3)">✏ Edit</button></div>
+      ${rv('Name',(fv.sig_fname+' '+fv.sig_lname).trim())}${rv('Position',fv.sig_pos)}
+      ${rv('DocuSign Email',fv.sig_email)}${rv('Mobile',fv.sig_mobile)}${rv('SA ID',fv.sig_id)}
+      <div class="rv-sec">On-site Contact <button onclick="goStep(3)">✏ Edit</button></div>
+      ${rv('Name',(fv.con_fname+' '+fv.con_lname).trim())}${rv('Email',fv.con_email)}${rv('Mobile',fv.con_mobile)}
+      <div class="rv-sec">Director 1 <button onclick="goStep(4)">✏ Edit</button></div>
+      ${rv('Full Name',fv.d1_name)}${rv('SA ID',fv.d1_id)}${rv('% Shares',fv.d1_shares?fv.d1_shares+'%':'')}
+      <div class="rv-sec">Banking <button onclick="goStep(5)">✏ Edit</button></div>
+      ${rv('Bank',fv.bank)}${rv('Account Type',fv.acc_type)}${rv('Account Holder',fv.acc_holder)}
+      ${rv('Account Number',fv.acc_num?'••••'+fv.acc_num.slice(-4):'')}${rv('Branch Code',fv.branch_code)}
+      <div class="rv-sec">Documents <button onclick="goStep(6)">✏ Edit</button></div>
+      <div class="rv"><span class="rv-lbl">Files Uploaded</span><span class="${Object.keys(uploadedDocs).length>=2?'rv-val':'rv-empty'}" style="color:${Object.keys(uploadedDocs).length>=2?'var(--green)':'var(--orange)'}">
+        ${Object.keys(uploadedDocs).length} document${Object.keys(uploadedDocs).length!==1?'s':''} ${Object.keys(uploadedDocs).length>=2?'✓':'— upload at least 2'}
+      </span></div>
+    </div></div>
+    <div class="alert alert-i">ℹ️ By submitting you confirm all information is accurate and consent to ATM Solutions processing your data under <strong>POPIA (Act No. 4 of 2013)</strong> and <strong>FICA (Act No. 38 of 2001)</strong>. You authorise ATM Solutions to conduct credit and trade reference checks.</div>`;
+
+  return '';
 }
 
-function rv(label,val){
-  return `<div class="rv-row"><span class="rv-label">${label}</span><span class="${val?'rv-val':'rv-empty'}">${val||'Not provided'}</span></div>`;
-}
-
-// ── STEP NAV ──────────────────────────────────────────────────────────────
-function goToStep(n){ currentStep=n; renderStep(); }
-
-function renderStep(){
-  // progress bar
-  const pb=document.getElementById('progress-bar');
-  if(!pb) return;
-  pb.innerHTML=STEPS.map((s,i)=>{
+// ══════════════════════════════════════════════
+// STEP NAVIGATION
+// ══════════════════════════════════════════════
+function renderStep() {
+  // Progress bar
+  document.getElementById('prog').innerHTML=STEPS.map((s,i)=>{
     const st=currentStep===s.id?'on':currentStep>s.id?'done':'';
-    return `<div class="ps"><div class="pd ${st}">${st==='done'?'✓':s.id}</div><span class="pl ${st}">${s.label}</span></div>${i<STEPS.length-1?`<div class="pc ${currentStep>s.id?'done':''}"></div>`:''}`
+    return `<div class="p-step"><div class="p-dot ${st}">${st==='done'?'✓':s.id}</div><span class="p-label ${st}">${s.l}</span></div>${i<STEPS.length-1?`<div class="p-line ${currentStep>s.id?'done':''}"></div>`:''}`
   }).join('');
-  // content
-  const sc=document.getElementById('step-content');
-  sc.innerHTML = getStepHTML(currentStep);
-  // nav
-  const nav=document.getElementById('nav-btns');
-  let html='';
-  if(!editMode) html+=`<button class="btn btn-s" style="margin-right:auto;font-size:12px" onclick="toggleEdit()">✏️ Edit Mode</button>`;
-  if(currentStep>1) html+=`<button class="btn btn-s" onclick="prevStep()">← Back</button>`;
-  if(currentStep<7) html+=`<button class="btn btn-p" onclick="nextStep()">Continue →</button>`;
-  else html+=`<button class="btn btn-g" onclick="submitForm()">✓ Submit Application</button>`;
-  nav.innerHTML=html;
+
+  // Content
+  document.getElementById('step-content').innerHTML=getStepHTML(currentStep);
+
+  // Nav buttons
+  let nav='';
+  if(currentStep>1) nav+=`<button class="btn btn-dark" onclick="goStep(${currentStep-1})">← Back</button>`;
+  if(currentStep<7) nav+=`<button class="btn btn-teal" style="width:auto" onclick="goStep(${currentStep+1})">Continue →</button>`;
+  else nav+=`<button class="btn btn-green" onclick="submitForm()">✓ Submit Application</button>`;
+  document.getElementById('step-nav').innerHTML=nav;
+
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function nextStep(){ if(currentStep<7){ currentStep++; renderStep(); } }
-function prevStep(){ if(currentStep>1){ currentStep--; renderStep(); } }
+function goStep(n){currentStep=n;renderStep();}
 
-function toggleEdit(){
-  editMode=!editMode;
-  const banner=document.getElementById('edit-banner');
-  if(editMode) banner.classList.remove('hidden');
-  else banner.classList.add('hidden');
-  renderStep();
-}
+// ══════════════════════════════════════════════
+// FORM SUBMIT
+// ══════════════════════════════════════════════
+async function submitForm() {
+  const nav=document.getElementById('step-nav');
+  nav.innerHTML='<span style="color:var(--sub);font-size:13px">⏳ Saving securely...</span>';
 
-// ── SUPABASE CONFIG (plain fetch — no library needed) ────────────────────
-const SUPA_URL = 'https://cxyntiiegbwmgslwyfmn.supabase.co';
-const SUPA_KEY = 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d';
-
-// Generic Supabase REST helpers
-async function sbInsert(table, record) {
-  const res = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`,
-      'Prefer': 'return=representation',
-    },
-    body: JSON.stringify(record),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(()=>({message: res.statusText}));
-    throw new Error(err.message || err.error || res.statusText);
-  }
-  return res.json();
-}
-
-async function sbUpdate(table, id, patch) {
-  const res = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`,
-      'Prefer': 'return=representation',
-    },
-    body: JSON.stringify(patch),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(()=>({message: res.statusText}));
-    throw new Error(err.message || err.error || res.statusText);
-  }
-  return res.json();
-}
-
-async function sbSelect(table, params='') {
-  const res = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}`, {
-    headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`,
-    },
-  });
-  if (!res.ok) throw new Error(res.statusText);
-  return res.json();
-}
-
-// ── SUBMIT TO SUPABASE ────────────────────────────────────────────────────
-async function submitForm(){
-  // Show saving state
-  const sc = document.getElementById('step-content');
-  const nav = document.getElementById('nav-btns');
-  nav.innerHTML = '<span style="color:var(--sub);font-size:13px">⏳ Saving your application securely...</span>';
-
-  // Build the record matching our schema
-  const record = {
-    // Part A — Business
-    trading_name:          fv.trading_name   || null,
-    registered_name:       fv.registered_name || null,
-    registration_number:   fv.registration_number || null,
-    vat_number:            fv.vat_number     || null,
-    entity_type:           fv.entity_type    || null,
-    nature_of_business:    fv.nature_of_business || null,
-    // Part B — Site
-    site_address:          fv.site_address   || null,
-    suburb:                fv.suburb         || null,
-    city:                  fv.city           || null,
-    province:              fv.province       || null,
-    postal_code:           fv.postal_code    || null,
-    gps_latitude:          fv.gps_lat        ? parseFloat(fv.gps_lat)  : null,
-    gps_longitude:         fv.gps_lng        ? parseFloat(fv.gps_lng) : null,
-    site_type:             fv.site_type      || null,
-    operating_days:        fv.operating_days || null,
-    trading_hours:         fv.trading_hours  || null,
-    // Part C — Turnover
-    financial_year_end:    fv.fin_year       || null,
-    turnover_below_2m:     fv.turnover_2m === 'yes',
-    gross_assets_below_2m: fv.assets_2m === 'yes',
-    estimated_daily_cash:  fv.daily_cash     ? parseFloat(fv.daily_cash)   : null,
-    estimated_monthly_cash:fv.monthly_cash   ? parseFloat(fv.monthly_cash) : null,
-    // Part D — Signatory
-    signatory_first_name:  fv.sig_fname      || null,
-    signatory_last_name:   fv.sig_lname      || null,
-    signatory_email:       fv.sig_email      || null,
-    signatory_phone:       fv.sig_phone      || null,
-    signatory_mobile:      fv.sig_mobile     || null,
-    signatory_id_number:   fv.sig_id         || null,
-    signatory_position:    fv.sig_pos        || null,
-    country_of_residence:  fv.sig_country    || 'South Africa',
-    // Part D — Contact
-    contact_first_name:    fv.con_fname      || null,
-    contact_last_name:     fv.con_lname      || null,
-    contact_email:         fv.con_email      || null,
-    contact_phone:         fv.con_phone      || null,
-    contact_mobile:        fv.con_mobile     || null,
-    contact_position:      fv.con_pos        || null,
-    contact_id_number:     fv.con_id         || null,
-    // Directors
-    director1_name:        fv.d1_name        || null,
-    director1_id:          fv.d1_id          || null,
-    director1_shares:      fv.d1_shares      ? parseFloat(fv.d1_shares) : null,
-    director1_address:     fv.d1_addr        || null,
-    director2_name:        fv.d2_name        || null,
-    director2_id:          fv.d2_id          || null,
-    director2_shares:      fv.d2_shares      ? parseFloat(fv.d2_shares) : null,
-    director2_address:     fv.d2_addr        || null,
-    director3_name:        fv.d3_name        || null,
-    director3_id:          fv.d3_id          || null,
-    director3_shares:      fv.d3_shares      ? parseFloat(fv.d3_shares) : null,
-    director3_address:     fv.d3_addr        || null,
-    // Part F — Banking
-    bank_name:             fv.bank           || null,
-    account_holder:        fv.acc_holder     || null,
-    account_number:        fv.acc_num        || null,
-    account_type:          fv.acc_type       || null,
-    branch_name:           fv.branch_name    || null,
-    branch_code:           fv.branch_code    || null,
-    // Status
-    status:                'submitted',
-    submitted_at:          new Date().toISOString(),
+  const record={
+    trading_name:fv.trading_name||null,registered_name:fv.registered_name||null,
+    registration_number:fv.registration_number||null,vat_number:fv.vat_number||null,
+    entity_type:fv.entity_type||null,nature_of_business:fv.nature_of_business||null,
+    site_address:fv.site_address||null,suburb:fv.suburb||null,city:fv.city||null,
+    province:fv.province||null,postal_code:fv.postal_code||null,
+    gps_latitude:fv.gps_lat?parseFloat(fv.gps_lat):null,
+    gps_longitude:fv.gps_lng?parseFloat(fv.gps_lng):null,
+    site_type:fv.site_type||null,operating_days:fv.operating_days||null,trading_hours:fv.trading_hours||null,
+    financial_year_end:fv.fin_year||null,
+    turnover_below_2m:fv.turnover_2m==='yes',gross_assets_below_2m:fv.assets_2m==='yes',
+    estimated_daily_cash:fv.daily_cash?parseFloat(fv.daily_cash):null,
+    estimated_monthly_cash:fv.monthly_cash?parseFloat(fv.monthly_cash):null,
+    signatory_first_name:fv.sig_fname||null,signatory_last_name:fv.sig_lname||null,
+    signatory_email:fv.sig_email||null,signatory_phone:fv.sig_phone||null,
+    signatory_mobile:fv.sig_mobile||null,signatory_id_number:fv.sig_id||null,
+    signatory_position:fv.sig_pos||null,country_of_residence:fv.sig_country||'South Africa',
+    contact_first_name:fv.con_fname||null,contact_last_name:fv.con_lname||null,
+    contact_email:fv.con_email||null,contact_phone:fv.con_phone||null,
+    contact_mobile:fv.con_mobile||null,contact_position:fv.con_pos||null,contact_id_number:fv.con_id||null,
+    director1_name:fv.d1_name||null,director1_id:fv.d1_id||null,
+    director1_shares:fv.d1_shares?parseFloat(fv.d1_shares):null,director1_address:fv.d1_addr||null,
+    director2_name:fv.d2_name||null,director2_id:fv.d2_id||null,
+    director2_shares:fv.d2_shares?parseFloat(fv.d2_shares):null,director2_address:fv.d2_addr||null,
+    director3_name:fv.d3_name||null,director3_id:fv.d3_id||null,
+    director3_shares:fv.d3_shares?parseFloat(fv.d3_shares):null,director3_address:fv.d3_addr||null,
+    bank_name:fv.bank||null,account_holder:fv.acc_holder||null,account_number:fv.acc_num||null,
+    account_type:fv.acc_type||null,branch_name:fv.branch_name||null,branch_code:fv.branch_code||null,
+    status:'submitted',submitted_at:new Date().toISOString(),
   };
 
   try {
-    const rows = await sbInsert('applications', record);
-    const saved = Array.isArray(rows) ? rows[0] : rows;
-    const ref = saved?.reference_number || 'ATM-2025-PENDING';
-
-    // Log the submission event
-    if (saved?.id) {
-      await sbInsert('application_events', {
-        application_id: saved.id,
-        event_type: 'submitted',
-        triggered_by: fv.sig_email || 'client',
-        notes: `Application submitted via web portal. ${Object.keys(uploadedDocs).length} document(s) indicated.`,
-      }).catch(()=>{});
-    }
-
-    // Show success
+    const rows=await sbInsert('applications',record);
+    const saved=Array.isArray(rows)?rows[0]:rows;
+    const ref=saved?.reference_number||'ATM-2026-PENDING';
     showSuccess(ref);
-
-  } catch(err) {
-    console.error('Supabase error:', err);
-    // Friendly error — still show reference but flag the issue
-    nav.innerHTML = '';
-    sc.innerHTML = `
-      <div class="alert al-r" style="margin-bottom:16px">
-        ⚠️ There was a problem saving your application: ${err.message || 'Connection error'}.<br>
-        Please try again or contact your rep on +27 11 531 5300.
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-p" onclick="submitForm()">Try Again</button>
-        <button class="btn btn-s" onclick="goToStep(7)">← Back to Review</button>
-      </div>`;
+  } catch(e) {
+    document.getElementById('step-content').innerHTML=`
+      <div class="alert alert-r" style="margin-bottom:16px">⚠️ Problem saving application: ${e.message}<br>Please try again or call +27 11 531 5300.</div>`;
+    nav.innerHTML=`<button class="btn btn-dark" onclick="goStep(7)">← Back</button><button class="btn btn-teal" style="width:auto" onclick="submitForm()">Try Again</button>`;
   }
 }
 
 function showSuccess(ref) {
-  document.getElementById('step-content').innerHTML = `
+  document.getElementById('prog').innerHTML='';
+  document.getElementById('step-nav').innerHTML='';
+  document.getElementById('step-content').innerHTML=`
     <div class="success">
-      <div class="sico">✓</div>
-      <h2>Application Submitted</h2>
-      <p>Your Smart ATM site application has been securely saved and received by ATM Solutions.</p>
+      <div class="s-ico">✓</div>
+      <h2>Application Submitted!</h2>
+      <p>Your Smart ATM site application has been securely received by ATM Solutions.</p>
       <div class="ref-pill">${ref}</div>
-      <p>Please save this reference number. A confirmation will be sent to <strong>${fv.con_email||fv.sig_email||'your email'}</strong>.</p>
-      <div class="what-next">
-        <div class="wn-step"><div class="wn-num">1</div><div>Your rep reviews your application and sets commercial terms</div></div>
-        <div class="wn-step"><div class="wn-num">2</div><div>DocuSign contract sent to your rep to sign first</div></div>
-        <div class="wn-step"><div class="wn-num">3</div><div>Contract then sent to <strong>${fv.sig_email||'your signatory'}</strong> to countersign</div></div>
-        <div class="wn-step"><div class="wn-num">4</div><div>Site survey and ATM installation scheduled — typically 5–10 business days</div></div>
+      <p>Save this reference number. Confirmation sent to <strong>${fv.con_email||fv.sig_email||'your email'}</strong></p>
+      <div class="next-steps">
+        <div class="ns"><div class="ns-num">1</div><div>Your rep reviews your application and sets commercial terms</div></div>
+        <div class="ns"><div class="ns-num">2</div><div>DocuSign contract sent to your rep to sign first</div></div>
+        <div class="ns"><div class="ns-num">3</div><div>Contract forwarded to <strong>${fv.sig_email||'your signatory'}</strong> to countersign</div></div>
+        <div class="ns"><div class="ns-num">4</div><div>Site survey and ATM installation — typically 5–10 business days</div></div>
       </div>
-      <div style="margin-top:22px;font-size:11px;color:var(--muted)">ATM Solutions · A division of Paycorp Group (Pty) Ltd · Reg. No. 2013/077629/07</div>
+      <div style="margin-top:20px;font-size:11px;color:var(--muted)">ATM Solutions · A division of Paycorp Group (Pty) Ltd · Reg. No. 2013/077629/07</div>
     </div>`;
-  document.getElementById('nav-btns').innerHTML = '';
-  document.getElementById('progress-bar').innerHTML = '';
-}
-
-// ── PRE-SEND REVIEW MODAL ────────────────────────────────────────────────
-let presendAppId = null;
-
-function sendDocuSign(appId) {
-  presendAppId = appId;
-  const app = APPS.find(x => x.id === appId);
-  if (!app) return;
-  document.getElementById('presend-ref').textContent = app.ref + ' · ' + app.merchant;
-  document.getElementById('ps-trading').textContent = app.merchant || '—';
-  document.getElementById('ps-ref2').textContent = app.ref || '—';
-  document.getElementById('ps-address').textContent = app.province || '—';
-  document.getElementById('ps-email').textContent = app.email || '—';
-  document.getElementById('ps-fee').value = app.fee || '';
-  document.getElementById('ps-atm').value = app.atm_type || '';
-  document.getElementById('ps-rebate').value = app.rebate_deal || 'Reward Deal';
-  document.getElementById('ps-rebval').value = app.rebate_per_withdrawal || '0.88';
-  document.getElementById('ps-esc').value = app.annual_escalation || '6';
-  document.getElementById('ps-period').value = app.contract_period_months || '60';
-  document.getElementById('ps-cass').value = app.cassette_denominations || 'R200 / R100 / R50 / R20';
-  document.getElementById('ps-kah').value = app.key_account_holder || '';
-  document.getElementById('ps-notes').value = app.rep_notes || '';
-  document.getElementById('ps-rep-email').textContent = currentRep?.email || 'rep@atmsolutions.co.za';
-  document.getElementById('ps-merch-email').textContent = app.email || '—';
-  document.getElementById('presend-modal').classList.remove('hidden');
-}
-
-function closePresend() {
-  document.getElementById('presend-modal').classList.add('hidden');
-  presendAppId = null;
-}
-
-async function confirmAndSendDocuSign() {
-  const btn = document.getElementById('ps-confirm-btn');
-  btn.textContent = '⏳ Saving...';
-  btn.disabled = true;
-
-  // Collect updated commercial terms
-  const updatedTerms = {
-    service_fee:            parseFloat(document.getElementById('ps-fee').value) || null,
-    atm_type:               document.getElementById('ps-atm').value,
-    rebate_deal:            document.getElementById('ps-rebate').value,
-    rebate_per_withdrawal:  parseFloat(document.getElementById('ps-rebval').value) || null,
-    annual_escalation:      parseFloat(document.getElementById('ps-esc').value) || 6,
-    contract_period_months: parseInt(document.getElementById('ps-period').value) || 60,
-    cassette_denominations: document.getElementById('ps-cass').value,
-    key_account_holder:     document.getElementById('ps-kah').value,
-    rep_notes:              document.getElementById('ps-notes').value,
-    payment_option:         document.getElementById('ps-payment').value,
-    status:                 'docusign_sent',
-  };
-
-  try {
-    // Save updated commercial terms to Supabase
-    await sbUpdate('applications', presendAppId, updatedTerms);
-
-    // Get the full application data to build pre-filled URL
-    const rows = await sbSelect('applications', `id=eq.${presendAppId}&select=*`);
-    const app = rows[0];
-
-    // Build DocuSign pre-filled template URL
-    // This opens DocuSign in the browser with all fields populated
-    const TEMPLATE_ID = '6b8a3ae7-f5bb-4a4e-8b96-439a5cda8e57';
-    const DS_BASE = 'https://apps.docusign.com/send/templates/details';
-
-    // Encode all field values as URL parameters
-    const fields = {
-      ClientCompanyName:     app.registered_name || '',
-      TradingAs:             app.trading_name || '',
-      NatureOfBusiness:      app.nature_of_business || '',
-      RegistrationNo:        app.registration_number || '',
-      VATNumber:             app.vat_number || '',
-      RegisteredAddress:     app.site_address || '',
-      TelNo:                app.contact_phone || '',
-      CellularNo:            app.signatory_mobile || '',
-      BillingEmail:          app.contact_email || '',
-      OperatingDays:         app.operating_days || '',
-      OperatingHours:        app.trading_hours || '',
-      FinancialYearEnd:      app.financial_year_end || '',
-      TurnoverBelow2M:       app.turnover_below_2m ? 'Yes' : 'No',
-      AssetsBelow2M:         app.gross_assets_below_2m ? 'Yes' : 'No',
-      EstimatedDailyCash:    app.estimated_daily_cash ? 'R'+Number(app.estimated_daily_cash).toLocaleString('en-ZA') : '',
-      EstimatedMonthlyCash:  app.estimated_monthly_cash ? 'R'+Number(app.estimated_monthly_cash).toLocaleString('en-ZA') : '',
-      OwnerFullName:         ((app.signatory_first_name||'')+' '+(app.signatory_last_name||'')).trim(),
-      OwnerIDNumber:         app.signatory_id_number || '',
-      OwnerMobile:           app.signatory_mobile || '',
-      OwnerPosition:         app.signatory_position || '',
-      ManagerFullName:       ((app.contact_first_name||'')+' '+(app.contact_last_name||'')).trim(),
-      ManagerMobile:         app.contact_mobile || '',
-      Director1Name:         app.director1_name || '',
-      Director1ID:           app.director1_id || '',
-      Director1Shares:       app.director1_shares ? app.director1_shares+'%' : '',
-      Director2Name:         app.director2_name || '',
-      Director2ID:           app.director2_id || '',
-      AccountHolder:         app.account_holder || '',
-      AccountNumber:         app.account_number || '',
-      BankName:              app.bank_name || '',
-      BranchCode:            app.branch_code || '',
-      AccountType:           app.account_type || '',
-      ServiceFee:            app.service_fee ? 'R'+Number(app.service_fee).toLocaleString('en-ZA') : '',
-      AnnualEscalation:      (app.annual_escalation || 6)+'%',
-      RebateDeal:            app.rebate_deal || '',
-      ContractPeriod:        (app.contract_period_months || 60)+' months',
-      CassetteDenominations: app.cassette_denominations || '',
-      PaymentOption:         app.payment_option || '',
-      // Pre-fill signer details
-      signer1_email:         currentRep?.email || 'deant@atmsolutions.co.za',
-      signer1_name:          currentRep?.name || 'ATM Solutions Representative',
-      signer2_email:         app.signatory_email || '',
-      signer2_name:          ((app.signatory_first_name||'')+' '+(app.signatory_last_name||'')).trim(),
-    };
-
-    // Build the DocuSign powerform-style URL
-    const params = Object.entries(fields)
-      .filter(([,v]) => v)
-      .map(([k,v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-      .join('&');
-
-    const docusignURL = `${DS_BASE}/${TEMPLATE_ID}?${params}`;
-
-    // Update local app state
-    const localApp = APPS.find(x => x.id === presendAppId);
-    if (localApp) {
-      localApp.status = 'docusign_sent';
-      localApp.fee = updatedTerms.service_fee;
-    }
-    renderAppTable();
-    closePresend();
-
-    // Show instructions then open DocuSign
-    const merchantEmail = app.signatory_email || 'merchant';
-    const confirmed = confirm(
-      '✅ Commercial terms saved!
-
-' +
-      'DocuSign will now open in a new tab with all fields pre-filled.
-
-' +
-      'In DocuSign:
-' +
-      '1. Review the pre-filled contract
-' +
-      '2. Add ' + (currentRep?.email||'your email') + ' as Signer 1
-' +
-      '3. Add ' + merchantEmail + ' as Signer 2
-' +
-      '4. Click Send
-
-' +
-      'Click OK to open DocuSign now.'
-    );
-
-    if (confirmed) {
-      window.open(docusignURL, '_blank');
-    }
-
-  } catch(err) {
-    btn.textContent = '✅ Confirm & Send DocuSign';
-    btn.disabled = false;
-    alert('❌ Error: ' + err.message + '\nPlease try again.');
-  }
-}
-
-// ── LOAD REAL APPLICATIONS FOR REP DASHBOARD ─────────────────────────────
-async function loadApplications() {
-  try {
-    const data = await sbSelect('applications',
-      'select=id,reference_number,trading_name,nature_of_business,province,status,signatory_email,submitted_at,service_fee&order=created_at.desc&limit=50'
-    );
-    if (data && data.length > 0) {
-      // Replace demo data with real data
-      APPS.length = 0;
-      data.forEach(a => APPS.push({
-        id:       a.id,
-        ref:      a.reference_number || '—',
-        merchant: a.trading_name     || 'Unnamed',
-        province: a.province         || '—',
-        nature:   a.nature_of_business || '—',
-        status:   a.status           || 'submitted',
-        email:    a.signatory_email  || '',
-        date:     a.submitted_at     ? a.submitted_at.split('T')[0] : '—',
-        fee:      a.service_fee      || null,
-        docs:     0,
-      }));
-      renderAppTable();
-    }
-  } catch(err) {
-    console.warn('Could not load applications from Supabase:', err.message);
-    // Falls back to demo data already in APPS array
-  }
-}
-
-// ── SAVE COMMERCIAL TERMS BACK TO SUPABASE ───────────────────────────────
-async function saveComm(){
-  const a = APPS.find(x=>x.id===modalAppId);
-  const fee = parseFloat(document.getElementById('m-fee').value) || null;
-  const atm = document.getElementById('m-atm').value;
-  const notes = document.getElementById('m-notes').value;
-
-  if (a) {
-    // Update in Supabase
-    try {
-      await sbUpdate('applications', modalAppId, {
-        service_fee:   fee,
-        atm_type:      atm,
-        rebate_deal:   document.getElementById('m-rebate').value,
-        rebate_threshold: document.getElementById('m-thresh').value,
-        rebate_per_withdrawal: parseFloat(document.getElementById('m-rebval').value)||null,
-        annual_escalation: parseFloat(document.getElementById('m-esc').value)||6,
-        contract_period_months: parseInt(document.getElementById('m-period').value)||60,
-        cassette_denominations: document.getElementById('m-cass').value,
-        key_account_holder: document.getElementById('m-kah').value,
-        rep_notes:     notes,
-        status:        'rep_approved',
-        rep_approved_at: new Date().toISOString(),
-      });
-
-      await sbInsert('application_events', {
-        application_id: modalAppId,
-        event_type: 'rep_approved',
-        triggered_by: currentRep?.email || 'rep',
-        notes: `Commercial terms set. Fee: R${fee} p/m. ATM type: ${atm}. ${notes}`,
-      }).catch(()=>{});
-    } catch(err) {
-      console.warn('Could not save to Supabase:', err.message);
-    }
-
-    // Update local state regardless
-    a.fee = fee;
-    a.status = 'rep_approved';
-    renderAppTable();
-  }
-  closeModal();
 }
 </script>
 </body>
