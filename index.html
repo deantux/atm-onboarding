@@ -404,9 +404,19 @@ tr:hover td{background:rgba(0,180,216,.02)}
 // ══════════════════════════════════════════════
 const CODES = ['ATM2025','DEMO1234','PAYCORP1','SMARTATM'];
 const REPS = [
-  {id:'1',name:'Dean Tucker',email:'deant@atmsolutions.co.za',pin:'1234',branch:'Head Office'},
-  {id:'2',name:'Gavin Reubenson',email:'gavin@atmsolutions.co.za',pin:'5678',branch:'Cape Town'},
-  {id:'3',name:'Admin User',email:'admin@atmsolutions.co.za',pin:'9999',branch:'Head Office'},
+  {id:'1', name:'Dean Tucker',            email:'deant@atmsolutions.co.za',      pin:'1234', branch:'Head Office'},
+  {id:'2', name:'Jonathan Challen',       email:'JonathanC@atmsolutions.co.za',  pin:'1234', branch:'Gauteng'},
+  {id:'3', name:'Jacqui Khoury',          email:'Jacquik@atmsolutions.co.za',    pin:'1234', branch:'Gauteng'},
+  {id:'4', name:'Bandisa Simelane',       email:'BandisaS@atmsolutions.co.za',   pin:'1234', branch:'Gauteng'},
+  {id:'5', name:'Brian Masimong',         email:'BrianM@atmsolutions.co.za',     pin:'1234', branch:'North West'},
+  {id:'6', name:'Dianne Greeff',          email:'DianneG@atmsolutions.co.za',    pin:'1234', branch:'Western Cape'},
+  {id:'7', name:'Charmaine Smit',         email:'CharmaineS@atmsolutions.co.za', pin:'1234', branch:'Western Cape'},
+  {id:'8', name:'Awonke Mdazuka',         email:'AwonkeM@atmsolutions.co.za',    pin:'1234', branch:'Western Cape'},
+  {id:'9', name:'John Griffith',          email:'JohnG@atmsolutions.co.za',      pin:'1234', branch:'Eastern Cape'},
+  {id:'10',name:'Siyathokoza Mlungwana',  email:'SiyaM@atmsolutions.co.za',      pin:'1234', branch:'KwaZulu-Natal'},
+  {id:'11',name:'Suren Mothilal',         email:'Surenm@atmsolutions.co.za',     pin:'1234', branch:'KwaZulu-Natal'},
+  {id:'12',name:'Gawie Du Toit',          email:'GawieDT@atmsolutions.co.za',    pin:'1234', branch:'Mpumalanga'},
+  {id:'13',name:'Johny Ramohlale',        email:'JohnyR@atmsolutions.co.za',     pin:'1234', branch:'Limpopo'},
 ];
 const SUPA = 'https://cxyntiiegbwmgslwyfmn.supabase.co';
 const SKEY = 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d';
@@ -426,7 +436,7 @@ const fv = {
   trading_name:'',registered_name:'',registration_number:'',vat_number:'',entity_type:'',nature_of_business:'',
   site_address:'',suburb:'',city:'',province:'',postal_code:'',gps_lat:'',gps_lng:'',site_type:'',operating_days:'Monday to Sunday',trading_hours:'',
   fin_year:'',turnover_2m:'',assets_2m:'',daily_cash:'',monthly_cash:'',
-  sig_fname:'',sig_lname:'',sig_email:'',sig_phone:'',sig_mobile:'',sig_id:'',sig_pos:'',sig_country:'South Africa',
+  sig_fname:'',sig_lname:'',sig_email:'',sig_phone:'',sig_mobile:'',sig_id:'',sig_pos:'',sig_country:'South Africa',sig_pob:'',
   con_fname:'',con_lname:'',con_email:'',con_phone:'',con_mobile:'',con_pos:'',con_id:'',
   d1_name:'',d1_id:'',d1_shares:'',d1_addr:'',
   d2_name:'',d2_id:'',d2_shares:'',d2_addr:'',
@@ -974,6 +984,38 @@ function getStepHTML(s) {
         ${mf('Estimated Daily ATM Cash Deposit','daily_cash','e.g. R40,000 per day',true)}
         ${mf('Estimated Monthly ATM Cash Deposit','monthly_cash','e.g. R2,500,000 per month',true)}
       </div>
+    </div></div>
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">🤖</div><div><div class="sec-title">AI Document Scanner <span style="font-size:10px;font-weight:400;color:var(--teal);background:var(--tl);border:1px solid var(--tb);border-radius:10px;padding:2px 8px;margin-left:6px">Optional</span></div><div class="sec-desc">Upload SA ID, CIPC certificate or bank statement — Claude AI reads it and fills the form automatically</div></div></div>
+    <div class="sec-body">
+      <div class="alert alert-i" style="margin-bottom:16px">ℹ️ Uploading a document is optional. All fields can also be filled in manually below. Supported: JPG, PNG, PDF — Max 10MB</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+
+        <div style="background:var(--card2);border:1.5px dashed var(--border2);border-radius:10px;padding:16px;text-align:center;cursor:pointer;position:relative;transition:.15s" id="scan-id-card" onclick="document.getElementById('scan-id-input').click()">
+          <input type="file" id="scan-id-input" accept="image/*,.pdf" style="display:none" onchange="scanDocument(this,'id')"/>
+          <div style="font-size:24px;margin-bottom:6px">🪪</div>
+          <div style="font-size:12px;font-weight:700;color:var(--white)">SA ID Document</div>
+          <div style="font-size:11px;color:var(--sub);margin-top:3px">Green book or Smart ID card</div>
+          <div id="scan-id-status" style="font-size:11px;margin-top:6px;color:var(--muted)">Click to upload</div>
+        </div>
+
+        <div style="background:var(--card2);border:1.5px dashed var(--border2);border-radius:10px;padding:16px;text-align:center;cursor:pointer;position:relative;transition:.15s" id="scan-cipc-card" onclick="document.getElementById('scan-cipc-input').click()">
+          <input type="file" id="scan-cipc-input" accept="image/*,.pdf" style="display:none" onchange="scanDocument(this,'cipc')"/>
+          <div style="font-size:24px;margin-bottom:6px">🏢</div>
+          <div style="font-size:12px;font-weight:700;color:var(--white)">CIPC Certificate</div>
+          <div style="font-size:11px;color:var(--sub);margin-top:3px">COR14.3 or CoR15.1A</div>
+          <div id="scan-cipc-status" style="font-size:11px;margin-top:6px;color:var(--muted)">Click to upload</div>
+        </div>
+
+        <div style="background:var(--card2);border:1.5px dashed var(--border2);border-radius:10px;padding:16px;text-align:center;cursor:pointer;position:relative;transition:.15s" id="scan-bank-card" onclick="document.getElementById('scan-bank-input').click()">
+          <input type="file" id="scan-bank-input" accept="image/*,.pdf" style="display:none" onchange="scanDocument(this,'bank')"/>
+          <div style="font-size:24px;margin-bottom:6px">🏦</div>
+          <div style="font-size:12px;font-weight:700;color:var(--white)">Bank Statement</div>
+          <div style="font-size:11px;color:var(--sub);margin-top:3px">Or bank confirmation letter</div>
+          <div id="scan-bank-status" style="font-size:11px;margin-top:6px;color:var(--muted)">Click to upload</div>
+        </div>
+
+      </div>
+      <div id="scan-result" style="display:none;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.2);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--green)"></div>
     </div></div>`;
 
   if(s===3) return `
@@ -987,6 +1029,7 @@ function getStepHTML(s) {
         ${f('Work Telephone','sig_phone','082 324 7905')}
         ${f('Mobile / Cellphone','sig_mobile','082 324 7905',true)}
         ${f('SA ID Number','sig_id','9802255169088',false,'13-digit SA ID')}
+      ${f('Place of Birth','sig_pob','e.g. Johannesburg, South Africa')}
         ${f('Capacity / Position','sig_pos','e.g. Director, Owner, Trustee',true)}
         ${f('Country of Residence','sig_country','South Africa')}
       </div>
@@ -1145,7 +1188,7 @@ async function submitForm() {
     signatory_first_name:fv.sig_fname||null,signatory_last_name:fv.sig_lname||null,
     signatory_email:fv.sig_email||null,signatory_phone:fv.sig_phone||null,
     signatory_mobile:fv.sig_mobile||null,signatory_id_number:fv.sig_id||null,
-    signatory_position:fv.sig_pos||null,country_of_residence:fv.sig_country||'South Africa',
+    signatory_position:fv.sig_pos||null,country_of_residence:fv.sig_country||'South Africa',place_of_birth:fv.sig_pob||null,
     contact_first_name:fv.con_fname||null,contact_last_name:fv.con_lname||null,
     contact_email:fv.con_email||null,contact_phone:fv.con_phone||null,
     contact_mobile:fv.con_mobile||null,contact_position:fv.con_pos||null,contact_id_number:fv.con_id||null,
@@ -1191,6 +1234,113 @@ function showSuccess(ref) {
       <div style="margin-top:20px;font-size:11px;color:var(--muted)">ATM Solutions · A division of Paycorp Group (Pty) Ltd · Reg. No. 2013/077629/07</div>
     </div>`;
 }
+// ══════════════════════════════════════════════
+// AI DOCUMENT SCANNER
+// ══════════════════════════════════════════════
+async function scanDocument(input, docType) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const statusEl = document.getElementById(`scan-${docType}-status`);
+  const cardEl   = document.getElementById(`scan-${docType}-card`);
+  const resultEl = document.getElementById('scan-result');
+
+  statusEl.innerHTML = '<span style="color:var(--teal)">⏳ Reading document with AI...</span>';
+  cardEl.style.borderColor = 'var(--teal)';
+
+  try {
+    // Convert file to base64
+    const base64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = () => res(reader.result.split(',')[1]);
+      reader.onerror = () => rej(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+
+    const mediaType = file.type || 'image/jpeg';
+
+    const resp = await fetch(
+      'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/extract-document',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d',
+        },
+        body: JSON.stringify({ image_base64: base64, media_type: mediaType, doc_type: docType }),
+      }
+    );
+
+    const result = await resp.json();
+    if (!result.success) throw new Error(result.error);
+
+    const d = result.data;
+    let filled = [];
+
+    if (docType === 'id') {
+      // Parse full name into first/last
+      if (d.full_name) {
+        const parts = d.full_name.trim().split(' ');
+        fv.sig_fname = parts[0] || '';
+        fv.sig_lname = parts.slice(1).join(' ') || '';
+        filled.push('Full Name');
+      }
+      if (d.id_number)     { fv.sig_id  = d.id_number;     filled.push('ID Number'); }
+      if (d.place_of_birth){ fv.sig_pob = d.place_of_birth; filled.push('Place of Birth'); }
+
+    } else if (docType === 'cipc') {
+      if (d.registered_name)    { fv.registered_name    = d.registered_name;    filled.push('Registered Name'); }
+      if (d.trading_name)       { fv.trading_name       = d.trading_name;       filled.push('Trading Name'); }
+      if (d.registration_number){ fv.registration_number= d.registration_number;filled.push('Registration Number'); }
+      if (d.company_type)       { fv.entity_type        = d.company_type;       filled.push('Entity Type'); }
+      if (d.registered_address) { fv.site_address       = d.registered_address; filled.push('Address'); }
+      // Directors
+      if (d.directors && d.directors.length > 0) {
+        d.directors.forEach((dir, i) => {
+          const n = i + 1;
+          if (n <= 3) {
+            if (dir.name)      { fv[`d${n}_name`] = dir.name;      }
+            if (dir.id_number) { fv[`d${n}_id`]   = dir.id_number; }
+          }
+        });
+        filled.push(`${d.directors.length} Director(s)`);
+      }
+
+    } else if (docType === 'bank') {
+      if (d.account_holder){ fv.acc_holder  = d.account_holder; filled.push('Account Holder'); }
+      if (d.bank_name)     { fv.bank        = d.bank_name;      filled.push('Bank Name'); }
+      if (d.account_number){ fv.acc_num     = d.account_number; filled.push('Account Number'); }
+      if (d.branch_name)   { fv.branch_name = d.branch_name;    filled.push('Branch Name'); }
+      if (d.branch_code)   { fv.branch_code = d.branch_code;    filled.push('Branch Code'); }
+      if (d.account_type)  { fv.acc_type    = d.account_type;   filled.push('Account Type'); }
+    }
+
+    statusEl.innerHTML = `<span style="color:var(--green)">✅ ${filled.length} fields extracted</span>`;
+    cardEl.style.borderColor = 'var(--green)';
+    cardEl.style.borderStyle = 'solid';
+
+    if (filled.length > 0) {
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `✅ <strong>AI extracted from ${docType === 'id' ? 'ID document' : docType === 'cipc' ? 'CIPC certificate' : 'bank statement'}:</strong> ${filled.join(', ')} — fields have been auto-filled below. Please review and correct if needed.`;
+    } else {
+      resultEl.style.display = 'block';
+      resultEl.style.background = 'rgba(245,166,35,.06)';
+      resultEl.style.borderColor = 'rgba(245,166,35,.2)';
+      resultEl.style.color = 'var(--orange)';
+      resultEl.innerHTML = '⚠️ Could not extract data from this document. Please fill in the fields manually below.';
+    }
+
+    // Re-render the current step to show updated values
+    renderStep();
+
+  } catch(e) {
+    statusEl.innerHTML = `<span style="color:var(--red)">❌ Error: ${e.message}</span>`;
+    cardEl.style.borderColor = 'var(--red)';
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = `❌ Could not read document: ${e.message}. Please fill in the fields manually.`;
+  }
+}
+
 // ── TAB EVENT LISTENERS (more reliable than onclick) ──
 document.addEventListener('DOMContentLoaded', function() {
   var btnClient = document.getElementById('tab-client');
