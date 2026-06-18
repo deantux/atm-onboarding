@@ -1306,8 +1306,13 @@ async function scanDocument(input, docType) {
         'cheque':'Business Cheque / Current','current':'Business Cheque / Current',
         'business cheque':'Business Cheque / Current','cheque account':'Business Cheque / Current',
         'current account':'Business Cheque / Current','business current':'Business Cheque / Current',
-        'transmission':'Business Cheque / Current',
+        'transmission':'Business Cheque / Current','transact':'Business Cheque / Current',
+        'cheque/current':'Business Cheque / Current','business cheque/current':'Business Cheque / Current',
+        'fnb cheque':'Business Cheque / Current','fnb transact':'Business Cheque / Current',
+        'gold cheque':'Business Cheque / Current','platinum cheque':'Business Cheque / Current',
+        'smart cheque':'Business Cheque / Current','business smart cheque':'Business Cheque / Current',
         'savings':'Business Savings','business savings':'Business Savings','savings account':'Business Savings',
+        'flexi savings':'Business Savings','smart savings':'Business Savings',
         'personal cheque':'Personal Cheque','personal savings':'Personal Savings',
         'platinum':'Platinum Business','platinum business':'Platinum Business',
       };
@@ -1333,7 +1338,7 @@ async function scanDocument(input, docType) {
       if (d.account_type) {
         const araw = d.account_type.toLowerCase().trim();
         fv.acc_type = AMAP[araw] ||
-          (araw.includes('cheque')||araw.includes('current') ? 'Business Cheque / Current' :
+          (araw.includes('cheque')||araw.includes('current')||araw.includes('transact') ? 'Business Cheque / Current' :
            araw.includes('savings')   ? 'Business Savings' :
            araw.includes('platinum')  ? 'Platinum Business' :
            araw.includes('personal') && araw.includes('cheque') ? 'Personal Cheque' :
