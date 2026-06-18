@@ -1283,6 +1283,7 @@ async function scanDocument(input, docType) {
           if (n <= 3) {
             if (dir.name)      { fv[`d${n}_name`] = dir.name;      }
             if (dir.id_number) { fv[`d${n}_id`]   = dir.id_number; }
+            if (dir.address)   { fv[`d${n}_addr`] = dir.address;   }
           }
         });
         filled.push(`${d.directors.length} Director(s)`);
@@ -1309,6 +1310,9 @@ async function scanDocument(input, docType) {
         'transmission':'Business Cheque / Current','transact':'Business Cheque / Current',
         'cheque/current':'Business Cheque / Current','business cheque/current':'Business Cheque / Current',
         'fnb cheque':'Business Cheque / Current','fnb transact':'Business Cheque / Current',
+        'gold business account':'Business Cheque / Current',
+        'gold business':'Business Cheque / Current',
+        'gold cheque account':'Business Cheque / Current',
         'gold cheque':'Business Cheque / Current','platinum cheque':'Business Cheque / Current',
         'smart cheque':'Business Cheque / Current','business smart cheque':'Business Cheque / Current',
         'savings':'Business Savings','business savings':'Business Savings','savings account':'Business Savings',
