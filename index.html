@@ -554,7 +554,6 @@ async function loadApps() {
         fee:a.service_fee||null,
       }));
     } else {
-      // Demo data fallback
       APPS = [
         {id:'demo1',ref:'ATM-2026-01000',merchant:'Dean Service Station',province:'Gauteng',nature:'Petroleum / Fuel',status:'rep_approved',email:'tucker.dean14@gmail.com',fee:6500},
         {id:'demo2',ref:'ATM-2026-01001',merchant:'Cape Fuels Bellville',province:'Western Cape',nature:'Petroleum / Fuel',status:'submitted',email:'ops@capefuels.co.za',fee:null},
@@ -642,7 +641,6 @@ async function saveAndOpenDocuSign() {
   const btn = document.getElementById('comm-save-btn');
   btn.textContent = '⏳ Saving...'; btn.disabled = true;
 
-  // Capture appId immediately before any async ops
   const appId = commAppId;
   if (!appId) {
     alert('Error: No application selected. Please close and try again.');
@@ -669,21 +667,17 @@ async function saveAndOpenDocuSign() {
   const repName  = currentRep?.name  || 'ATM Solutions Representative';
 
   try {
-    // Save commercial terms to Supabase
     if (!appId.startsWith('demo')) {
       await sbUpdate('applications', appId, patch);
     }
 
-    // Update local state
     const local = APPS.find(x => x.id === appId);
     if (local) { local.status = 'docusign_sent'; local.fee = fee; }
     renderTable();
     closeComm();
 
-    // Show sending status
     btn.textContent = '⏳ Sending DocuSign...';
 
-    // Call Edge Function to send DocuSign with full pre-population
     if (!appId.startsWith('demo')) {
       const res = await fetch(
         'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/send-docusign',
@@ -703,7 +697,6 @@ async function saveAndOpenDocuSign() {
       const data = await res.json();
 
       if (data.success) {
-        // ✅ Full success - DocuSign sent with all fields pre-populated
         alert(
           '✅ DocuSign sent successfully!\n\n' +
           'Envelope ID: ' + data.envelope_id + '\n\n' +
@@ -712,9 +705,7 @@ async function saveAndOpenDocuSign() {
           '2. ' + (data.merchant_email || 'Merchant') + ' — receives after you sign\n\n' +
           'All fields have been pre-populated from the application data.'
         );
-
       } else if (data.consent_required) {
-        // ⚠️ Need to grant consent first - show clear instructions
         const go = confirm(
           '⚠️ DocuSign Consent Required\n\n' +
           'This is a one-time step. You need to grant permission for\n' +
@@ -727,16 +718,11 @@ async function saveAndOpenDocuSign() {
           '5. Come back here and click Send DocuSign again\n\n' +
           'Click OK to open the consent page now.'
         );
-        if (go) {
-          window.open(data.consent_url, '_blank');
-        }
-
+        if (go) { window.open(data.consent_url, '_blank'); }
       } else {
-        // ❌ Other error
         alert('❌ DocuSign Error:\n\n' + data.error + '\n\nPlease try again or contact support.');
       }
     } else {
-      // Demo mode — open PowerForm
       const a = APPS.find(x => x.id === appId);
       openDocuSignURL(a, patch, repEmail);
     }
@@ -754,31 +740,25 @@ function openDocuSignURL(app, terms, repEmail) {
   const s = v => v ? String(v) : '';
   const m = v => v ? 'R' + Number(v).toLocaleString('en-ZA') : '';
 
-  // Build signer details
   const repName  = currentRep?.name || 'ATM Solutions Representative';
   const repEmail2 = repEmail || 'deant@atmsolutions.co.za';
   const merchantName  = (s(app.signatory_first_name) + ' ' + s(app.signatory_last_name)).trim() || s(app.merchant) || s(app.trading_name);
   const merchantEmail = s(app.signatory_email || app.email);
 
-  // Build PowerForm pre-population URL
-  // DocuSign PowerForm format: RoleName_UserName=value&RoleName_Email=value
   const POWERFORM_BASE = 'https://eu.docusign.net/Member/PowerFormSigning.aspx';
   const params = new URLSearchParams({
     PowerFormId: '1871d9ce-6fed-4d4a-ba27-2b73dff10e24',
     env:         'eu',
     acct:        '0829f8ba-5922-4613-9f41-39f8a872c1b5',
     v:           '2',
-    // Signer 1 — ATM Solutions Rep (signs first)
     'ATM SOLUTIONS REP_UserName': repName,
     'ATM SOLUTIONS REP_Email':    repEmail2,
-    // Signer 2 — Client/Merchant Signatory (signs second)
     'CLIENT/MERCHANT SIGNATORY_UserName': merchantName,
     'CLIENT/MERCHANT SIGNATORY_Email':    merchantEmail,
   });
 
   const powerFormURL = POWERFORM_BASE + '?' + params.toString();
 
-  // Show data card with the pre-populated URL
   const d = {
     ref:          s(app.reference_number || app.ref),
     tradingName:  s(app.trading_name || app.merchant),
@@ -804,7 +784,6 @@ function openDocuSignURL(app, terms, repEmail) {
 }
 
 function showDataCard(d, docusignURL) {
-  // Remove existing modal if any
   const existing = document.getElementById('data-card-modal');
   if(existing) existing.remove();
 
@@ -822,29 +801,24 @@ function showDataCard(d, docusignURL) {
         <button onclick="document.getElementById('data-card-modal').remove()" style="background:#142440;border:1px solid #243D63;color:#8FA3BF;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px">✕ Close</button>
       </div>
       <div style="padding:22px">
-
         <div style="background:rgba(0,180,216,.08);border:1px solid rgba(0,180,216,.25);border-radius:8px;padding:14px;margin-bottom:18px;font-size:12px;color:#8FA3BF;line-height:1.8">
-          ✅ <strong style="color:#fff">Pre-populated!</strong> DocuSign will open with signer names and emails already filled in. Review the data below, then click Open DocuSign. The contract will be sent to the rep first, then the merchant.
+          ✅ <strong style="color:#fff">Pre-populated!</strong> DocuSign will open with signer names and emails already filled in. Review the data below, then click Open DocuSign.
         </div>
-
-        <!-- SIGNERS -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📧 Signers — Enter in DocuSign</div>
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📧 Signers</div>
         <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
             <div>
-              <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 1 — ATM Solutions Rep (signs first)</div>
+              <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 1 — ATM Solutions Rep</div>
               <div style="font-weight:600;color:#fff">${d.repName}</div>
               <div style="color:#00B4D8;font-family:monospace;font-size:12px">${d.repEmail}</div>
             </div>
             <div>
-              <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 2 — Merchant (countersigns)</div>
+              <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 2 — Merchant</div>
               <div style="font-weight:600;color:#fff">${d.merchantName}</div>
               <div style="color:#00B4D8;font-family:monospace;font-size:12px">${d.merchantEmail}</div>
             </div>
           </div>
         </div>
-
-        <!-- BUSINESS DETAILS -->
         <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏢 Business Details</div>
         <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           ${dataRow('Trading Name', d.tradingName)}
@@ -852,8 +826,6 @@ function showDataCard(d, docusignURL) {
           ${dataRow('VAT Number', d.vat)}
           ${dataRow('Site Address', d.address)}
         </div>
-
-        <!-- COMMERCIAL TERMS -->
         <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">💰 Commercial Terms</div>
         <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           ${dataRow('Monthly Service Fee (ex VAT)', d.serviceFee)}
@@ -863,15 +835,12 @@ function showDataCard(d, docusignURL) {
           ${dataRow('ATM Type', d.atm_type)}
           ${dataRow('Cassette Denominations', d.cassettes)}
         </div>
-
-        <!-- BANKING -->
         <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏦 Banking Details</div>
         <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:20px">
           ${dataRow('Bank', d.bank)}
           ${dataRow('Account Holder', d.accHolder)}
           ${dataRow('Account Number', d.accNum)}
         </div>
-
         <div style="display:flex;gap:10px;justify-content:flex-end">
           <button onclick="document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#142440;color:#E8EDF5;border:1px solid #243D63;font-size:13px;font-weight:600;cursor:pointer">Cancel</button>
           <button onclick="window.open('${docusignURL}','_blank');document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#00B4D8;color:#0A1628;border:none;font-size:13px;font-weight:700;cursor:pointer">✉ Open Pre-filled DocuSign →</button>
@@ -972,9 +941,9 @@ function getStepHTML(s) {
         </div>
       </div>
       <div id="scan-result" style="display:none;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.2);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--green)"></div>
-    </div></div>\`;
+    </div></div>`;
 
-  if(s===2) return \`
+  if(s===2) return `
     <div class="sec"><div class="sec-hd"><div class="sec-ico">📍</div><div><div class="sec-title">ATM Site & Location</div><div class="sec-desc">Where the Smart ATM will be installed</div></div></div>
     <div class="sec-body"><div class="grid2">
       ${f('Street Address','site_address','28 Van Riebeeck Street',true,'','text','span2')}
@@ -1012,7 +981,10 @@ function getStepHTML(s) {
         ${mf('Estimated Daily ATM Cash Deposit','daily_cash','e.g. R40,000 per day',true)}
         ${mf('Estimated Monthly ATM Cash Deposit','monthly_cash','e.g. R2,500,000 per month',true)}
       </div>
-    </div></div>
+    </div></div>`;
+
+  if(s===3) return `
+    <div class="sec"><div class="sec-hd"><div class="sec-ico">✍️</div><div><div class="sec-title">Authorised Signatory (Part D)</div><div class="sec-desc">Person who will sign the Smart ATM agreement</div></div></div>
     <div class="sec-body">
       <div class="alert alert-w" style="margin-bottom:16px">⚠️ DocuSign will be emailed to the address below. Please double-check it is correct.</div>
       <div class="grid2">
@@ -1022,7 +994,7 @@ function getStepHTML(s) {
         ${f('Work Telephone','sig_phone','082 324 7905')}
         ${f('Mobile / Cellphone','sig_mobile','082 324 7905',true)}
         ${f('SA ID Number','sig_id','9802255169088',false,'13-digit SA ID')}
-      ${f('Place of Birth','sig_pob','e.g. Johannesburg, South Africa')}
+        ${f('Place of Birth','sig_pob','e.g. Johannesburg, South Africa')}
         ${f('Capacity / Position','sig_pos','e.g. Director, Owner, Trustee',true)}
         ${f('Country of Residence','sig_country','South Africa')}
       </div>
@@ -1137,16 +1109,13 @@ function getStepHTML(s) {
 // STEP NAVIGATION
 // ══════════════════════════════════════════════
 function renderStep() {
-  // Progress bar
   document.getElementById('prog').innerHTML=STEPS.map((s,i)=>{
     const st=currentStep===s.id?'on':currentStep>s.id?'done':'';
     return `<div class="p-step"><div class="p-dot ${st}">${st==='done'?'✓':s.id}</div><span class="p-label ${st}">${s.l}</span></div>${i<STEPS.length-1?`<div class="p-line ${currentStep>s.id?'done':''}"></div>`:''}`
   }).join('');
 
-  // Content
   document.getElementById('step-content').innerHTML=getStepHTML(currentStep);
 
-  // Nav buttons
   let nav='';
   if(currentStep>1) nav+=`<button class="btn btn-dark" onclick="goStep(${currentStep-1})">← Back</button>`;
   if(currentStep<7) nav+=`<button class="btn btn-teal" style="width:auto" onclick="goStep(${currentStep+1})">Continue →</button>`;
@@ -1227,6 +1196,7 @@ function showSuccess(ref) {
       <div style="margin-top:20px;font-size:11px;color:var(--muted)">ATM Solutions · A division of Paycorp Group (Pty) Ltd · Reg. No. 2013/077629/07</div>
     </div>`;
 }
+
 // ══════════════════════════════════════════════
 // AI DOCUMENT SCANNER
 // ══════════════════════════════════════════════
@@ -1242,7 +1212,6 @@ async function scanDocument(input, docType) {
   cardEl.style.borderColor = 'var(--teal)';
 
   try {
-    // Convert file to base64
     const base64 = await new Promise((res, rej) => {
       const reader = new FileReader();
       reader.onload = () => res(reader.result.split(',')[1]);
@@ -1271,7 +1240,6 @@ async function scanDocument(input, docType) {
     let filled = [];
 
     if (docType === 'id') {
-      // Parse full name into first/last
       if (d.full_name) {
         const parts = d.full_name.trim().split(' ');
         fv.sig_fname = parts[0] || '';
@@ -1285,9 +1253,30 @@ async function scanDocument(input, docType) {
       if (d.registered_name)    { fv.registered_name    = d.registered_name;    filled.push('Registered Name'); }
       if (d.trading_name)       { fv.trading_name       = d.trading_name;       filled.push('Trading Name'); }
       if (d.registration_number){ fv.registration_number= d.registration_number;filled.push('Registration Number'); }
-      if (d.company_type)       { fv.entity_type        = d.company_type;       filled.push('Entity Type'); }
+      if (d.company_type) {
+        // ── PATCHED: normalise AI output to exact ENTITIES array values ──
+        const EMAP = {
+          'private company':'Private Company (Pty) Ltd','pty ltd':'Private Company (Pty) Ltd',
+          '(pty) ltd':'Private Company (Pty) Ltd','proprietary limited':'Private Company (Pty) Ltd',
+          'private company (pty) ltd':'Private Company (Pty) Ltd',
+          'close corporation':'Close Corporation (CC)','cc':'Close Corporation (CC)',
+          'close corporation (cc)':'Close Corporation (CC)',
+          'trust':'Trust','family trust':'Trust','business trust':'Trust',
+          'partnership':'Partnership','sole proprietor':'Sole Proprietor',
+          'sole proprietorship':'Sole Proprietor','sole trader':'Sole Proprietor',
+          'public company':'Public Company','ltd':'Public Company','limited':'Public Company',
+        };
+        const eraw = d.company_type.toLowerCase().trim().replace(/\.+/g,'');
+        fv.entity_type = EMAP[eraw] ||
+          (eraw.includes('pty')||eraw.includes('private')   ? 'Private Company (Pty) Ltd' :
+           eraw.includes('close')||eraw.includes(' cc')     ? 'Close Corporation (CC)' :
+           eraw.includes('trust')                           ? 'Trust' :
+           eraw.includes('partner')                         ? 'Partnership' :
+           eraw.includes('sole')                            ? 'Sole Proprietor' :
+           d.company_type);
+        filled.push('Entity Type');
+      }
       if (d.registered_address) { fv.site_address       = d.registered_address; filled.push('Address'); }
-      // Directors
       if (d.directors && d.directors.length > 0) {
         d.directors.forEach((dir, i) => {
           const n = i + 1;
@@ -1300,12 +1289,58 @@ async function scanDocument(input, docType) {
       }
 
     } else if (docType === 'bank') {
+      // ── PATCHED: normalise AI output to exact BANKS / ACC_TYPES array values ──
+      const BMAP = {
+        'fnb':'FNB (First National Bank)','first national bank':'FNB (First National Bank)',
+        'first national':'FNB (First National Bank)','first national bank limited':'FNB (First National Bank)',
+        'absa':'Absa','absa bank':'Absa',
+        'nedbank':'Nedbank','ned bank':'Nedbank',
+        'standard bank':'Standard Bank','standard bank limited':'Standard Bank',
+        'capitec':'Capitec','capitec bank':'Capitec','capitec bank limited':'Capitec',
+        'tymebank':'TymeBank','tyme bank':'TymeBank',
+        'african bank':'African Bank','african bank limited':'African Bank',
+        'investec':'Investec','investec bank':'Investec',
+        'discovery bank':'Discovery Bank','discovery':'Discovery Bank',
+      };
+      const AMAP = {
+        'cheque':'Business Cheque / Current','current':'Business Cheque / Current',
+        'business cheque':'Business Cheque / Current','cheque account':'Business Cheque / Current',
+        'current account':'Business Cheque / Current','business current':'Business Cheque / Current',
+        'transmission':'Business Cheque / Current',
+        'savings':'Business Savings','business savings':'Business Savings','savings account':'Business Savings',
+        'personal cheque':'Personal Cheque','personal savings':'Personal Savings',
+        'platinum':'Platinum Business','platinum business':'Platinum Business',
+      };
       if (d.account_holder){ fv.acc_holder  = d.account_holder; filled.push('Account Holder'); }
-      if (d.bank_name)     { fv.bank        = d.bank_name;      filled.push('Bank Name'); }
+      if (d.bank_name) {
+        const braw = d.bank_name.toLowerCase().trim();
+        fv.bank = BMAP[braw] ||
+          (braw.includes('fnb')||braw.includes('first national') ? 'FNB (First National Bank)' :
+           braw.includes('absa')      ? 'Absa' :
+           braw.includes('nedbank')   ? 'Nedbank' :
+           braw.includes('standard')  ? 'Standard Bank' :
+           braw.includes('capitec')   ? 'Capitec' :
+           braw.includes('tyme')      ? 'TymeBank' :
+           braw.includes('african')   ? 'African Bank' :
+           braw.includes('investec')  ? 'Investec' :
+           braw.includes('discovery') ? 'Discovery Bank' :
+           d.bank_name);
+        filled.push('Bank Name');
+      }
       if (d.account_number){ fv.acc_num     = d.account_number; filled.push('Account Number'); }
       if (d.branch_name)   { fv.branch_name = d.branch_name;    filled.push('Branch Name'); }
       if (d.branch_code)   { fv.branch_code = d.branch_code;    filled.push('Branch Code'); }
-      if (d.account_type)  { fv.acc_type    = d.account_type;   filled.push('Account Type'); }
+      if (d.account_type) {
+        const araw = d.account_type.toLowerCase().trim();
+        fv.acc_type = AMAP[araw] ||
+          (araw.includes('cheque')||araw.includes('current') ? 'Business Cheque / Current' :
+           araw.includes('savings')   ? 'Business Savings' :
+           araw.includes('platinum')  ? 'Platinum Business' :
+           araw.includes('personal') && araw.includes('cheque') ? 'Personal Cheque' :
+           araw.includes('personal')  ? 'Personal Savings' :
+           d.account_type);
+        filled.push('Account Type');
+      }
     }
 
     statusEl.innerHTML = `<span style="color:var(--green)">✅ ${filled.length} fields extracted</span>`;
@@ -1323,7 +1358,6 @@ async function scanDocument(input, docType) {
       resultEl.innerHTML = '⚠️ Could not extract data from this document. Please fill in the fields manually below.';
     }
 
-    // Re-render the current step to show updated values
     renderStep();
 
   } catch(e) {
@@ -1334,7 +1368,7 @@ async function scanDocument(input, docType) {
   }
 }
 
-// ── TAB EVENT LISTENERS (more reliable than onclick) ──
+// ── TAB EVENT LISTENERS ──
 document.addEventListener('DOMContentLoaded', function() {
   var btnClient = document.getElementById('tab-client');
   var btnRep = document.getElementById('tab-rep');
@@ -1342,7 +1376,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (btnRep) btnRep.addEventListener('click', function(e) { e.preventDefault(); showTab('rep'); });
 });
 
-// Also attach immediately in case DOMContentLoaded already fired
 (function() {
   var btnClient = document.getElementById('tab-client');
   var btnRep = document.getElementById('tab-rep');
