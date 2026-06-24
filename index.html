@@ -890,13 +890,53 @@ function dataRow(label, value) {
 }
 
 async function createCRMLead(id) {
-  if(!id.startsWith('demo')) {
-    try { await sbUpdate('applications',id,{status:'crm_created',dynamics_created_at:new Date().toISOString()}); } catch(e){}
+  const btn = event.target;
+  btn.textContent = '⏳ Creating...';
+  btn.disabled = true;
+
+  const a = APPS.find(x => x.id === id);
+
+  try {
+    if (!id.startsWith('demo')) {
+      const res = await fetch(
+        'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/sync-dynamics',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d',
+          },
+          body: JSON.stringify({
+            application_id: id,
+            rep_name: currentRep?.name || 'ATM Solutions Rep',
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        if (a) a.status = 'crm_created';
+        renderTable();
+        alert(
+          '✅ Lead ' + (data.action === 'updated' ? 'updated' : 'created') + ' in Dynamics 365!\n\n' +
+          'Company: ' + data.company + '\n' +
+          'Reference: ' + data.reference + '\n' +
+          'Lead ID: ' + data.lead_id + '\n\n' +
+          'View in Paycorp CRM: https://paycorpatm.crm4.dynamics.com'
+        );
+      } else {
+        throw new Error(data.error);
+      }
+    } else {
+      // Demo mode
+      if (a) a.status = 'crm_created';
+      renderTable();
+      alert('✅ Demo mode — CRM Lead created successfully!');
+    }
+  } catch(e) {
+    btn.textContent = '↗ Create CRM Lead';
+    btn.disabled = false;
+    alert('❌ Error creating CRM lead:\n\n' + e.message);
   }
-  const a=APPS.find(x=>x.id===id);
-  if(a) a.status='crm_created';
-  renderTable();
-  alert('✅ CRM Lead created!\n\nDynamics 365 integration coming soon.\nFor now, the application has been marked as complete.');
 }
 
 // ══════════════════════════════════════════════
@@ -1200,6 +1240,30 @@ async function submitForm() {
     const rows=await sbInsert('applications',record);
     const saved=Array.isArray(rows)?rows[0]:rows;
     const ref=saved?.reference_number||'ATM-2026-PENDING';
+    const appId=saved?.id;
+
+    // Auto-sync to Dynamics 365 CRM on submission
+    if (appId) {
+      try {
+        await fetch(
+          'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/sync-dynamics',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d',
+            },
+            body: JSON.stringify({
+              application_id: appId,
+              rep_name: 'Client Portal Submission',
+            }),
+          }
+        );
+      } catch(e) {
+        console.warn('Dynamics sync failed (non-blocking):', e.message);
+      }
+    }
+
     showSuccess(ref);
   } catch(e) {
     document.getElementById('step-content').innerHTML=`
