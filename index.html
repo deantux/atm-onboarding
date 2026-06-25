@@ -606,12 +606,13 @@ function renderTable() {
 
   document.getElementById('app-tbody').innerHTML = APPS.map(a=>{
     let act='';
-    if(a.status==='submitted') act=`<button class="abtn t" onclick="openComm('${a.id}')">⚙ Review + Set Fees</button>`;
-    else if(a.status==='rep_approved') act=`<button class="abtn t" onclick="openComm('${a.id}')">✉ Send DocuSign</button>`;
-    else if(a.status==='docusign_sent') act=`<span style="font-size:11px;color:#7aa4ff">⏳ Awaiting rep sig</span>`;
-    else if(a.status==='rep_signed') act=`<span style="font-size:11px;color:var(--orange)">⏳ Awaiting merchant</span>`;
+    const crmBtn=`<button class="abtn g" onclick="createCRMLead('${a.id}',event)" style="font-size:11px;padding:4px 8px">↗ CRM</button>`;
+    if(a.status==='submitted') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">⚙ Review + Set Fees</button>${crmBtn}</div>`;
+    else if(a.status==='rep_approved') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">✉ Send DocuSign</button>${crmBtn}</div>`;
+    else if(a.status==='docusign_sent') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:#7aa4ff">⏳ Awaiting rep sig</span>${crmBtn}</div>`;
+    else if(a.status==='rep_signed') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:var(--orange)">⏳ Awaiting merchant</span>${crmBtn}</div>`;
     else if(a.status==='client_signed') act=`<button class="abtn g" onclick="createCRMLead('${a.id}',event)">↗ Create CRM Lead</button>`;
-    else if(a.status==='crm_created') act=`<span style="font-size:11px;color:var(--green)">✓ In CRM</span>`;
+    else if(a.status==='crm_created') act=`<span style="font-size:11px;color:var(--green)">✅ In CRM</span>`;
     const fee=a.fee?`<span style="font-family:monospace;font-size:12px;color:var(--green)">R${Number(a.fee).toLocaleString('en-ZA')}</span>`:`<span style="color:var(--muted);font-size:11px">—</span>`;
     return `<tr>
       <td style="font-family:monospace;font-size:11px;color:var(--teal);font-weight:700">${a.ref}</td>
