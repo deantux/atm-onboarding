@@ -495,6 +495,19 @@ function showTab(t) {
 // ══════════════════════════════════════════════
 // CLIENT AUTH
 // ══════════════════════════════════════════════
+// Store rep info from URL if client came via rep link
+let clientRep = null;
+(function() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const repParam = params.get('rep');
+    if (repParam) clientRep = JSON.parse(decodeURIComponent(repParam));
+    // Auto-fill access code if in URL
+    const code = params.get('code');
+    if (code) document.getElementById('c-code').value = code;
+  } catch(e) {}
+})();
+
 function clientLogin() {
   const code = document.getElementById('c-code').value.trim().toUpperCase();
   const name = document.getElementById('c-name').value.trim();
@@ -506,6 +519,10 @@ function clientLogin() {
   document.getElementById('client-gate').style.display='none';
   document.getElementById('client-form').style.display='block';
   if(name) document.getElementById('c-greeting').textContent = `Welcome ${name}. Complete all sections — your information will pre-populate your Smart ATM site agreement.`;
+  // Show rep attribution if client came via rep link
+  if(clientRep?.name) {
+    document.getElementById('c-greeting').textContent += ` Your application will be managed by ${clientRep.name}.`;
+  }
   currentStep=1;
   renderStep();
 }
@@ -612,7 +629,8 @@ function renderTable() {
 // ══════════════════════════════════════════════
 function genLink() {
   const tok=Math.random().toString(36).substring(2,12).toUpperCase();
-  const url=`https://atm-onboarding.vercel.app/?code=ATM2025&token=${tok}&rep=${currentRep?.id}`;
+  const repParam=encodeURIComponent(JSON.stringify({id:currentRep?.id,name:currentRep?.name,email:currentRep?.email}));
+  const url=`https://atm-onboarding.vercel.app/?code=ATM2025&token=${tok}&rep=${repParam}`;
   document.getElementById('link-val').textContent=url;
   document.getElementById('link-panel').style.display='block';
   document.getElementById('wa-link').onclick=()=>window.open(`https://wa.me/?text=${encodeURIComponent('Please complete your Smart ATM site application: '+url)}`);
@@ -1234,6 +1252,10 @@ async function submitForm() {
     bank_name:fv.bank||null,account_holder:fv.acc_holder||null,account_number:fv.acc_num||null,
     account_type:fv.acc_type||null,branch_name:fv.branch_name||null,branch_code:fv.branch_code||null,
     status:'submitted',submitted_at:new Date().toISOString(),
+    // Rep attribution - from URL param (client link) or logged-in rep
+    rep_id:    (currentRep?.id    || clientRep?.id    || null),
+    rep_name:  (currentRep?.name  || clientRep?.name  || null),
+    rep_email: (currentRep?.email || clientRep?.email || null),
   };
 
   try {
@@ -1255,7 +1277,8 @@ async function submitForm() {
             },
             body: JSON.stringify({
               application_id: appId,
-              rep_name: 'Client Portal Submission',
+              rep_name:  currentRep?.name  || clientRep?.name  || 'Client Portal Submission',
+              rep_email: currentRep?.email || clientRep?.email || null,
             }),
           }
         );
