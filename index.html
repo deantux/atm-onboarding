@@ -610,8 +610,8 @@ function renderTable() {
     else if(a.status==='rep_approved') act=`<button class="abtn t" onclick="openComm('${a.id}')">✉ Send DocuSign</button>`;
     else if(a.status==='docusign_sent') act=`<span style="font-size:11px;color:#7aa4ff">⏳ Awaiting rep sig</span>`;
     else if(a.status==='rep_signed') act=`<span style="font-size:11px;color:var(--orange)">⏳ Awaiting merchant</span>`;
-    else if(a.status==='client_signed') act=`<button class="abtn g" onclick="createCRMLead('${a.id}')">↗ Create CRM Lead</button>`;
-    else if(a.status==='crm_created') act=`<span style="font-size:11px;color:var(--green)">✓ Complete</span>`;
+    else if(a.status==='client_signed') act=`<button class="abtn g" onclick="createCRMLead('${a.id}',event)">↗ Create CRM Lead</button>`;
+    else if(a.status==='crm_created') act=`<span style="font-size:11px;color:var(--green)">✓ In CRM</span>`;
     const fee=a.fee?`<span style="font-family:monospace;font-size:12px;color:var(--green)">R${Number(a.fee).toLocaleString('en-ZA')}</span>`:`<span style="color:var(--muted);font-size:11px">—</span>`;
     return `<tr>
       <td style="font-family:monospace;font-size:11px;color:var(--teal);font-weight:700">${a.ref}</td>
@@ -907,7 +907,7 @@ function dataRow(label, value) {
   </div>`;
 }
 
-async function createCRMLead(id) {
+async function createCRMLead(id, event) {
   const btn = event.target;
   btn.textContent = '⏳ Creating...';
   btn.disabled = true;
