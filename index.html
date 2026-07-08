@@ -403,21 +403,8 @@ tr:hover td{background:rgba(0,180,216,.02)}
 // CONFIG
 // ══════════════════════════════════════════════
 const CODES = ['ATM2025','DEMO1234','PAYCORP1','SMARTATM'];
-const REPS = [
-  {id:'1', name:'Dean Tucker',            email:'deant@atmsolutions.co.za',      pin:'1234', branch:'Head Office'},
-  {id:'2', name:'Jonathan Challen',       email:'JonathanC@atmsolutions.co.za',  pin:'1234', branch:'Gauteng'},
-  {id:'3', name:'Jacqui Khoury',          email:'Jacquik@atmsolutions.co.za',    pin:'1234', branch:'Gauteng'},
-  {id:'4', name:'Bandisa Simelane',       email:'BandisaS@atmsolutions.co.za',   pin:'1234', branch:'Gauteng'},
-  {id:'5', name:'Brian Masimong',         email:'BrianM@atmsolutions.co.za',     pin:'1234', branch:'North West'},
-  {id:'6', name:'Dianne Greeff',          email:'DianneG@atmsolutions.co.za',    pin:'1234', branch:'Western Cape'},
-  {id:'7', name:'Charmaine Smit',         email:'CharmaineS@atmsolutions.co.za', pin:'1234', branch:'Western Cape'},
-  {id:'8', name:'Awonke Mdazuka',         email:'AwonkeM@atmsolutions.co.za',    pin:'1234', branch:'Western Cape'},
-  {id:'9', name:'John Griffith',          email:'JohnG@atmsolutions.co.za',      pin:'1234', branch:'Eastern Cape'},
-  {id:'10',name:'Siyathokoza Mlungwana',  email:'SiyaM@atmsolutions.co.za',      pin:'1234', branch:'KwaZulu-Natal'},
-  {id:'11',name:'Suren Mothilal',         email:'Surenm@atmsolutions.co.za',     pin:'1234', branch:'KwaZulu-Natal'},
-  {id:'12',name:'Gawie Du Toit',          email:'GawieDT@atmsolutions.co.za',    pin:'1234', branch:'Mpumalanga'},
-  {id:'13',name:'Johny Ramohlale',        email:'JohnyR@atmsolutions.co.za',     pin:'1234', branch:'Limpopo'},
-];
+// SECURITY: rep credentials verified server-side via rep-portal Edge Function
+let SESSION_TOKEN = null;
 const SUPA = 'https://cxyntiiegbwmgslwyfmn.supabase.co';
 const SKEY = 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d';
 const DS_TEMPLATE = '6b8a3ae7-f5bb-4a4e-8b96-439a5cda8e57';
@@ -516,6 +503,7 @@ function clientLogin() {
     err.style.display='block'; return;
   }
   err.style.display='none';
+  try{sessionStorage.setItem('atm_code', code);}catch(e){}
   document.getElementById('client-gate').style.display='none';
   document.getElementById('client-form').style.display='block';
   if(name) document.getElementById('c-greeting').textContent = `Welcome ${name}. Complete all sections — your information will pre-populate your Smart ATM site agreement.`;
@@ -530,12 +518,21 @@ function clientLogin() {
 // ══════════════════════════════════════════════
 // REP AUTH
 // ══════════════════════════════════════════════
-function repLogin() {
+async function repLogin() {
   const email = document.getElementById('r-email').value.trim();
   const pin = document.getElementById('r-pin').value.trim();
-  const rep = REPS.find(r=>r.email.toLowerCase()===email.toLowerCase() && r.pin===pin);
-  if(!rep){document.getElementById('r-err').style.display='block';return;}
   document.getElementById('r-err').style.display='none';
+  let rep;
+  try {
+    const r = await fetch(`${SUPA}/functions/v1/rep-portal`, {
+      method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+      body: JSON.stringify({action:'login', email, pin})
+    });
+    const data = await r.json();
+    if(!data.success){document.getElementById('r-err').style.display='block';return;}
+    SESSION_TOKEN = data.token;
+    rep = {id:data.rep.id, name:data.rep.full_name, email:data.rep.email, branch:data.rep.branch};
+  } catch(e){document.getElementById('r-err').style.display='block';return;}
   currentRep=rep;
   document.getElementById('rep-gate').style.display='none';
   document.getElementById('rep-dash').style.display='block';
@@ -547,6 +544,7 @@ function repLogin() {
 }
 function repLogout() {
   currentRep=null;
+  SESSION_TOKEN=null;
   document.getElementById('rep-gate').style.display='block';
   document.getElementById('rep-dash').style.display='none';
   document.getElementById('r-email').value='';
@@ -559,7 +557,13 @@ function repLogout() {
 // ══════════════════════════════════════════════
 async function loadApps() {
   try {
-    const data = await sbSelect('applications','select=id,reference_number,trading_name,nature_of_business,province,status,signatory_email,submitted_at,service_fee&order=created_at.desc&limit=50');
+    const lr = await fetch(`${SUPA}/functions/v1/rep-portal`, {
+      method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+      body: JSON.stringify({action:'list', token: SESSION_TOKEN})
+    });
+    const lj = await lr.json();
+    if(!lj.success){ if(lr.status===401){alert('Session expired — please log in again.');repLogout();return;} throw new Error(lj.error); }
+    const data = lj.applications;
     if(data && data.length>0) {
       APPS = data.map(a=>({
         id:a.id, ref:a.reference_number||'—',
@@ -690,7 +694,12 @@ async function saveAndOpenDocuSign() {
   try {
     // Save commercial terms to Supabase
     if (!appId.startsWith('demo')) {
-      await sbUpdate('applications', appId, patch);
+      const ur = await fetch(`${SUPA}/functions/v1/rep-portal`, {
+        method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+        body: JSON.stringify({action:'update', token: SESSION_TOKEN, application_id: appId, fields: {...patch, rep_name: repName, rep_email: repEmail}})
+      });
+      const uj = await ur.json();
+      if(!uj.success) throw new Error(uj.error);
     }
 
     // Update local state
@@ -716,6 +725,7 @@ async function saveAndOpenDocuSign() {
             application_id: appId,
             rep_email:      repEmail,
             rep_name:       repName,
+            token:          SESSION_TOKEN,
           }),
         }
       );
@@ -928,6 +938,8 @@ async function createCRMLead(id, event) {
           body: JSON.stringify({
             application_id: id,
             rep_name: currentRep?.name || 'ATM Solutions Rep',
+            rep_email: currentRep?.email || null,
+            token: SESSION_TOKEN,
           }),
         }
       );
@@ -1260,33 +1272,15 @@ async function submitForm() {
   };
 
   try {
-    const rows=await sbInsert('applications',record);
-    const saved=Array.isArray(rows)?rows[0]:rows;
-    const ref=saved?.reference_number||'ATM-2026-PENDING';
-    const appId=saved?.id;
-
-    // Auto-sync to Dynamics 365 CRM on submission
-    if (appId) {
-      try {
-        await fetch(
-          'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/sync-dynamics',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d',
-            },
-            body: JSON.stringify({
-              application_id: appId,
-              rep_name:  currentRep?.name  || clientRep?.name  || 'Client Portal Submission',
-              rep_email: currentRep?.email || clientRep?.email || null,
-            }),
-          }
-        );
-      } catch(e) {
-        console.warn('Dynamics sync failed (non-blocking):', e.message);
-      }
-    }
+    // SECURITY: submission validated + inserted server-side; CRM sync happens server-side too
+    const accessCode = (document.getElementById('c-code')?.value || sessionStorage.getItem('atm_code') || 'ATM2025').trim().toUpperCase();
+    const sr = await fetch(`${SUPA}/functions/v1/submit-application`, {
+      method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+      body: JSON.stringify({access_code: accessCode, record})
+    });
+    const sj = await sr.json();
+    if(!sj.success) throw new Error(sj.error);
+    const ref = sj.reference_number || 'ATM-2026-PENDING';
 
     showSuccess(ref);
   } catch(e) {
