@@ -1254,7 +1254,7 @@ async function submitForm() {
     account_type:fv.acc_type||null,branch_name:fv.branch_name||null,branch_code:fv.branch_code||null,
     status:'submitted',submitted_at:new Date().toISOString(),
     // Rep attribution - from URL param (client link) or logged-in rep
-    rep_id:    (currentRep?.id    || clientRep?.id    || null),
+    rep_id:    null, // UUID looked up server-side by rep_email
     rep_name:  (currentRep?.name  || clientRep?.name  || null),
     rep_email: (currentRep?.email || clientRep?.email || null),
   };
