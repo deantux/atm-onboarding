@@ -306,8 +306,17 @@ tr:hover td{background:rgba(0,180,216,.02)}
           </div>
           <div id="r-err" class="alert alert-r" style="display:none">⚠️ Invalid credentials. Please try again.</div>
           <button class="btn btn-teal" onclick="repLogin()" style="margin-top:4px">Sign In →</button>
+          <div style="display:flex;align-items:center;gap:10px;margin:16px 0 12px">
+            <div style="flex:1;height:1px;background:#1e3a5f"></div>
+            <span style="font-size:11px;color:#64748b">OR</span>
+            <div style="flex:1;height:1px;background:#1e3a5f"></div>
+          </div>
+          <button class="btn btn-dark" onclick="msLogin()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #1e3a5f">
+            <svg width="16" height="16" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+            Sign in with Microsoft
+          </button>
           <div class="access-note" style="text-align:center">
-            Demo: <strong>deant@atmsolutions.co.za</strong> / PIN: <strong>1234</strong>
+            Microsoft sign-in uses your ATM Solutions 365 account with Authenticator 2FA.
           </div>
         </div>
       </div>
@@ -490,9 +499,18 @@ let clientRep = null;
     const params = new URLSearchParams(window.location.search);
     const repParam = params.get('rep');
     if (repParam) clientRep = JSON.parse(decodeURIComponent(repParam));
-    // Auto-fill access code if in URL
     const code = params.get('code');
-    if (code) document.getElementById('c-code').value = code;
+    const state = params.get('state') || '';
+    if (code && state.startsWith('msauth-')) {
+      // Microsoft 365 sign-in callback
+      const saved = sessionStorage.getItem('ms_state');
+      window.history.replaceState({}, '', window.location.pathname);
+      if (saved && saved !== state) { console.warn('MS state mismatch'); }
+      else setTimeout(()=>handleMSCallback(code), 50);
+    } else if (code) {
+      // Legacy client access-code link
+      document.getElementById('c-code').value = code;
+    }
   } catch(e) {}
 })();
 
@@ -534,15 +552,61 @@ async function repLogin() {
     SESSION_TOKEN = data.token;
     rep = {id:data.rep.id, name:data.rep.full_name, email:data.rep.email, branch:data.rep.branch};
   } catch(e){document.getElementById('r-err').style.display='block';return;}
+  finishRepLogin(rep);
+}
+
+function finishRepLogin(rep) {
   currentRep=rep;
   document.getElementById('rep-gate').style.display='none';
   document.getElementById('rep-dash').style.display='block';
   document.getElementById('rep-fn').textContent=rep.name.split(' ')[0];
-  document.getElementById('rep-eyebrow').textContent=`Rep Portal · ${rep.branch}`;
+  document.getElementById('rep-eyebrow').textContent=`Rep Portal · ${rep.branch||''}`;
   document.getElementById('hdr-rep-name').textContent=`Signed in: ${rep.name}`;
   document.getElementById('hdr-rep-name').style.display='inline';
   document.getElementById('hdr-settings-btn').style.display='inline';
   loadApps();
+}
+
+// ══════════════════════════════════════════════
+// MICROSOFT 365 SIGN-IN (Entra ID / Azure AD)
+// ══════════════════════════════════════════════
+const MS_TENANT = '3f04772e-1648-4323-a829-a2948c059d62';
+const MS_CLIENT = 'f83bee34-2747-4e45-921d-5a125bd1de1f';
+
+function msLogin() {
+  const state = 'msauth-' + crypto.randomUUID();
+  try { sessionStorage.setItem('ms_state', state); } catch(e){}
+  const redirect = window.location.origin + window.location.pathname;
+  const url = `https://login.microsoftonline.com/${MS_TENANT}/oauth2/v2.0/authorize`
+    + `?client_id=${MS_CLIENT}`
+    + `&response_type=code`
+    + `&redirect_uri=${encodeURIComponent(redirect)}`
+    + `&response_mode=query`
+    + `&scope=${encodeURIComponent('openid profile email User.Read')}`
+    + `&state=${state}`
+    + `&prompt=select_account`;
+  window.location.href = url;
+}
+
+async function handleMSCallback(code) {
+  showTab('rep');
+  const errEl = document.getElementById('r-err');
+  errEl.textContent = '⏳ Signing you in with Microsoft…';
+  errEl.style.display='block';
+  try {
+    const redirect = window.location.origin + window.location.pathname;
+    const r = await fetch(`${SUPA}/functions/v1/ms-auth`, {
+      method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+      body: JSON.stringify({ code, redirect_uri: redirect })
+    });
+    const data = await r.json();
+    if (!data.success) { errEl.textContent = `⚠️ ${data.error||'Microsoft sign-in failed'}`; return; }
+    errEl.style.display='none';
+    SESSION_TOKEN = data.token;
+    finishRepLogin({id:data.rep.id, name:data.rep.full_name, email:data.rep.email, branch:data.rep.branch});
+  } catch(e) {
+    errEl.textContent = `⚠️ Sign-in error: ${e.message}`;
+  }
 }
 function repLogout() {
   currentRep=null;
