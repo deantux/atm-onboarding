@@ -217,6 +217,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <span id="hdr-rep-name" style="font-size:11px;color:var(--sub);display:none"></span>
+    <button class="btn btn-dark" style="font-size:10px;padding:4px 10px;margin-left:12px;display:none" id="hdr-settings-btn" onclick="openPINModal()">⚙️ Settings</button>
     <span class="badge">Pay Your Way</span>
   </div>
 </header>
@@ -540,6 +541,7 @@ async function repLogin() {
   document.getElementById('rep-eyebrow').textContent=`Rep Portal · ${rep.branch}`;
   document.getElementById('hdr-rep-name').textContent=`Signed in: ${rep.name}`;
   document.getElementById('hdr-rep-name').style.display='inline';
+  document.getElementById('hdr-settings-btn').style.display='inline';
   loadApps();
 }
 function repLogout() {
@@ -550,6 +552,7 @@ function repLogout() {
   document.getElementById('r-email').value='';
   document.getElementById('r-pin').value='';
   document.getElementById('hdr-rep-name').style.display='none';
+  document.getElementById('hdr-settings-btn').style.display='none';
 }
 
 // ══════════════════════════════════════════════
@@ -1431,6 +1434,49 @@ document.addEventListener('DOMContentLoaded', function() {
   if (btnClient) btnClient.onclick = function(e) { e.preventDefault(); showTab('client'); };
   if (btnRep) btnRep.onclick = function(e) { e.preventDefault(); showTab('rep'); };
 })();
+
+// PIN CHANGE MODAL
+function openPINModal() {
+  document.getElementById('pin-modal').style.display='flex';
+  document.getElementById('pin-current').value='';
+  document.getElementById('pin-new').value='';
+  document.getElementById('pin-confirm').value='';
+  document.getElementById('pin-err').style.display='none';
+  document.getElementById('pin-success').style.display='none';
+}
+function closePINModal() { document.getElementById('pin-modal').style.display='none'; }
+async function changePIN() {
+  const current = document.getElementById('pin-current').value.trim();
+  const newPin = document.getElementById('pin-new').value.trim();
+  const confirm = document.getElementById('pin-confirm').value.trim();
+  const err = document.getElementById('pin-err');
+  const success = document.getElementById('pin-success');
+  err.style.display='none';success.style.display='none';
+  if (!current || !newPin || !confirm) { err.textContent='❌ All fields required';err.style.display='block';return; }
+  if (newPin.length < 4) { err.textContent='❌ New PIN must be at least 4 characters';err.style.display='block';return; }
+  if (newPin !== confirm) { err.textContent='❌ Confirm PIN must match';err.style.display='block';return; }
+  if (current === newPin) { err.textContent='❌ New PIN must differ from current';err.style.display='block';return; }
+  try {
+    const r = await fetch(`${SUPA}/functions/v1/rep-portal`, {method:'POST',headers:{'Content-Type':'application/json','apikey':SKEY},body:JSON.stringify({action:'change_pin',token:SESSION_TOKEN,current_pin:current,new_pin:newPin})});
+    const data = await r.json();
+    if (!data.success) { err.textContent=`❌ ${data.error}`;err.style.display='block';return; }
+    success.textContent='✅ PIN changed! Logging out...';success.style.display='block';
+    setTimeout(()=>{closePINModal();repLogout();},2000);
+  } catch(e) { err.textContent=`❌ ${e.message}`;err.style.display='block'; }
+}
+window.addEventListener('click',(e)=>{ if(e.target===document.getElementById('pin-modal'))closePINModal(); });
+
 </script>
+<!-- PIN Change Modal -->
+<div id="pin-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
+<div style="background:#112240;border:1px solid #1e3a5f;border-radius:12px;padding:28px;max-width:420px;width:90%">
+<h3 style="color:#00B4D8;margin:0 0 20px;font-size:18px">Change Your PIN</h3>
+<div style="margin-bottom:14px"><label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:5px">Current PIN</label><input type="password" id="pin-current" placeholder="Enter current PIN" style="width:100%;padding:8px 12px;border:1px solid #1e3a5f;border-radius:6px;background:#0a1628;color:#e2e8f0;box-sizing:border-box;font-size:14px"></div>
+<div style="margin-bottom:14px"><label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:5px">New PIN (4+ chars)</label><input type="password" id="pin-new" placeholder="Enter new PIN" style="width:100%;padding:8px 12px;border:1px solid #1e3a5f;border-radius:6px;background:#0a1628;color:#e2e8f0;box-sizing:border-box;font-size:14px"></div>
+<div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:5px">Confirm PIN</label><input type="password" id="pin-confirm" placeholder="Confirm new PIN" style="width:100%;padding:8px 12px;border:1px solid #1e3a5f;border-radius:6px;background:#0a1628;color:#e2e8f0;box-sizing:border-box;font-size:14px"></div>
+<div id="pin-err" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:10px;border-radius:6px;font-size:12px;margin-bottom:14px"></div>
+<div id="pin-success" style="display:none;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#22c55e;padding:10px;border-radius:6px;font-size:12px;margin-bottom:14px"></div>
+<div style="display:flex;gap:10px"><button class="btn btn-dark" onclick="closePINModal()" style="flex:1">Cancel</button><button class="btn btn-teal" onclick="changePIN()" style="flex:1">Update PIN</button></div>
+</div></div>
 </body>
 </html>
