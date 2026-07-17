@@ -1019,7 +1019,7 @@ async function createCRMLead(id, event) {
           'Company: ' + data.company + '\n' +
           'Reference: ' + data.reference + '\n' +
           'Lead ID: ' + data.lead_id + '\n\n' +
-          'View in Paycorp CRM: https://paycorpatm.crm4.dynamics.com'
+          'View in Paycorp CRM: ' + (data.crm_url || 'https://paycorpatm.crm4.dynamics.com')
         );
       } else {
         throw new Error(data.error);
