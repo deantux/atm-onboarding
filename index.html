@@ -677,7 +677,9 @@ function renderTable() {
 
   document.getElementById('app-tbody').innerHTML = APPS.map(a=>{
     let act='';
-    const crmBtn=`<button class="abtn g" onclick="createCRMLead('${a.id}',event)" style="font-size:11px;padding:4px 8px">↗ CRM</button>`;
+    const crmBtn=a.crmSynced||a.dynamics_lead_id
+      ? `<span style="font-size:11px;color:var(--green)">✓ Synced</span>`
+      : `<button class="abtn g" onclick="createCRMLead('${a.id}',event)" style="font-size:11px;padding:4px 8px">↗ CRM</button>`;
     if(a.status==='submitted') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">⚙ Review + Set Fees</button>${crmBtn}</div>`;
     else if(a.status==='rep_approved') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">✉ Send DocuSign</button>${crmBtn}</div>`;
     else if(a.status==='docusign_sent') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:#7aa4ff">⏳ Awaiting rep sig</span>${crmBtn}</div>`;
@@ -1012,7 +1014,11 @@ async function createCRMLead(id, event) {
       );
       const data = await res.json();
       if (data.success) {
-        if (a) a.status = 'crm_created';
+        if (a) {
+          a.crmSynced = true;
+          a.dynamics_lead_id = data.lead_id;
+          if (a.status === 'client_signed') a.status = 'crm_created';
+        }
         renderTable();
         alert(
           '✅ Lead ' + (data.action === 'updated' ? 'updated' : 'created') + ' in Dynamics 365!\n\n' +
@@ -1026,7 +1032,10 @@ async function createCRMLead(id, event) {
       }
     } else {
       // Demo mode
-      if (a) a.status = 'crm_created';
+      if (a) {
+        a.crmSynced = true;
+        if (a.status === 'client_signed') a.status = 'crm_created';
+      }
       renderTable();
       alert('✅ Demo mode — CRM Lead created successfully!');
     }
