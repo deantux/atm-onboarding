@@ -1005,11 +1005,12 @@ async function createCRMLead(id, event) {
             'apikey': 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d',
           },
           body: JSON.stringify({
-            application_id: id,
-            rep_name: currentRep?.name || 'ATM Solutions Rep',
-            rep_email: currentRep?.email || null,
-            token: SESSION_TOKEN,
-          }),
+  application_id: id,
+  rep_name: currentRep?.name || 'ATM Solutions Rep',
+  rep_email: currentRep?.email,
+  target_env: 'prod',
+  token: SESSION_TOKEN,
+}),
         }
       );
       const data = await res.json();
