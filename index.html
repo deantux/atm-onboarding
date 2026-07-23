@@ -491,7 +491,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
         <div class="field"><label>Contact Mobile</label><input type="text" id="ld-phone"/></div>
         <div class="field"><label>Contact Email</label><input type="email" id="ld-email"/></div>
         <div class="field"><label>Stage</label>
-          <select id="ld-stage"><option>Lead Captured</option><option>Client Contacted</option><option>Client Interested</option><option>Meeting scheduled</option><option>Client not interested</option></select>
+          <select id="ld-stage"><option>Lead Captured</option><option>Client Contacted</option><option>Client Interested</option><option>Meeting scheduled</option><option>Proposal Sent</option><option>Deal Signed</option><option>Client not interested</option></select>
         </div>
         <div class="field"><label>Source</label><input type="text" id="ld-source"/></div>
         <div class="field"><label>Province</label><input type="text" id="ld-province"/></div>
@@ -792,10 +792,10 @@ async function loadApps() {
 // ══════════════════════════════════════════════
 let LEADS = [];
 let CURRENT_LEAD_ID = null;
-const STAGES = ['Lead Captured','Client Contacted','Client Interested','Meeting scheduled','Client not interested'];
+const STAGES = ['Lead Captured','Client Contacted','Client Interested','Meeting scheduled','Proposal Sent','Deal Signed','Client not interested'];
 const STAGE_COLORS = {
   'Lead Captured':'#8FA3BF','Client Contacted':'#00B4D8','Client Interested':'#00C896',
-  'Meeting scheduled':'#F5A623','Client not interested':'#C8102E',
+  'Meeting scheduled':'#F5A623','Proposal Sent':'#9B6DFF','Deal Signed':'#00E676','Client not interested':'#C8102E',
 };
 
 function switchRepView(view) {
