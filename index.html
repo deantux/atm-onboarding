@@ -181,6 +181,7 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .activity-item{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:12px}
 .activity-type{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--teal);background:var(--tl);padding:2px 8px;border-radius:10px;margin-right:6px}
 .activity-meta{color:var(--muted);font-size:10px;margin-top:3px}
+.followup-item{background:rgba(245,166,35,.08);border:1px solid var(--orange);border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:12px}
 .tbl-hd{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .tbl-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--white)}
 table{width:100%;border-collapse:collapse}
@@ -402,6 +403,8 @@ tr:hover td{background:rgba(0,180,216,.02)}
       </div>
 
       <div id="view-pipeline" style="display:none">
+        <div class="stats" id="pipeline-stats" style="margin-bottom:16px"></div>
+        <div id="followup-banner"></div>
         <div class="kanban-toolbar">
           <div style="font-size:12px;color:var(--muted)" id="pipeline-count"></div>
           <button class="btn btn-teal" style="width:auto" onclick="openLeadModal(null)">+ New Lead</button>
@@ -494,6 +497,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
           <select id="ld-stage"><option>Lead Captured</option><option>Client Contacted</option><option>Client Interested</option><option>Meeting scheduled</option><option>Proposal Sent</option><option>Deal Signed</option><option>Client not interested</option></select>
         </div>
         <div class="field"><label>Source</label><input type="text" id="ld-source"/></div>
+        <div class="field"><label>Follow-up Date</label><input type="date" id="ld-followup"/></div>
         <div class="field"><label>Province</label><input type="text" id="ld-province"/></div>
         <div class="field"><label>Industry</label><input type="text" id="ld-industry"/></div>
         <div class="field span2"><label>Notes</label><textarea id="ld-notes" style="min-height:50px"></textarea></div>
@@ -533,6 +537,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
 
       <div class="btn-row">
         <button class="btn btn-dark" onclick="closeLeadModal()">Close</button>
+        <button class="btn btn-dark" id="ld-convert-btn" onclick="convertLeadToApplication()">🎯 Convert to Application</button>
         <button class="btn btn-teal" onclick="saveLeadDetail()">💾 Save Changes</button>
       </div>
     </div>
@@ -842,6 +847,11 @@ function renderKanban() {
           <span>${esc(l.contact_name||'—')}</span>
           <span class="kanban-card-rep">${esc((l.rep_name||'').split(' ')[0]||'')}</span>
         </div>
+        ${l.contact_phone ? `<div style="display:flex;gap:6px;margin-top:6px" onclick="event.stopPropagation()">
+          <a href="tel:${esc(l.contact_phone)}" class="btn btn-dark" style="padding:4px 8px;font-size:10px;width:auto">📞 Call</a>
+          <a href="https://wa.me/${esc(l.contact_phone.replace(/[^0-9]/g,''))}" target="_blank" class="btn btn-dark" style="padding:4px 8px;font-size:10px;width:auto">💬 WhatsApp</a>
+        </div>` : ''}
+        ${l.follow_up_date && new Date(l.follow_up_date) <= new Date() ? '<div style="margin-top:6px;font-size:10px;color:var(--orange)">⏰ Follow-up due</div>' : ''}
       </div>
     `).join('') : `<div class="kanban-empty">No leads</div>`;
     return `
@@ -854,6 +864,35 @@ function renderKanban() {
       </div>
     `;
   }).join('');
+  renderPipelineStats();
+  renderFollowupBanner();
+}
+
+function renderPipelineStats() {
+  const el = document.getElementById('pipeline-stats');
+  const active = LEADS.filter(l => l.stage !== 'Converted' && l.stage !== 'Client not interested');
+  const won = LEADS.filter(l => l.stage === 'Deal Signed' || l.stage === 'Converted').length;
+  const byRep = {};
+  active.forEach(l => { const n = (l.rep_name||'Unassigned').split(' ')[0]; byRep[n] = (byRep[n]||0)+1; });
+  const topRep = Object.entries(byRep).sort((a,b)=>b[1]-a[1])[0];
+  el.innerHTML = `
+    <div class="stat"><div class="stat-l">Active Leads</div><div class="stat-v">${active.length}</div></div>
+    <div class="stat"><div class="stat-l">Deals Signed</div><div class="stat-v g">${won}</div></div>
+    <div class="stat"><div class="stat-l">Not Interested</div><div class="stat-v">${LEADS.filter(l=>l.stage==='Client not interested').length}</div></div>
+    <div class="stat"><div class="stat-l">Top Rep</div><div class="stat-v t" style="font-size:16px">${topRep ? esc(topRep[0])+' ('+topRep[1]+')' : '—'}</div></div>
+  `;
+}
+
+function renderFollowupBanner() {
+  const el = document.getElementById('followup-banner');
+  const due = LEADS.filter(l => l.follow_up_date && new Date(l.follow_up_date) <= new Date() && l.stage!=='Converted' && l.stage!=='Client not interested');
+  if (!due.length) { el.innerHTML = ''; return; }
+  el.innerHTML = due.map(l => `
+    <div class="followup-item" onclick="openLeadModal('${l.id}')">
+      <span>⏰ <strong>${esc(l.company_name)}</strong> — follow-up was due ${new Date(l.follow_up_date).toLocaleDateString('en-ZA')}</span>
+      <span style="color:var(--muted)">${esc((l.rep_name||'').split(' ')[0]||'')}</span>
+    </div>
+  `).join('');
 }
 
 function esc(s) {
@@ -866,7 +905,7 @@ function closeNewLead() {
   document.getElementById('new-lead-modal').style.display='none';
   ['nl-company','nl-contact','nl-phone','nl-email','nl-source','nl-province','nl-industry','nl-notes'].forEach(id=>document.getElementById(id).value='');
 }
-async function createLead() {
+async function createLead(force) {
   const company = document.getElementById('nl-company').value.trim();
   if (!company) { alert('Company name is required'); return; }
   const fields = {
@@ -880,12 +919,28 @@ async function createLead() {
     notes: document.getElementById('nl-notes').value,
   };
   try {
-    const j = await crmFetch({action:'create', fields});
+    const r = await fetch(`${SUPA}/functions/v1/crm-leads`, {
+      method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+      body: JSON.stringify({action:'create', fields, force: !!force, token: SESSION_TOKEN})
+    });
+    const j = await r.json();
+
+    if (j.duplicate_warning) {
+      const names = [
+        ...(j.matches.leads||[]).map(m=>`Lead: ${m.company_name} (${m.stage}, ${m.rep_name||'—'})`),
+        ...(j.matches.applications||[]).map(m=>`Application: ${m.trading_name} (${m.status})`),
+      ].join('\n');
+      if (confirm(`Possible duplicate found:\n\n${names}\n\nCreate this lead anyway?`)) createLead(true);
+      return;
+    }
+    if (!j.success) {
+      if (r.status===401){ alert('Session expired — please log in again.'); repLogout(); return; }
+      throw new Error(j.error||'Request failed');
+    }
+
     closeNewLead();
     await loadLeads();
-    if (j.sync && j.sync.success === false) {
-      console.warn('CRM sync issue on new lead:', j.sync);
-    }
+    if (j.sync && j.sync.success === false) console.warn('CRM sync issue on new lead:', j.sync);
   } catch(e) {
     alert('❌ Could not create lead: ' + e.message);
   }
@@ -905,6 +960,15 @@ async function openLeadModal(id) {
   document.getElementById('ld-email').value = lead.contact_email||'';
   document.getElementById('ld-stage').value = lead.stage||'Lead Captured';
   document.getElementById('ld-source').value = lead.source||'';
+  document.getElementById('ld-followup').value = lead.follow_up_date ? lead.follow_up_date.slice(0,10) : '';
+  const convertBtn = document.getElementById('ld-convert-btn');
+  if (lead.converted_application_id) {
+    convertBtn.textContent = '✅ Already Converted';
+    convertBtn.disabled = true;
+  } else {
+    convertBtn.textContent = '🎯 Convert to Application';
+    convertBtn.disabled = false;
+  }
   document.getElementById('ld-province').value = lead.province||'';
   document.getElementById('ld-industry').value = lead.industry||'';
   document.getElementById('ld-notes').value = lead.notes||'';
@@ -933,6 +997,7 @@ async function saveLeadDetail() {
     contact_email: document.getElementById('ld-email').value,
     stage: document.getElementById('ld-stage').value,
     source: document.getElementById('ld-source').value,
+    follow_up_date: document.getElementById('ld-followup').value || null,
     province: document.getElementById('ld-province').value,
     industry: document.getElementById('ld-industry').value,
     notes: document.getElementById('ld-notes').value,
@@ -950,6 +1015,23 @@ async function saveLeadDetail() {
     await loadLeads();
   } catch(e) {
     alert('❌ Could not save: ' + e.message);
+  }
+}
+
+async function convertLeadToApplication() {
+  if (!CURRENT_LEAD_ID) return;
+  if (!confirm('Convert this lead into a draft Site Application? You\'ll complete signatory and banking details afterward via the normal Application flow.')) return;
+  try {
+    const j = await crmFetch({action:'convert_to_application', lead_id: CURRENT_LEAD_ID});
+    closeLeadModal();
+    await loadLeads();
+    switchRepView('apps');
+    document.getElementById('subtab-apps').classList.add('active');
+    document.getElementById('subtab-pipeline').classList.remove('active');
+    await loadApps();
+    alert(`✅ Draft application created${j.reference_number ? ' — ' + j.reference_number : ''}. Find it in Site Applications to complete the rest.`);
+  } catch(e) {
+    alert('❌ Could not convert: ' + e.message);
   }
 }
 
