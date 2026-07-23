@@ -155,6 +155,32 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 
 /* TABLE */
 .tbl{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
+
+/* SUB-TABS (Applications / Pipeline toggle) */
+.sub-tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:20px;width:fit-content;gap:2px}
+.sub-tab-btn{padding:8px 20px;border-radius:6px;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--sub);background:transparent}
+.sub-tab-btn.active{background:var(--teal);color:var(--navy)}
+
+/* KANBAN */
+.kanban-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.kanban-wrap{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
+.kanban-col{background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:250px;max-width:250px;flex-shrink:0;display:flex;flex-direction:column;max-height:calc(100vh - 260px)}
+.kanban-col-hd{padding:12px 14px;border-bottom:2px solid var(--stage-color,var(--teal));display:flex;justify-content:space-between;align-items:center}
+.kanban-col-title{font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:.5px}
+.kanban-col-count{font-size:11px;color:var(--muted);background:var(--card2);padding:2px 8px;border-radius:10px}
+.kanban-cards{padding:10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+.kanban-card{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;cursor:pointer;transition:.15s}
+.kanban-card:hover{border-color:var(--teal);transform:translateY(-1px)}
+.kanban-card-co{font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px}
+.kanban-card-meta{font-size:11px;color:var(--sub);display:flex;justify-content:space-between;align-items:center}
+.kanban-card-rep{color:var(--teal)}
+.kanban-empty{padding:20px 10px;text-align:center;color:var(--muted);font-size:11px}
+
+/* ACTIVITY LOG */
+.activity-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;margin-top:10px}
+.activity-item{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:12px}
+.activity-type{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--teal);background:var(--tl);padding:2px 8px;border-radius:10px;margin-right:6px}
+.activity-meta{color:var(--muted);font-size:10px;margin-top:3px}
 .tbl-hd{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .tbl-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--white)}
 table{width:100%;border-collapse:collapse}
@@ -343,29 +369,44 @@ tr:hover td{background:rgba(0,180,216,.02)}
         <div class="stat"><div class="stat-l">Signed</div><div class="stat-v g" id="s-sgn">0</div></div>
       </div>
 
-      <div id="link-panel" class="sec" style="display:none;margin-bottom:16px">
-        <div class="sec-hd"><div class="sec-ico">🔗</div><div><div class="sec-title">Client Application Link</div><div class="sec-desc">Share via WhatsApp or email — expires 7 days</div></div></div>
-        <div class="sec-body">
-          <div class="link-box" id="link-val"></div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-            <button class="btn btn-dark" onclick="copyLink()">📋 Copy</button>
-            <button class="btn btn-dark" id="wa-link">💬 WhatsApp</button>
-            <button class="btn btn-dark" id="em-link">✉️ Email</button>
-            <button class="btn btn-dark" style="margin-left:auto" onclick="document.getElementById('link-panel').style.display='none'">✕</button>
+      <div class="sub-tabs">
+        <button class="sub-tab-btn active" id="subtab-apps" type="button" onclick="switchRepView('apps')">Site Applications</button>
+        <button class="sub-tab-btn" id="subtab-pipeline" type="button" onclick="switchRepView('pipeline')">Pipeline</button>
+      </div>
+
+      <div id="view-applications">
+        <div id="link-panel" class="sec" style="display:none;margin-bottom:16px">
+          <div class="sec-hd"><div class="sec-ico">🔗</div><div><div class="sec-title">Client Application Link</div><div class="sec-desc">Share via WhatsApp or email — expires 7 days</div></div></div>
+          <div class="sec-body">
+            <div class="link-box" id="link-val"></div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+              <button class="btn btn-dark" onclick="copyLink()">📋 Copy</button>
+              <button class="btn btn-dark" id="wa-link">💬 WhatsApp</button>
+              <button class="btn btn-dark" id="em-link">✉️ Email</button>
+              <button class="btn btn-dark" style="margin-left:auto" onclick="document.getElementById('link-panel').style.display='none'">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tbl">
+          <div class="tbl-hd"><div class="tbl-title">Site Applications</div><span id="app-count" style="font-size:11px;color:var(--muted)"></span></div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr>
+                <th>Reference</th><th>Merchant</th><th>Province</th><th>Fee p/m</th><th>Status</th><th>Action</th>
+              </tr></thead>
+              <tbody id="app-tbody"></tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      <div class="tbl">
-        <div class="tbl-hd"><div class="tbl-title">Site Applications</div><span id="app-count" style="font-size:11px;color:var(--muted)"></span></div>
-        <div style="overflow-x:auto">
-          <table>
-            <thead><tr>
-              <th>Reference</th><th>Merchant</th><th>Province</th><th>Fee p/m</th><th>Status</th><th>Action</th>
-            </tr></thead>
-            <tbody id="app-tbody"></tbody>
-          </table>
+      <div id="view-pipeline" style="display:none">
+        <div class="kanban-toolbar">
+          <div style="font-size:12px;color:var(--muted)" id="pipeline-count"></div>
+          <button class="btn btn-teal" style="width:auto" onclick="openLeadModal(null)">+ New Lead</button>
         </div>
+        <div class="kanban-wrap" id="kanban-wrap"></div>
       </div>
     </div>
   </div>
@@ -403,6 +444,96 @@ tr:hover td{background:rgba(0,180,216,.02)}
       <div class="btn-row">
         <button class="btn btn-dark" onclick="closeComm()">Cancel</button>
         <button class="btn btn-green" id="comm-save-btn" onclick="saveAndOpenDocuSign()">✅ Save &amp; Open DocuSign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW LEAD MODAL -->
+<div class="overlay" id="new-lead-modal" style="display:none" onclick="if(event.target===this)closeNewLead()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div><div class="modal-title">+ New Lead</div></div>
+      <button class="close-btn" onclick="closeNewLead()">✕ Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid2" style="gap:12px">
+        <div class="field span2"><label>Company Name <span class="req">*</span></label><input type="text" id="nl-company" placeholder="e.g. Shell Randburg"/></div>
+        <div class="field"><label>Contact Name</label><input type="text" id="nl-contact"/></div>
+        <div class="field"><label>Contact Mobile</label><input type="text" id="nl-phone"/></div>
+        <div class="field"><label>Contact Email</label><input type="email" id="nl-email"/></div>
+        <div class="field"><label>Source</label><select id="nl-source"><option value="">Select...</option><option>Cold call</option><option>Site visit</option><option>Referral</option><option>Web enquiry</option><option>Trade show</option><option>Other</option></select></div>
+        <div class="field"><label>Province</label>
+          <select id="nl-province"><option value="">Select...</option><option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option><option>Eastern Cape</option><option>Free State</option><option>Mpumalanga</option><option>Limpopo</option><option>North West</option><option>Northern Cape</option></select>
+        </div>
+        <div class="field"><label>Industry</label><input type="text" id="nl-industry" placeholder="e.g. Petroleum / Fuel, Retail"/></div>
+        <div class="field span2"><label>Notes</label><textarea id="nl-notes" style="min-height:50px"></textarea></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-dark" onclick="closeNewLead()">Cancel</button>
+        <button class="btn btn-teal" onclick="createLead()">Create Lead</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEAD DETAIL MODAL -->
+<div class="overlay" id="lead-modal" style="display:none" onclick="if(event.target===this)closeLeadModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div><div class="modal-title" id="ld-title">Lead</div><div style="font-size:11px;color:var(--sub);margin-top:2px" id="ld-sub"></div></div>
+      <button class="close-btn" onclick="closeLeadModal()">✕ Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid2" style="gap:12px">
+        <div class="field span2"><label>Company Name</label><input type="text" id="ld-company"/></div>
+        <div class="field"><label>Contact Name</label><input type="text" id="ld-contact"/></div>
+        <div class="field"><label>Contact Mobile</label><input type="text" id="ld-phone"/></div>
+        <div class="field"><label>Contact Email</label><input type="email" id="ld-email"/></div>
+        <div class="field"><label>Stage</label>
+          <select id="ld-stage"><option>Lead Captured</option><option>Client Contacted</option><option>Client Interested</option><option>Meeting scheduled</option><option>Client not interested</option></select>
+        </div>
+        <div class="field"><label>Source</label><input type="text" id="ld-source"/></div>
+        <div class="field"><label>Province</label><input type="text" id="ld-province"/></div>
+        <div class="field"><label>Industry</label><input type="text" id="ld-industry"/></div>
+        <div class="field span2"><label>Notes</label><textarea id="ld-notes" style="min-height:50px"></textarea></div>
+      </div>
+
+      <div class="sec" style="margin-top:16px">
+        <div class="sec-hd"><div class="sec-ico">💰</div><div><div class="sec-title">Proposal Pricing</div><div class="sec-desc">Standard rate card — override if a custom deal's been negotiated</div></div></div>
+        <div class="sec-body">
+          <div class="grid2" style="gap:12px">
+            <div class="field"><label>Client's Preferred Install Type</label>
+              <select id="ld-preferred"><option value="">Not decided yet</option><option>Standard slimline wrap</option><option>Illuminated shroud</option><option>Through-the-wall wing</option><option>Through-the-wall rotational</option></select>
+            </div>
+            <div class="field"></div>
+            <div class="field"><label>Standard Slimline Wrap</label><div class="money"><span class="money-sym">R</span><input type="number" id="ld-price-standard"/></div></div>
+            <div class="field"><label>Illuminated Shroud</label><div class="money"><span class="money-sym">R</span><input type="number" id="ld-price-illuminated"/></div></div>
+            <div class="field"><label>Through-the-Wall Wing</label><div class="money"><span class="money-sym">R</span><input type="number" id="ld-price-wing"/></div></div>
+            <div class="field"><label>Through-the-Wall Rotational</label><div class="money"><span class="money-sym">R</span><input type="number" id="ld-price-rotational"/></div></div>
+            <div class="field"><label>Cash Deposit Fee (per R100)</label><div class="money"><span class="money-sym">R</span><input type="number" id="ld-cdf" step="0.01"/></div></div>
+            <div class="field"><label>Rebate per Withdrawal</label><div class="money"><span class="money-sym">R</span><input type="number" id="ld-rebate" step="0.01"/></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" style="margin-top:16px">
+        <div class="sec-hd"><div class="sec-ico">📋</div><div><div class="sec-title">Activity Log</div></div></div>
+        <div class="sec-body">
+          <div class="grid2" style="gap:8px">
+            <div class="field"><label>Type</label>
+              <select id="act-type"><option value="call">Call</option><option value="email">Email</option><option value="whatsapp">WhatsApp</option><option value="meeting">Meeting</option><option value="site">Site Visit</option><option value="proposal">Proposal Sent</option><option value="note">Note</option></select>
+            </div>
+            <div class="field"><label>Notes</label><input type="text" id="act-notes" placeholder="What happened..."/></div>
+          </div>
+          <button class="btn btn-dark" style="margin-top:8px;width:auto" onclick="addActivity()">+ Log Activity</button>
+          <div class="activity-list" id="activity-list"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-dark" onclick="closeLeadModal()">Close</button>
+        <button class="btn btn-teal" onclick="saveLeadDetail()">💾 Save Changes</button>
       </div>
     </div>
   </div>
@@ -654,6 +785,204 @@ async function loadApps() {
     ];
   }
   renderTable();
+}
+
+// ══════════════════════════════════════════════
+// PIPELINE (MINI-CRM / KANBAN)
+// ══════════════════════════════════════════════
+let LEADS = [];
+let CURRENT_LEAD_ID = null;
+const STAGES = ['Lead Captured','Client Contacted','Client Interested','Meeting scheduled','Client not interested'];
+const STAGE_COLORS = {
+  'Lead Captured':'#8FA3BF','Client Contacted':'#00B4D8','Client Interested':'#00C896',
+  'Meeting scheduled':'#F5A623','Client not interested':'#C8102E',
+};
+
+function switchRepView(view) {
+  document.getElementById('subtab-apps').classList.toggle('active', view==='apps');
+  document.getElementById('subtab-pipeline').classList.toggle('active', view==='pipeline');
+  document.getElementById('view-applications').style.display = view==='apps' ? 'block' : 'none';
+  document.getElementById('view-pipeline').style.display = view==='pipeline' ? 'block' : 'none';
+  if (view==='pipeline' && LEADS.length===0) loadLeads();
+}
+
+async function crmFetch(body) {
+  const r = await fetch(`${SUPA}/functions/v1/crm-leads`, {
+    method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+    body: JSON.stringify({...body, token: SESSION_TOKEN})
+  });
+  const j = await r.json();
+  if (!j.success) {
+    if (r.status===401){ alert('Session expired — please log in again.'); repLogout(); }
+    throw new Error(j.error||'Request failed');
+  }
+  return j;
+}
+
+async function loadLeads() {
+  try {
+    const j = await crmFetch({action:'list'});
+    LEADS = j.leads || [];
+  } catch(e) {
+    LEADS = [];
+    console.error('loadLeads failed', e);
+  }
+  renderKanban();
+}
+
+function renderKanban() {
+  const wrap = document.getElementById('kanban-wrap');
+  document.getElementById('pipeline-count').textContent = `${LEADS.length} lead${LEADS.length===1?'':'s'} in pipeline`;
+  wrap.innerHTML = STAGES.map(stage => {
+    const cards = LEADS.filter(l => l.stage === stage);
+    const cardHtml = cards.length ? cards.map(l => `
+      <div class="kanban-card" onclick="openLeadModal('${l.id}')">
+        <div class="kanban-card-co">${esc(l.company_name)}</div>
+        <div class="kanban-card-meta">
+          <span>${esc(l.contact_name||'—')}</span>
+          <span class="kanban-card-rep">${esc((l.rep_name||'').split(' ')[0]||'')}</span>
+        </div>
+      </div>
+    `).join('') : `<div class="kanban-empty">No leads</div>`;
+    return `
+      <div class="kanban-col" style="--stage-color:${STAGE_COLORS[stage]}">
+        <div class="kanban-col-hd">
+          <div class="kanban-col-title">${stage}</div>
+          <div class="kanban-col-count">${cards.length}</div>
+        </div>
+        <div class="kanban-cards">${cardHtml}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// ---- New Lead ----
+function openNewLead() { document.getElementById('new-lead-modal').style.display='flex'; }
+function closeNewLead() {
+  document.getElementById('new-lead-modal').style.display='none';
+  ['nl-company','nl-contact','nl-phone','nl-email','nl-source','nl-province','nl-industry','nl-notes'].forEach(id=>document.getElementById(id).value='');
+}
+async function createLead() {
+  const company = document.getElementById('nl-company').value.trim();
+  if (!company) { alert('Company name is required'); return; }
+  const fields = {
+    company_name: company,
+    contact_name: document.getElementById('nl-contact').value,
+    contact_phone: document.getElementById('nl-phone').value,
+    contact_email: document.getElementById('nl-email').value,
+    source: document.getElementById('nl-source').value,
+    province: document.getElementById('nl-province').value,
+    industry: document.getElementById('nl-industry').value,
+    notes: document.getElementById('nl-notes').value,
+  };
+  try {
+    const j = await crmFetch({action:'create', fields});
+    closeNewLead();
+    await loadLeads();
+    if (j.sync && j.sync.success === false) {
+      console.warn('CRM sync issue on new lead:', j.sync);
+    }
+  } catch(e) {
+    alert('❌ Could not create lead: ' + e.message);
+  }
+}
+
+// ---- Lead Detail ----
+async function openLeadModal(id) {
+  if (id === null) { openNewLead(); return; }
+  CURRENT_LEAD_ID = id;
+  const lead = LEADS.find(l => l.id === id);
+  if (!lead) return;
+  document.getElementById('ld-title').textContent = lead.company_name;
+  document.getElementById('ld-sub').textContent = `Rep: ${lead.rep_name||'—'} · Created ${new Date(lead.created_at).toLocaleDateString('en-ZA')}`;
+  document.getElementById('ld-company').value = lead.company_name||'';
+  document.getElementById('ld-contact').value = lead.contact_name||'';
+  document.getElementById('ld-phone').value = lead.contact_phone||'';
+  document.getElementById('ld-email').value = lead.contact_email||'';
+  document.getElementById('ld-stage').value = lead.stage||'Lead Captured';
+  document.getElementById('ld-source').value = lead.source||'';
+  document.getElementById('ld-province').value = lead.province||'';
+  document.getElementById('ld-industry').value = lead.industry||'';
+  document.getElementById('ld-notes').value = lead.notes||'';
+  document.getElementById('ld-preferred').value = lead.preferred_install_type||'';
+  document.getElementById('ld-price-standard').value = lead.price_standard ?? 7260;
+  document.getElementById('ld-price-illuminated').value = lead.price_illuminated ?? 7660;
+  document.getElementById('ld-price-wing').value = lead.price_wing ?? 7660;
+  document.getElementById('ld-price-rotational').value = lead.price_rotational ?? 8660;
+  document.getElementById('ld-cdf').value = lead.cash_deposit_fee ?? 0.22;
+  document.getElementById('ld-rebate').value = lead.rebate_rate ?? 0.50;
+  document.getElementById('lead-modal').style.display = 'flex';
+  loadActivities(id);
+}
+
+function closeLeadModal() {
+  document.getElementById('lead-modal').style.display = 'none';
+  CURRENT_LEAD_ID = null;
+}
+
+async function saveLeadDetail() {
+  if (!CURRENT_LEAD_ID) return;
+  const fields = {
+    company_name: document.getElementById('ld-company').value,
+    contact_name: document.getElementById('ld-contact').value,
+    contact_phone: document.getElementById('ld-phone').value,
+    contact_email: document.getElementById('ld-email').value,
+    stage: document.getElementById('ld-stage').value,
+    source: document.getElementById('ld-source').value,
+    province: document.getElementById('ld-province').value,
+    industry: document.getElementById('ld-industry').value,
+    notes: document.getElementById('ld-notes').value,
+    preferred_install_type: document.getElementById('ld-preferred').value || null,
+    price_standard: Number(document.getElementById('ld-price-standard').value)||null,
+    price_illuminated: Number(document.getElementById('ld-price-illuminated').value)||null,
+    price_wing: Number(document.getElementById('ld-price-wing').value)||null,
+    price_rotational: Number(document.getElementById('ld-price-rotational').value)||null,
+    cash_deposit_fee: Number(document.getElementById('ld-cdf').value)||null,
+    rebate_rate: Number(document.getElementById('ld-rebate').value)||null,
+  };
+  try {
+    await crmFetch({action:'update', lead_id: CURRENT_LEAD_ID, fields});
+    closeLeadModal();
+    await loadLeads();
+  } catch(e) {
+    alert('❌ Could not save: ' + e.message);
+  }
+}
+
+// ---- Activities ----
+async function loadActivities(leadId) {
+  const list = document.getElementById('activity-list');
+  list.innerHTML = '<div class="kanban-empty">Loading...</div>';
+  try {
+    const j = await crmFetch({action:'list_activities', lead_id: leadId});
+    const acts = j.activities || [];
+    if (!acts.length) { list.innerHTML = '<div class="kanban-empty">No activity logged yet</div>'; return; }
+    list.innerHTML = acts.map(a => `
+      <div class="activity-item">
+        <span class="activity-type">${a.activity_type}</span>${esc(a.notes||'')}
+        <div class="activity-meta">${esc(a.rep_name||'')} · ${new Date(a.activity_date).toLocaleString('en-ZA')}</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="kanban-empty">Could not load activity</div>';
+  }
+}
+
+async function addActivity() {
+  if (!CURRENT_LEAD_ID) return;
+  const activity_type = document.getElementById('act-type').value;
+  const notes = document.getElementById('act-notes').value;
+  try {
+    await crmFetch({action:'add_activity', lead_id: CURRENT_LEAD_ID, activity_type, notes});
+    document.getElementById('act-notes').value = '';
+    loadActivities(CURRENT_LEAD_ID);
+  } catch(e) {
+    alert('❌ Could not log activity: ' + e.message);
+  }
 }
 
 // ══════════════════════════════════════════════
