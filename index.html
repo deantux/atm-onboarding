@@ -797,6 +797,7 @@ async function loadApps() {
 // ══════════════════════════════════════════════
 let LEADS = [];
 let CURRENT_LEAD_ID = null;
+let CONVERTING_LEAD_ID = null; // set when the rep is filling in the Client Application on behalf of a lead
 const STAGES = ['Lead Captured','Client Contacted','Client Interested','Meeting scheduled','Proposal Sent','Deal Signed','Client not interested'];
 const STAGE_COLORS = {
   'Lead Captured':'#8FA3BF','Client Contacted':'#00B4D8','Client Interested':'#00C896',
@@ -1018,21 +1019,28 @@ async function saveLeadDetail() {
   }
 }
 
-async function convertLeadToApplication() {
+function convertLeadToApplication() {
   if (!CURRENT_LEAD_ID) return;
-  if (!confirm('Convert this lead into a draft Site Application? You\'ll complete signatory and banking details afterward via the normal Application flow.')) return;
-  try {
-    const j = await crmFetch({action:'convert_to_application', lead_id: CURRENT_LEAD_ID});
-    closeLeadModal();
-    await loadLeads();
-    switchRepView('apps');
-    document.getElementById('subtab-apps').classList.add('active');
-    document.getElementById('subtab-pipeline').classList.remove('active');
-    await loadApps();
-    alert(`✅ Draft application created${j.reference_number ? ' — ' + j.reference_number : ''}. Find it in Site Applications to complete the rest.`);
-  } catch(e) {
-    alert('❌ Could not convert: ' + e.message);
-  }
+  const lead = LEADS.find(l => l.id === CURRENT_LEAD_ID);
+  if (!lead) return;
+  if (!confirm(`Fill in the Smart ATM application for ${lead.company_name} now? You'll enter the code, then complete signatory and banking details as usual.`)) return;
+
+  // Prefill everything we already know
+  fv.trading_name = lead.company_name || '';
+  fv.registered_name = lead.company_name || '';
+  fv.province = lead.province || '';
+  fv.nature_of_business = lead.industry || '';
+  const nameParts = (lead.contact_name||'').split(' ');
+  fv.con_fname = nameParts[0] || '';
+  fv.con_lname = nameParts.slice(1).join(' ') || '';
+  fv.con_email = lead.contact_email || '';
+  fv.con_mobile = lead.contact_phone || '';
+
+  CONVERTING_LEAD_ID = CURRENT_LEAD_ID;
+  closeLeadModal();
+  showTab('client');
+  currentStep = 1;
+  alert(`Fields pre-filled from ${lead.company_name}. Enter your access code and continue from Step 1 to complete the rest.`);
 }
 
 // ---- Activities ----
@@ -1769,6 +1777,16 @@ async function submitForm() {
     const sj = await sr.json();
     if(!sj.success) throw new Error(sj.error);
     const ref = sj.reference_number || 'ATM-2026-PENDING';
+
+    if (CONVERTING_LEAD_ID) {
+      try {
+        await fetch(`${SUPA}/functions/v1/crm-leads`, {
+          method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+          body: JSON.stringify({action:'mark_converted', lead_id: CONVERTING_LEAD_ID, application_id: sj.id, token: SESSION_TOKEN})
+        });
+      } catch(e) { console.warn('Could not link converted lead (non-fatal):', e); }
+      CONVERTING_LEAD_ID = null;
+    }
 
     showSuccess(ref);
   } catch(e) {
