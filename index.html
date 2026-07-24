@@ -161,20 +161,24 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .sub-tab-btn{padding:8px 20px;border-radius:6px;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--sub);background:transparent}
 .sub-tab-btn.active{background:var(--teal);color:var(--navy)}
 
-/* KANBAN */
+/* KANBAN — vertical accordion, no horizontal scroll */
 .kanban-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-.kanban-wrap{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
-.kanban-col{background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:250px;max-width:250px;flex-shrink:0;display:flex;flex-direction:column;max-height:calc(100vh - 260px)}
-.kanban-col-hd{padding:12px 14px;border-bottom:2px solid var(--stage-color,var(--teal));display:flex;justify-content:space-between;align-items:center}
-.kanban-col-title{font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:.5px}
-.kanban-col-count{font-size:11px;color:var(--muted);background:var(--card2);padding:2px 8px;border-radius:10px}
-.kanban-cards{padding:10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+.stage-list{display:flex;flex-direction:column;gap:6px}
+.stage-row{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--stage-color,var(--teal));border-radius:8px;overflow:hidden}
+.stage-row-hd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer}
+.stage-row-title{font-size:13px;font-weight:700;color:var(--white)}
+.stage-row-right{display:flex;align-items:center;gap:10px}
+.stage-row-count{font-size:11px;color:var(--muted);background:var(--card2);padding:2px 9px;border-radius:10px;min-width:22px;text-align:center}
+.stage-row-chevron{font-size:11px;color:var(--muted);transition:transform .15s}
+.stage-row.open .stage-row-chevron{transform:rotate(90deg)}
+.stage-row-body{display:none;padding:0 12px 12px;flex-direction:column;gap:8px}
+.stage-row.open .stage-row-body{display:flex}
 .kanban-card{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;cursor:pointer;transition:.15s}
-.kanban-card:hover{border-color:var(--teal);transform:translateY(-1px)}
+.kanban-card:hover{border-color:var(--teal)}
 .kanban-card-co{font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px}
 .kanban-card-meta{font-size:11px;color:var(--sub);display:flex;justify-content:space-between;align-items:center}
 .kanban-card-rep{color:var(--teal)}
-.kanban-empty{padding:20px 10px;text-align:center;color:var(--muted);font-size:11px}
+.kanban-empty{padding:10px;text-align:center;color:var(--muted);font-size:11px}
 
 /* ACTIVITY LOG */
 .activity-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;margin-top:10px}
@@ -409,7 +413,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
           <div style="font-size:12px;color:var(--muted)" id="pipeline-count"></div>
           <button class="btn btn-teal" style="width:auto" onclick="openLeadModal(null)">+ New Lead</button>
         </div>
-        <div class="kanban-wrap" id="kanban-wrap"></div>
+        <div class="stage-list" id="kanban-wrap"></div>
       </div>
     </div>
   </div>
@@ -836,11 +840,20 @@ async function loadLeads() {
   renderKanban();
 }
 
+let EXPANDED_STAGES = new Set();
+
+function toggleStage(stage) {
+  if (EXPANDED_STAGES.has(stage)) EXPANDED_STAGES.delete(stage);
+  else EXPANDED_STAGES.add(stage);
+  renderKanban();
+}
+
 function renderKanban() {
   const wrap = document.getElementById('kanban-wrap');
-  document.getElementById('pipeline-count').textContent = `${LEADS.length} lead${LEADS.length===1?'':'s'} in pipeline`;
+  document.getElementById('pipeline-count').textContent = `${LEADS.length} lead${LEADS.length===1?'':'s'} in pipeline — tap a stage to view`;
   wrap.innerHTML = STAGES.map(stage => {
     const cards = LEADS.filter(l => l.stage === stage);
+    const isOpen = EXPANDED_STAGES.has(stage);
     const cardHtml = cards.length ? cards.map(l => `
       <div class="kanban-card" onclick="openLeadModal('${l.id}')">
         <div class="kanban-card-co">${esc(l.company_name)}</div>
@@ -854,14 +867,17 @@ function renderKanban() {
         </div>` : ''}
         ${l.follow_up_date && new Date(l.follow_up_date) <= new Date() ? '<div style="margin-top:6px;font-size:10px;color:var(--orange)">⏰ Follow-up due</div>' : ''}
       </div>
-    `).join('') : `<div class="kanban-empty">No leads</div>`;
+    `).join('') : `<div class="kanban-empty">No leads in this stage</div>`;
     return `
-      <div class="kanban-col" style="--stage-color:${STAGE_COLORS[stage]}">
-        <div class="kanban-col-hd">
-          <div class="kanban-col-title">${stage}</div>
-          <div class="kanban-col-count">${cards.length}</div>
+      <div class="stage-row ${isOpen?'open':''}" style="--stage-color:${STAGE_COLORS[stage]}">
+        <div class="stage-row-hd" onclick="toggleStage('${stage}')">
+          <div class="stage-row-title">${stage}</div>
+          <div class="stage-row-right">
+            <div class="stage-row-count">${cards.length}</div>
+            <div class="stage-row-chevron">▶</div>
+          </div>
         </div>
-        <div class="kanban-cards">${cardHtml}</div>
+        <div class="stage-row-body">${cardHtml}</div>
       </div>
     `;
   }).join('');
