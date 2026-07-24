@@ -1115,7 +1115,8 @@ function renderTable() {
     const crmBtn=a.crmSynced||a.dynamics_lead_id
       ? `<span style="font-size:11px;color:var(--green)">✓ Synced</span>`
       : `<button class="abtn g" onclick="createCRMLead('${a.id}',event)" style="font-size:11px;padding:4px 8px">↗ CRM</button>`;
-    if(a.status==='submitted') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">⚙ Review + Set Fees</button>${crmBtn}</div>`;
+    if(a.status==='draft') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:var(--muted)">📝 Incomplete</span><button class="abtn t" onclick="deleteDraftApp('${a.id}')">🗑 Delete Draft</button></div>`;
+    else if(a.status==='submitted') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">⚙ Review + Set Fees</button>${crmBtn}</div>`;
     else if(a.status==='rep_approved') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">✉ Send DocuSign</button>${crmBtn}</div>`;
     else if(a.status==='docusign_sent') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:#7aa4ff">⏳ Awaiting rep sig</span>${crmBtn}</div>`;
     else if(a.status==='rep_signed') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:var(--orange)">⏳ Awaiting merchant</span>${crmBtn}</div>`;
@@ -1420,6 +1421,21 @@ function dataRow(label, value) {
     <span style="font-size:10px;font-weight:600;color:#4A6080;text-transform:uppercase;letter-spacing:.4px;min-width:140px;padding-top:2px">${label}</span>
     <span style="color:${value?'#E8EDF5':'#4A6080'};font-style:${value?'normal':'italic'};text-align:right">${value||'Not provided'}</span>
   </div>`;
+}
+
+async function deleteDraftApp(id) {
+  if (!confirm('Delete this incomplete draft application? This cannot be undone.')) return;
+  try {
+    const r = await fetch(`${SUPA}/functions/v1/rep-portal`, {
+      method:'POST', headers:{'Content-Type':'application/json','apikey':SKEY},
+      body: JSON.stringify({action:'delete_draft', application_id:id, token: SESSION_TOKEN})
+    });
+    const j = await r.json();
+    if (!j.success) throw new Error(j.error||'Delete failed');
+    await loadApps();
+  } catch(e) {
+    alert('❌ Could not delete draft: ' + e.message);
+  }
 }
 
 async function createCRMLead(id, event) {
