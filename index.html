@@ -399,7 +399,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
           <div style="overflow-x:auto">
             <table>
               <thead><tr>
-                <th>Reference</th><th>Merchant</th><th>Province</th><th>Fee p/m</th><th>Status</th><th>Action</th>
+                <th>Reference</th><th>Merchant</th><th>Province</th><th>Fee p/m</th><th>Date</th><th>Status</th><th>Action</th>
               </tr></thead>
               <tbody id="app-tbody"></tbody>
             </table>
@@ -781,6 +781,8 @@ async function loadApps() {
         status:a.status||'submitted',
         email:a.signatory_email||'',
         fee:a.service_fee||null,
+        submitted_at:a.submitted_at||a.created_at||null,
+        crmSynced:!!(a.dynamics_lead_id_prod||a.dynamics_lead_id),
       }));
     } else {
       // Demo data fallback
@@ -1129,6 +1131,7 @@ function renderTable() {
       <td><div style="font-weight:600">${a.merchant}</div><div style="font-size:11px;color:var(--muted)">${a.nature}</div></td>
       <td style="color:var(--sub);font-size:12px">${a.province}</td>
       <td>${fee}</td>
+      <td style="font-size:11px;color:var(--sub);white-space:nowrap">${a.submitted_at ? `<div>${new Date(a.submitted_at).toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'})}</div><div style="color:var(--muted);font-size:10px">${new Date(a.submitted_at).toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'})}</div>` : '—'}</td>
       <td>${STATUS[a.status]||a.status}</td>
       <td>${act}</td>
     </tr>`;
