@@ -378,6 +378,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
       <div class="sub-tabs">
         <button class="sub-tab-btn active" id="subtab-apps" type="button" onclick="switchRepView('apps')">Site Applications</button>
         <button class="sub-tab-btn" id="subtab-pipeline" type="button" onclick="switchRepView('pipeline')">Pipeline</button>
+        <button class="sub-tab-btn" id="subtab-reps" type="button" onclick="switchRepView('reps')" style="display:none">👥 Manage Reps</button>
       </div>
 
       <div id="view-applications">
@@ -404,6 +405,32 @@ tr:hover td{background:rgba(0,180,216,.02)}
               <tbody id="app-tbody"></tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <div id="view-reps" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:18px;font-weight:700;color:var(--white)">Sales Rep Management</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">Add, edit or deactivate sales reps</div>
+          </div>
+          <button class="btn btn-teal" style="width:auto" onclick="openRepModal()">+ Add New Rep</button>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr style="background:rgba(0,180,216,.08)">
+                <th style="padding:12px 16px;text-align:left;font-size:12px;color:var(--teal);font-weight:600">Name</th>
+                <th style="padding:12px 16px;text-align:left;font-size:12px;color:var(--teal);font-weight:600">Email</th>
+                <th style="padding:12px 16px;text-align:left;font-size:12px;color:var(--teal);font-weight:600">Branch</th>
+                <th style="padding:12px 16px;text-align:left;font-size:12px;color:var(--teal);font-weight:600">Status</th>
+                <th style="padding:12px 16px;text-align:left;font-size:12px;color:var(--teal);font-weight:600">Action</th>
+              </tr>
+            </thead>
+            <tbody id="reps-tbody">
+              <tr><td colspan="5" style="padding:24px;text-align:center;color:var(--muted)">Loading reps...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -701,6 +728,11 @@ function finishRepLogin(rep) {
   document.getElementById('rep-gate').style.display='none';
   document.getElementById('rep-dash').style.display='block';
   document.getElementById('rep-fn').textContent=rep.name.split(' ')[0];
+  // Show Manage Reps tab for Head Office admin only
+  const PORTAL_ADMINS = ['deant@atmsolutions.co.za', 'toni@atmsolutions.co.za'];
+  if (rep.branch === 'Head Office' || PORTAL_ADMINS.includes(rep.email)) {
+    document.getElementById('subtab-reps').style.display = 'inline-flex';
+  }
   document.getElementById('rep-eyebrow').textContent=`Rep Portal · ${rep.branch||''}`;
   document.getElementById('hdr-rep-name').textContent=`Signed in: ${rep.name}`;
   document.getElementById('hdr-rep-name').style.display='inline';
@@ -814,8 +846,11 @@ const STAGE_COLORS = {
 function switchRepView(view) {
   document.getElementById('subtab-apps').classList.toggle('active', view==='apps');
   document.getElementById('subtab-pipeline').classList.toggle('active', view==='pipeline');
+  document.getElementById('subtab-reps').classList.toggle('active', view==='reps');
   document.getElementById('view-applications').style.display = view==='apps' ? 'block' : 'none';
   document.getElementById('view-pipeline').style.display = view==='pipeline' ? 'block' : 'none';
+  document.getElementById('view-reps').style.display = view==='reps' ? 'block' : 'none';
+  if (view==='reps') loadReps();
   if (view==='pipeline' && LEADS.length===0) loadLeads();
 }
 
@@ -2374,6 +2409,172 @@ function showBulkResults(results) {
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     detailEl.innerHTML += `<div style="margin-top:10px"><a href="${url}" download="Bulk_Upload_Results.csv" style="color:#00B4D8;font-size:11px">⬇️ Download results CSV</a></div>`;
+  }
+}
+</script>
+
+
+<!-- ══════════════════════════════════════════ REP MANAGEMENT MODAL -->
+<div id="rep-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#0f2035;border:1px solid #1e3a5f;border-radius:12px;padding:28px;width:100%;max-width:480px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 id="rep-modal-title" style="color:#00B4D8;margin:0;font-size:18px">Add New Rep</h3>
+      <button onclick="closeRepModal()" style="background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <input type="hidden" id="rep-modal-id">
+      <div>
+        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Full Name *</label>
+        <input id="rep-modal-name" type="text" placeholder="e.g. Toni Smith" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+      </div>
+      <div>
+        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Email *</label>
+        <input id="rep-modal-email" type="email" placeholder="toni@atmsolutions.co.za" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+      </div>
+      <div>
+        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Branch</label>
+        <select id="rep-modal-branch" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+          <option value="Head Office">Head Office</option>
+          <option value="Gauteng">Gauteng</option>
+          <option value="Western Cape">Western Cape</option>
+          <option value="Eastern Cape">Eastern Cape</option>
+          <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+          <option value="North West">North West</option>
+          <option value="Mpumalanga">Mpumalanga</option>
+          <option value="Limpopo">Limpopo</option>
+        </select>
+      </div>
+      <div id="rep-modal-pin-row">
+        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Initial PIN</label>
+        <input id="rep-modal-pin" type="text" value="1234" maxlength="4" placeholder="1234" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+        <div style="font-size:11px;color:#64748b;margin-top:4px">Rep can change their PIN after first login</div>
+      </div>
+      <div id="rep-modal-status-row" style="display:none">
+        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Status</label>
+        <select id="rep-modal-status" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </select>
+      </div>
+      <div id="rep-modal-error" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:10px;border-radius:6px;font-size:12px"></div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn btn-dark" style="width:auto" onclick="closeRepModal()">Cancel</button>
+        <button class="btn btn-teal" style="flex:1" id="rep-modal-save" onclick="saveRep()">Save Rep</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════ REP MANAGEMENT
+
+async function loadReps() {
+  const tbody = document.getElementById('reps-tbody');
+  tbody.innerHTML = '<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--muted)">Loading...</td></tr>';
+  try {
+    const r = await fetch(`${SUPA}/rest/v1/reps?select=*&order=branch.asc,full_name.asc`, {
+      headers: { 'apikey': SKEY, 'Authorization': `Bearer ${SESSION_TOKEN}` }
+    });
+    const reps = await r.json();
+    if (!Array.isArray(reps) || reps.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--muted)">No reps found</td></tr>';
+      return;
+    }
+    tbody.innerHTML = reps.map(rep => `
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--white)">${rep.full_name}</td>
+        <td style="padding:12px 16px;font-size:12px;color:var(--sub)">${rep.email}</td>
+        <td style="padding:12px 16px;font-size:12px;color:var(--sub)">${rep.branch || '—'}</td>
+        <td style="padding:12px 16px">
+          <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${rep.is_active ? 'rgba(0,200,150,.15)' : 'rgba(239,68,68,.15)'};color:${rep.is_active ? '#00c896' : '#ef4444'}">
+            ${rep.is_active ? 'Active' : 'Inactive'}
+          </span>
+        </td>
+        <td style="padding:12px 16px">
+          <button onclick="editRep(${JSON.stringify(rep).replace(/"/g,'&quot;')})" style="background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.3);color:#00B4D8;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">Edit</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:#ef4444">Error: ${e.message}</td></tr>`;
+  }
+}
+
+function openRepModal() {
+  document.getElementById('rep-modal-id').value = '';
+  document.getElementById('rep-modal-name').value = '';
+  document.getElementById('rep-modal-email').value = '';
+  document.getElementById('rep-modal-branch').value = 'Head Office';
+  document.getElementById('rep-modal-pin').value = '1234';
+  document.getElementById('rep-modal-pin-row').style.display = 'block';
+  document.getElementById('rep-modal-status-row').style.display = 'none';
+  document.getElementById('rep-modal-title').textContent = 'Add New Rep';
+  document.getElementById('rep-modal-error').style.display = 'none';
+  document.getElementById('rep-modal').style.display = 'flex';
+}
+
+function editRep(rep) {
+  document.getElementById('rep-modal-id').value = rep.id;
+  document.getElementById('rep-modal-name').value = rep.full_name;
+  document.getElementById('rep-modal-email').value = rep.email;
+  document.getElementById('rep-modal-branch').value = rep.branch || 'Head Office';
+  document.getElementById('rep-modal-pin-row').style.display = 'none';
+  document.getElementById('rep-modal-status-row').style.display = 'block';
+  document.getElementById('rep-modal-status').value = String(rep.is_active);
+  document.getElementById('rep-modal-title').textContent = 'Edit Rep';
+  document.getElementById('rep-modal-error').style.display = 'none';
+  document.getElementById('rep-modal').style.display = 'flex';
+}
+
+function closeRepModal() {
+  document.getElementById('rep-modal').style.display = 'none';
+}
+
+async function saveRep() {
+  const id       = document.getElementById('rep-modal-id').value;
+  const name     = document.getElementById('rep-modal-name').value.trim();
+  const email    = document.getElementById('rep-modal-email').value.trim().toLowerCase();
+  const branch   = document.getElementById('rep-modal-branch').value;
+  const pin      = document.getElementById('rep-modal-pin').value.trim();
+  const isActive = document.getElementById('rep-modal-status').value === 'true';
+  const errEl    = document.getElementById('rep-modal-error');
+  const saveBtn  = document.getElementById('rep-modal-save');
+
+  if (!name || !email) {
+    errEl.textContent = 'Name and email are required.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  saveBtn.textContent = 'Saving...';
+  saveBtn.disabled = true;
+  errEl.style.display = 'none';
+
+  try {
+    const r = await fetch(`${SUPA}/functions/v1/rep-management`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SKEY },
+      body: JSON.stringify({
+        action: id ? 'update_rep' : 'create_rep',
+        token: SESSION_TOKEN,
+        rep_id: id || null,
+        full_name: name,
+        email,
+        branch,
+        pin: pin || '1234',
+        is_active: isActive,
+      })
+    });
+    const data = await r.json();
+    if (!data.success) throw new Error(data.error || 'Failed to save rep');
+    closeRepModal();
+    loadReps();
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  } finally {
+    saveBtn.textContent = 'Save Rep';
+    saveBtn.disabled = false;
   }
 }
 </script>
