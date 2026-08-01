@@ -301,6 +301,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
         <h1>Apply for a <span>Smart ATM</span></h1>
         <p id="c-greeting">Complete all sections — your info will pre-populate your site agreement.</p>
       </div>
+      <div id="draft-banner" style="display:none;margin-bottom:16px"></div>
       <div class="prog" id="prog"></div>
       <div id="step-content"></div>
       <div class="btn-row" id="step-nav"></div>
@@ -597,6 +598,8 @@ let uploadedDocs = {};
 let commAppId = null;
 let APPS = [];
 
+const DRAFT_KEY = 'atm_app_draft_v1';
+
 const fv = {
   trading_name:'',registered_name:'',registration_number:'',vat_number:'',entity_type:'',nature_of_business:'',
   site_address:'',suburb:'',city:'',province:'',postal_code:'',gps_lat:'',gps_lng:'',site_type:'',operating_days:'Monday to Sunday',trading_hours:'',
@@ -658,6 +661,47 @@ function showTab(t) {
 }
 
 // ══════════════════════════════════════════════
+// DRAFT AUTOSAVE (client application form)
+// ══════════════════════════════════════════════
+function saveDraft() {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({fv, currentStep, savedAt: Date.now()})); } catch(e) {}
+}
+function clearDraft() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
+}
+function checkDraft() {
+  const banner = document.getElementById('draft-banner');
+  let raw;
+  try { raw = localStorage.getItem(DRAFT_KEY); } catch(e) { return; }
+  if(!raw) return;
+  let d;
+  try { d = JSON.parse(raw); } catch(e) { clearDraft(); return; }
+  if(!d || !d.fv || !Object.values(d.fv).some(v=>v)) { clearDraft(); return; }
+  const when = new Date(d.savedAt).toLocaleString('en-ZA',{dateStyle:'medium',timeStyle:'short'});
+  banner.style.display='block';
+  banner.innerHTML = `<div class="alert alert-i" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <span>📝 You have a saved application from <strong>${when}</strong> (step ${d.currentStep} of 7). Uploaded documents will need to be re-attached.</span>
+    <span style="display:flex;gap:8px;flex-shrink:0">
+      <button class="btn btn-teal" style="width:auto;padding:7px 16px" onclick="resumeDraft()">Resume</button>
+      <button class="btn btn-dark" style="width:auto;padding:7px 16px" onclick="discardDraft()">Start Fresh</button>
+    </span></div>`;
+}
+function resumeDraft() {
+  let raw;
+  try { raw = localStorage.getItem(DRAFT_KEY); } catch(e) { return; }
+  if(!raw) return;
+  const d = JSON.parse(raw);
+  Object.assign(fv, d.fv);
+  currentStep = d.currentStep || 1;
+  document.getElementById('draft-banner').style.display='none';
+  renderStep();
+}
+function discardDraft() {
+  clearDraft();
+  document.getElementById('draft-banner').style.display='none';
+}
+
+// ══════════════════════════════════════════════
 // CLIENT AUTH
 // ══════════════════════════════════════════════
 // Store rep info from URL if client came via rep link
@@ -700,6 +744,7 @@ function clientLogin() {
   }
   currentStep=1;
   renderStep();
+  checkDraft();
 }
 
 // ══════════════════════════════════════════════
@@ -1543,19 +1588,19 @@ async function createCRMLead(id, event) {
 function f(label,key,placeholder='',required=false,hint='',type='text',cls='') {
   const v=fv[key]||'';
   return `<div class="field ${cls}"><label>${label}${required?'<span class="req"> *</span>':''}</label>
-    <input type="${type}" value="${v.replace(/"/g,'&quot;')}" placeholder="${placeholder}" oninput="fv['${key}']=this.value"/>
+    <input type="${type}" value="${v.replace(/"/g,'&quot;')}" placeholder="${placeholder}" oninput="fv['${key}']=this.value;saveDraft()"/>
     ${hint?`<span class="hint">${hint}</span>`:''}</div>`;
 }
 function sel(label,key,opts,required=false,cls='') {
   const v=fv[key]||'';
   const os=opts.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('');
   return `<div class="field ${cls}"><label>${label}${required?'<span class="req"> *</span>':''}</label>
-    <select onchange="fv['${key}']=this.value"><option value="">Select...</option>${os}</select></div>`;
+    <select onchange="fv['${key}']=this.value;saveDraft()"><option value="">Select...</option>${os}</select></div>`;
 }
 function mf(label,key,hint='',required=false,cls='') {
   const v=fv[key]||'';
   return `<div class="field ${cls}"><label>${label}${required?'<span class="req"> *</span>':''}</label>
-    <div class="money"><span class="money-sym">R</span><input type="number" value="${v}" placeholder="0.00" oninput="fv['${key}']=this.value"/></div>
+    <div class="money"><span class="money-sym">R</span><input type="number" value="${v}" placeholder="0.00" oninput="fv['${key}']=this.value;saveDraft()"/></div>
     ${hint?`<span class="hint">${hint}</span>`:''}</div>`;
 }
 function docCard(key,title,sub,required) {
@@ -1634,15 +1679,15 @@ function getStepHTML(s) {
         <div class="radio-box">
           <p>Total turnover is less than R2 Million (Two Million Rand) per annum:</p>
           <div class="radio-row">
-            <label><input type="radio" name="t2m" value="yes" ${fv.turnover_2m==='yes'?'checked':''} onchange="fv.turnover_2m=this.value"/> <strong>Yes</strong></label>
-            <label><input type="radio" name="t2m" value="no" ${fv.turnover_2m==='no'?'checked':''} onchange="fv.turnover_2m=this.value"/> <strong>No</strong></label>
+            <label><input type="radio" name="t2m" value="yes" ${fv.turnover_2m==='yes'?'checked':''} onchange="fv.turnover_2m=this.value;saveDraft()"/> <strong>Yes</strong></label>
+            <label><input type="radio" name="t2m" value="no" ${fv.turnover_2m==='no'?'checked':''} onchange="fv.turnover_2m=this.value;saveDraft()"/> <strong>No</strong></label>
           </div>
         </div>
         <div class="radio-box">
           <p>Gross value of assets is less than R2 Million (Two Million Rand) per annum:</p>
           <div class="radio-row">
-            <label><input type="radio" name="a2m" value="yes" ${fv.assets_2m==='yes'?'checked':''} onchange="fv.assets_2m=this.value"/> <strong>Yes</strong></label>
-            <label><input type="radio" name="a2m" value="no" ${fv.assets_2m==='no'?'checked':''} onchange="fv.assets_2m=this.value"/> <strong>No</strong></label>
+            <label><input type="radio" name="a2m" value="yes" ${fv.assets_2m==='yes'?'checked':''} onchange="fv.assets_2m=this.value;saveDraft()"/> <strong>Yes</strong></label>
+            <label><input type="radio" name="a2m" value="no" ${fv.assets_2m==='no'?'checked':''} onchange="fv.assets_2m=this.value;saveDraft()"/> <strong>No</strong></label>
           </div>
         </div>
       </div>
@@ -1794,7 +1839,7 @@ function renderStep() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function goStep(n){currentStep=n;renderStep();}
+function goStep(n){currentStep=n;saveDraft();renderStep();}
 
 // ══════════════════════════════════════════════
 // FORM SUBMIT
@@ -1859,6 +1904,7 @@ async function submitForm() {
       CONVERTING_LEAD_ID = null;
     }
 
+    clearDraft();
     showSuccess(ref);
   } catch(e) {
     document.getElementById('step-content').innerHTML=`
