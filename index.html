@@ -397,7 +397,10 @@ tr:hover td{background:rgba(0,180,216,.02)}
         </div>
 
         <div class="tbl">
-          <div class="tbl-hd"><div class="tbl-title">Site Applications</div><span id="app-count" style="font-size:11px;color:var(--muted)"></span></div>
+          <div class="tbl-hd">
+            <div style="display:flex;align-items:center;gap:8px"><div class="tbl-title">Site Applications</div><span id="app-count" style="font-size:11px;color:var(--muted)"></span></div>
+            <button class="btn btn-dark" style="width:auto;padding:6px 14px;font-size:12px" onclick="exportToExcel()">📊 Export to Excel</button>
+          </div>
           <div style="overflow-x:auto">
             <table>
               <thead><tr>
@@ -1219,6 +1222,33 @@ function renderTable() {
 }
 
 // ══════════════════════════════════════════════
+// EXPORT TO EXCEL
+// ══════════════════════════════════════════════
+function exportToExcel() {
+  if (!APPS.length) { alert('No applications to export.'); return; }
+  if (typeof XLSX === 'undefined') { alert('Export library failed to load — check your connection and try again.'); return; }
+  const STATUS_LABELS = {
+    draft:'Draft', submitted:'Submitted', rep_approved:'Approved', docusign_sent:'DocuSign Sent',
+    rep_signed:'Rep Signed', client_signed:'Client Signed', crm_created:'CRM Created',
+  };
+  const rows = APPS.map(a => ({
+    Reference: a.ref,
+    Merchant: a.merchant,
+    Nature: a.nature,
+    Province: a.province,
+    'Fee p/m': a.fee != null ? Number(a.fee) : '',
+    Status: STATUS_LABELS[a.status] || a.status,
+    'Signatory Email': a.email || '',
+  }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{wch:18},{wch:26},{wch:20},{wch:16},{wch:10},{wch:16},{wch:28}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Applications');
+  const stamp = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `ATM-Applications-${stamp}.xlsx`);
+}
+
+// ══════════════════════════════════════════════
 // LINK GENERATOR
 // ══════════════════════════════════════════════
 function genLink() {
@@ -1617,6 +1647,48 @@ function docCard(key,title,sub,required) {
 function handleDoc(key,input){if(input.files[0]){uploadedDocs[key]=input.files[0].name;renderStep();}}
 function rv(lbl,val){return `<div class="rv"><span class="rv-lbl">${lbl}</span><span class="${val?'rv-val':'rv-empty'}">${val||'Not provided'}</span></div>`;}
 
+// ══════════════════════════════════════════════
+// GPS AUTO-FILL (OpenStreetMap Nominatim — free, no API key)
+// ══════════════════════════════════════════════
+async function autofillGPS() {
+  const statusEl = document.getElementById('gps-status');
+  const parts = [fv.site_address, fv.suburb, fv.city, fv.province].filter(Boolean);
+  if (!parts.length) {
+    statusEl.textContent = '⚠️ Enter at least a street address first.';
+    statusEl.style.color = 'var(--orange)';
+    return;
+  }
+  statusEl.textContent = '⏳ Looking up coordinates...';
+  statusEl.style.color = 'var(--sub)';
+  try {
+    const q = encodeURIComponent([...parts, 'South Africa'].join(', '));
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=${q}`);
+    if (!r.ok) throw new Error('lookup service unavailable');
+    const results = await r.json();
+    if (!results.length) {
+      statusEl.textContent = '⚠️ Address not found — please enter GPS coordinates manually.';
+      statusEl.style.color = 'var(--orange)';
+      return;
+    }
+    const hit = results[0];
+    fv.gps_lat = Number(hit.lat).toFixed(6);
+    fv.gps_lng = Number(hit.lon).toFixed(6);
+    saveDraft();
+    const latInput = document.querySelector(`input[oninput*="fv['gps_lat']"]`);
+    const lngInput = document.querySelector(`input[oninput*="fv['gps_lng']"]`);
+    if (latInput) latInput.value = fv.gps_lat;
+    if (lngInput) lngInput.value = fv.gps_lng;
+    const confident = Number(hit.importance || 0) >= 0.5 || ['house','building','residential'].includes(hit.type);
+    statusEl.textContent = confident
+      ? `✓ Located: ${hit.display_name}`
+      : `⚠️ Low-confidence match — "${hit.display_name}". Please verify or enter coordinates manually.`;
+    statusEl.style.color = confident ? 'var(--green)' : 'var(--orange)';
+  } catch(e) {
+    statusEl.textContent = '⚠️ Lookup failed — please enter GPS coordinates manually.';
+    statusEl.style.color = 'var(--orange)';
+  }
+}
+
 function getStepHTML(s) {
   if(s===1) return `
     <div class="sec"><div class="sec-hd"><div class="sec-ico">🏢</div><div><div class="sec-title">Business Details</div><div class="sec-desc">Legal entity and CIPC registration</div></div></div>
@@ -1669,8 +1741,12 @@ function getStepHTML(s) {
       ${sel('Premises Type','site_type',SITE_TYPES,true)}
       ${f('Operating Days','operating_days','Monday to Sunday',true)}
       ${f('Operating Hours','trading_hours','e.g. 24hours or 06:00–22:00',true)}
-      ${f('GPS Latitude','gps_lat','-33.6552',false,'Optional','number')}
-      ${f('GPS Longitude','gps_lng','19.3241',false,'Optional','number')}
+      <div class="field span2" style="flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-dark" style="width:auto;padding:8px 16px;font-size:12px" onclick="autofillGPS()">📍 Auto-fill GPS from Address</button>
+        <span id="gps-status" style="font-size:11px;color:var(--muted)"></span>
+      </div>
+      ${f('GPS Latitude','gps_lat','-33.6552',false,'Optional — or use Auto-fill above','number')}
+      ${f('GPS Longitude','gps_lng','19.3241',false,'Optional — or use Auto-fill above','number')}
     </div></div></div>
     <div class="sec"><div class="sec-hd"><div class="sec-ico">💰</div><div><div class="sec-title">Turnover Declaration (Part C)</div><div class="sec-desc">Required for the Smart ATM agreement</div></div></div>
     <div class="sec-body">
@@ -2625,5 +2701,6 @@ async function saveRep() {
 }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </body>
 </html>
