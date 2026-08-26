@@ -460,11 +460,13 @@ tr:hover td{background:rgba(0,180,216,.02)}
             <div class="grid2">
               <input type="text" id="ss-address" placeholder="Street address" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px"/>
               <input type="text" id="ss-city" placeholder="City / Town" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px"/>
+              <input type="text" id="ss-postal" placeholder="Postal code (optional, improves accuracy)" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px"/>
             </div>
             <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
               <button class="btn btn-teal" style="width:auto" onclick="runSiteScout()">🔍 Find Nearest ATMs</button>
-              <span id="ss-status" style="font-size:11px;color:var(--muted)"></span>
+              <button class="btn btn-dark" style="width:auto" onclick="useDeviceLocationForSiteScout()">📡 Use My Current Location</button>
             </div>
+            <div style="margin-top:8px"><span id="ss-status" style="font-size:11px;color:var(--muted)"></span><div id="ss-candidates" style="margin-top:6px"></div></div>
           </div>
         </div>
         <div id="ss-results"></div>
@@ -614,7 +616,7 @@ const SKEY = 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d';
 // Site Scout reads site directory + performance stats from the separate
 // cre-deal-approvals Supabase project (read-only, anon-key RLS policy).
 const CRE_SUPA = 'https://beyvigfwvarkhjlnkxgr.supabase.co';
-const CRE_SKEY = 'REPLACE_WITH_CRE_DEAL_APPROVALS_PUBLISHABLE_KEY';
+const CRE_SKEY = 'sb_publishable_1Avr5AH71le0UeJdl-i9lA_lFmIgHim';
 const DS_TEMPLATE = '6b8a3ae7-f5bb-4a4e-8b96-439a5cda8e57';
 const DS_BASE = 'https://apps.docusign.com/send/templates/details';
 
@@ -1703,8 +1705,20 @@ function rv(lbl,val){return `<div class="rv"><span class="rv-lbl">${lbl}</span><
 // ══════════════════════════════════════════════
 // GPS AUTO-FILL (OpenStreetMap Nominatim — free, no API key)
 // ══════════════════════════════════════════════
+async function geocodeSA(query, limit=3) {
+  const q = encodeURIComponent(query);
+  const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=${limit}&countrycodes=za&q=${q}`);
+  if (!r.ok) throw new Error('lookup service unavailable');
+  return r.json();
+}
+function isConfidentMatch(hit) {
+  return Number(hit.importance || 0) >= 0.5 || ['house','building','residential'].includes(hit.type);
+}
+
 async function autofillGPS() {
   const statusEl = document.getElementById('gps-status');
+  const candEl = document.getElementById('gps-candidates');
+  candEl.innerHTML = '';
   const parts = [fv.site_address, fv.suburb, fv.city, fv.province, fv.postal_code].filter(Boolean);
   if (!parts.length) {
     statusEl.textContent = '⚠️ Enter at least a street address first.';
@@ -1714,32 +1728,71 @@ async function autofillGPS() {
   statusEl.textContent = '⏳ Looking up coordinates...';
   statusEl.style.color = 'var(--sub)';
   try {
-    const q = encodeURIComponent([...parts, 'South Africa'].join(', '));
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=${q}`);
-    if (!r.ok) throw new Error('lookup service unavailable');
-    const results = await r.json();
+    const results = await geocodeSA([...parts, 'South Africa'].join(', '), 3);
     if (!results.length) {
       statusEl.textContent = '⚠️ Address not found — please enter GPS coordinates manually.';
       statusEl.style.color = 'var(--orange)';
       return;
     }
-    const hit = results[0];
-    fv.gps_lat = Number(hit.lat).toFixed(6);
-    fv.gps_lng = Number(hit.lon).toFixed(6);
-    saveDraft();
-    const latInput = document.querySelector(`input[oninput*="fv['gps_lat']"]`);
-    const lngInput = document.querySelector(`input[oninput*="fv['gps_lng']"]`);
-    if (latInput) latInput.value = fv.gps_lat;
-    if (lngInput) lngInput.value = fv.gps_lng;
-    const confident = Number(hit.importance || 0) >= 0.5 || ['house','building','residential'].includes(hit.type);
-    statusEl.textContent = confident
-      ? `✓ Located: ${hit.display_name}`
-      : `⚠️ Low-confidence match — "${hit.display_name}". Please verify or enter coordinates manually.`;
-    statusEl.style.color = confident ? 'var(--green)' : 'var(--orange)';
+    applyGPSCandidate(results[0]);
+    if (results.length > 1) {
+      candEl.innerHTML = `<div style="font-size:11px;color:var(--muted);margin-bottom:4px">Not quite right? Other matches:</div>` +
+        results.slice(1).map((hit,i) => `<button type="button" class="btn btn-dark" style="width:auto;padding:5px 10px;font-size:11px;margin-right:6px;margin-bottom:4px" onclick='pickGPSCandidateFromForm(${i+1})'>${esc(hit.display_name)}</button>`).join('');
+      window._gpsCandidates = results;
+    }
   } catch(e) {
     statusEl.textContent = '⚠️ Lookup failed — please enter GPS coordinates manually.';
     statusEl.style.color = 'var(--orange)';
   }
+}
+function applyGPSCandidate(hit) {
+  const statusEl = document.getElementById('gps-status');
+  fv.gps_lat = Number(hit.lat).toFixed(6);
+  fv.gps_lng = Number(hit.lon).toFixed(6);
+  saveDraft();
+  const latInput = document.querySelector(`input[oninput*="fv['gps_lat']"]`);
+  const lngInput = document.querySelector(`input[oninput*="fv['gps_lng']"]`);
+  if (latInput) latInput.value = fv.gps_lat;
+  if (lngInput) lngInput.value = fv.gps_lng;
+  const confident = isConfidentMatch(hit);
+  statusEl.textContent = confident
+    ? `✓ Located: ${hit.display_name}`
+    : `⚠️ Low-confidence match — "${hit.display_name}". Please verify or enter coordinates manually.`;
+  statusEl.style.color = confident ? 'var(--green)' : 'var(--orange)';
+}
+function pickGPSCandidateFromForm(index) {
+  if (!window._gpsCandidates || !window._gpsCandidates[index]) return;
+  applyGPSCandidate(window._gpsCandidates[index]);
+  document.getElementById('gps-candidates').innerHTML = '';
+}
+function useDeviceLocation() {
+  const statusEl = document.getElementById('gps-status');
+  document.getElementById('gps-candidates').innerHTML = '';
+  if (!navigator.geolocation) {
+    statusEl.textContent = '⚠️ This device/browser does not support location access.';
+    statusEl.style.color = 'var(--orange)';
+    return;
+  }
+  statusEl.textContent = '⏳ Getting your current location...';
+  statusEl.style.color = 'var(--sub)';
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      fv.gps_lat = pos.coords.latitude.toFixed(6);
+      fv.gps_lng = pos.coords.longitude.toFixed(6);
+      saveDraft();
+      const latInput = document.querySelector(`input[oninput*="fv['gps_lat']"]`);
+      const lngInput = document.querySelector(`input[oninput*="fv['gps_lng']"]`);
+      if (latInput) latInput.value = fv.gps_lat;
+      if (lngInput) lngInput.value = fv.gps_lng;
+      statusEl.textContent = `✓ Using your device's current location (accuracy ±${Math.round(pos.coords.accuracy)}m). Most accurate when you're standing at the site.`;
+      statusEl.style.color = 'var(--green)';
+    },
+    (err) => {
+      statusEl.textContent = `⚠️ Could not get your location (${err.message}). Please allow location access or enter GPS manually.`;
+      statusEl.style.color = 'var(--orange)';
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
 }
 
 // ══════════════════════════════════════════════
@@ -1756,8 +1809,10 @@ function haversineKm(lat1, lng1, lat2, lng2) {
 async function runSiteScout() {
   const statusEl = document.getElementById('ss-status');
   const resultsEl = document.getElementById('ss-results');
+  document.getElementById('ss-candidates').innerHTML = '';
   const address = document.getElementById('ss-address').value.trim();
   const city = document.getElementById('ss-city').value.trim();
+  const postal = document.getElementById('ss-postal').value.trim();
   if (!address && !city) {
     statusEl.textContent = '⚠️ Enter at least a street address or city.';
     statusEl.style.color = 'var(--orange)';
@@ -1767,21 +1822,55 @@ async function runSiteScout() {
   statusEl.textContent = '⏳ Locating address...';
   statusEl.style.color = 'var(--sub)';
 
-  let candidate;
+  let results;
   try {
-    const q = encodeURIComponent([address, city, 'South Africa'].filter(Boolean).join(', '));
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=${q}`);
-    if (!r.ok) throw new Error('lookup service unavailable');
-    const results = await r.json();
+    results = await geocodeSA([address, city, postal, 'South Africa'].filter(Boolean).join(', '), 3);
     if (!results.length) throw new Error('address not found');
-    candidate = { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon), display_name: results[0].display_name };
   } catch(e) {
     statusEl.textContent = `⚠️ Could not locate that address (${e.message}).`;
     statusEl.style.color = 'var(--orange)';
     return;
   }
 
+  await runSiteScoutWithCoords(parseFloat(results[0].lat), parseFloat(results[0].lon), results[0].display_name);
+  if (results.length > 1) {
+    window._ssCandidates = results;
+    document.getElementById('ss-candidates').innerHTML = `<div style="font-size:11px;color:var(--muted);margin-bottom:4px">Not quite right? Other matches:</div>` +
+      results.slice(1).map((hit,i) => `<button type="button" class="btn btn-dark" style="width:auto;padding:5px 10px;font-size:11px;margin-right:6px;margin-bottom:4px" onclick='pickSiteScoutCandidate(${i+1})'>${esc(hit.display_name)}</button>`).join('');
+  }
+}
+function pickSiteScoutCandidate(index) {
+  const hit = window._ssCandidates && window._ssCandidates[index];
+  if (!hit) return;
+  document.getElementById('ss-candidates').innerHTML = '';
+  runSiteScoutWithCoords(parseFloat(hit.lat), parseFloat(hit.lon), hit.display_name);
+}
+function useDeviceLocationForSiteScout() {
+  const statusEl = document.getElementById('ss-status');
+  document.getElementById('ss-candidates').innerHTML = '';
+  document.getElementById('ss-results').innerHTML = '';
+  if (!navigator.geolocation) {
+    statusEl.textContent = '⚠️ This device/browser does not support location access.';
+    statusEl.style.color = 'var(--orange)';
+    return;
+  }
+  statusEl.textContent = '⏳ Getting your current location...';
+  statusEl.style.color = 'var(--sub)';
+  navigator.geolocation.getCurrentPosition(
+    (pos) => runSiteScoutWithCoords(pos.coords.latitude, pos.coords.longitude, `your current location (±${Math.round(pos.coords.accuracy)}m)`),
+    (err) => {
+      statusEl.textContent = `⚠️ Could not get your location (${err.message}).`;
+      statusEl.style.color = 'var(--orange)';
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+async function runSiteScoutWithCoords(lat, lng, label) {
+  const statusEl = document.getElementById('ss-status');
+  const resultsEl = document.getElementById('ss-results');
+
   statusEl.textContent = '⏳ Loading nearby ATM sites...';
+  statusEl.style.color = 'var(--sub)';
   let sites;
   try {
     const r = await fetch(`${CRE_SUPA}/rest/v1/sites?select=terminal_id,site_name,region,terminal_type,cre_name,business_address,city,gps_lat,gps_lng,site_stats_6mo(avg_gp,avg_transactions,avg_revenue,months_of_data)&gps_lat=not.is.null`, {
@@ -1796,11 +1885,11 @@ async function runSiteScout() {
   }
 
   const nearest = sites
-    .map(s => ({ ...s, distanceKm: haversineKm(candidate.lat, candidate.lng, s.gps_lat, s.gps_lng) }))
+    .map(s => ({ ...s, distanceKm: haversineKm(lat, lng, s.gps_lat, s.gps_lng) }))
     .sort((a, b) => a.distanceKm - b.distanceKm)
     .slice(0, 10);
 
-  statusEl.textContent = `✓ Located: ${candidate.display_name} — showing ${nearest.length} nearest of ${sites.length} sites with known GPS`;
+  statusEl.textContent = `✓ Located: ${label} — showing ${nearest.length} nearest of ${sites.length} sites with known GPS`;
   statusEl.style.color = 'var(--green)';
 
   resultsEl.innerHTML = `
@@ -1877,8 +1966,9 @@ function getStepHTML(s) {
       ${f('Operating Hours','trading_hours','e.g. 24hours or 06:00–22:00',true)}
       <div class="field span2" style="flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap">
         <button type="button" class="btn btn-dark" style="width:auto;padding:8px 16px;font-size:12px" onclick="autofillGPS()">📍 Auto-fill GPS from Address</button>
-        <span id="gps-status" style="font-size:11px;color:var(--muted)"></span>
+        <button type="button" class="btn btn-dark" style="width:auto;padding:8px 16px;font-size:12px" onclick="useDeviceLocation()">📡 Use My Current Location</button>
       </div>
+      <div class="field span2"><span id="gps-status" style="font-size:11px;color:var(--muted)"></span><div id="gps-candidates" style="margin-top:6px"></div></div>
       ${f('GPS Latitude','gps_lat','-33.6552',false,'Optional — or use Auto-fill above','number')}
       ${f('GPS Longitude','gps_lng','19.3241',false,'Optional — or use Auto-fill above','number')}
     </div></div></div>
