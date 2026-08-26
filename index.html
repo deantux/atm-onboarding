@@ -379,6 +379,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
       <div class="sub-tabs">
         <button class="sub-tab-btn active" id="subtab-apps" type="button" onclick="switchRepView('apps')">Site Applications</button>
         <button class="sub-tab-btn" id="subtab-pipeline" type="button" onclick="switchRepView('pipeline')">Pipeline</button>
+        <button class="sub-tab-btn" id="subtab-sitescout" type="button" onclick="switchRepView('sitescout')">📍 Site Scout</button>
         <button class="sub-tab-btn" id="subtab-reps" type="button" onclick="switchRepView('reps')" style="display:none">👥 Manage Reps</button>
       </div>
 
@@ -449,6 +450,24 @@ tr:hover td{background:rgba(0,180,216,.02)}
           </div>
         </div>
         <div class="stage-list" id="kanban-wrap"></div>
+      </div>
+
+      <div id="view-sitescout" style="display:none">
+        <div class="sec" style="margin-bottom:16px">
+          <div class="sec-hd"><div class="sec-ico">📍</div><div><div class="sec-title">Site Scout</div><div class="sec-desc">Find the nearest existing ATMs to a candidate site and see how they perform</div></div></div>
+          <div class="sec-body">
+            <div class="alert alert-i" style="margin-bottom:16px">ℹ️ Enter a candidate site address to see the 10 nearest existing ATMs and their average monthly performance (last 6 months).</div>
+            <div class="grid2">
+              <input type="text" id="ss-address" placeholder="Street address" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px"/>
+              <input type="text" id="ss-city" placeholder="City / Town" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px"/>
+            </div>
+            <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-teal" style="width:auto" onclick="runSiteScout()">🔍 Find Nearest ATMs</button>
+              <span id="ss-status" style="font-size:11px;color:var(--muted)"></span>
+            </div>
+          </div>
+        </div>
+        <div id="ss-results"></div>
       </div>
     </div>
   </div>
@@ -592,6 +611,10 @@ const CODES = ['ATM2025','DEMO1234','PAYCORP1','SMARTATM'];
 let SESSION_TOKEN = null;
 const SUPA = 'https://cxyntiiegbwmgslwyfmn.supabase.co';
 const SKEY = 'sb_publishable_HhSZ8gcltdROtnI8h-EQtA_fH7SYG_d';
+// Site Scout reads site directory + performance stats from the separate
+// cre-deal-approvals Supabase project (read-only, anon-key RLS policy).
+const CRE_SUPA = 'https://beyvigfwvarkhjlnkxgr.supabase.co';
+const CRE_SKEY = 'REPLACE_WITH_CRE_DEAL_APPROVALS_PUBLISHABLE_KEY';
 const DS_TEMPLATE = '6b8a3ae7-f5bb-4a4e-8b96-439a5cda8e57';
 const DS_BASE = 'https://apps.docusign.com/send/templates/details';
 
@@ -897,9 +920,11 @@ const STAGE_COLORS = {
 function switchRepView(view) {
   document.getElementById('subtab-apps').classList.toggle('active', view==='apps');
   document.getElementById('subtab-pipeline').classList.toggle('active', view==='pipeline');
+  document.getElementById('subtab-sitescout').classList.toggle('active', view==='sitescout');
   document.getElementById('subtab-reps').classList.toggle('active', view==='reps');
   document.getElementById('view-applications').style.display = view==='apps' ? 'block' : 'none';
   document.getElementById('view-pipeline').style.display = view==='pipeline' ? 'block' : 'none';
+  document.getElementById('view-sitescout').style.display = view==='sitescout' ? 'block' : 'none';
   document.getElementById('view-reps').style.display = view==='reps' ? 'block' : 'none';
   if (view==='reps') loadReps();
   if (view==='pipeline' && LEADS.length===0) loadLeads();
@@ -1680,7 +1705,7 @@ function rv(lbl,val){return `<div class="rv"><span class="rv-lbl">${lbl}</span><
 // ══════════════════════════════════════════════
 async function autofillGPS() {
   const statusEl = document.getElementById('gps-status');
-  const parts = [fv.site_address, fv.suburb, fv.city, fv.province].filter(Boolean);
+  const parts = [fv.site_address, fv.suburb, fv.city, fv.province, fv.postal_code].filter(Boolean);
   if (!parts.length) {
     statusEl.textContent = '⚠️ Enter at least a street address first.';
     statusEl.style.color = 'var(--orange)';
@@ -1715,6 +1740,87 @@ async function autofillGPS() {
     statusEl.textContent = '⚠️ Lookup failed — please enter GPS coordinates manually.';
     statusEl.style.color = 'var(--orange)';
   }
+}
+
+// ══════════════════════════════════════════════
+// SITE SCOUT — nearest existing ATMs to a candidate site
+// ══════════════════════════════════════════════
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+async function runSiteScout() {
+  const statusEl = document.getElementById('ss-status');
+  const resultsEl = document.getElementById('ss-results');
+  const address = document.getElementById('ss-address').value.trim();
+  const city = document.getElementById('ss-city').value.trim();
+  if (!address && !city) {
+    statusEl.textContent = '⚠️ Enter at least a street address or city.';
+    statusEl.style.color = 'var(--orange)';
+    return;
+  }
+  resultsEl.innerHTML = '';
+  statusEl.textContent = '⏳ Locating address...';
+  statusEl.style.color = 'var(--sub)';
+
+  let candidate;
+  try {
+    const q = encodeURIComponent([address, city, 'South Africa'].filter(Boolean).join(', '));
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=${q}`);
+    if (!r.ok) throw new Error('lookup service unavailable');
+    const results = await r.json();
+    if (!results.length) throw new Error('address not found');
+    candidate = { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon), display_name: results[0].display_name };
+  } catch(e) {
+    statusEl.textContent = `⚠️ Could not locate that address (${e.message}).`;
+    statusEl.style.color = 'var(--orange)';
+    return;
+  }
+
+  statusEl.textContent = '⏳ Loading nearby ATM sites...';
+  let sites;
+  try {
+    const r = await fetch(`${CRE_SUPA}/rest/v1/sites?select=terminal_id,site_name,region,terminal_type,cre_name,business_address,city,gps_lat,gps_lng,site_stats_6mo(avg_gp,avg_transactions,avg_revenue,months_of_data)&gps_lat=not.is.null`, {
+      headers: { 'apikey': CRE_SKEY, 'Authorization': `Bearer ${CRE_SKEY}` }
+    });
+    if (!r.ok) throw new Error(`status ${r.status}`);
+    sites = await r.json();
+  } catch(e) {
+    statusEl.textContent = `⚠️ Could not load site directory (${e.message}).`;
+    statusEl.style.color = 'var(--orange)';
+    return;
+  }
+
+  const nearest = sites
+    .map(s => ({ ...s, distanceKm: haversineKm(candidate.lat, candidate.lng, s.gps_lat, s.gps_lng) }))
+    .sort((a, b) => a.distanceKm - b.distanceKm)
+    .slice(0, 10);
+
+  statusEl.textContent = `✓ Located: ${candidate.display_name} — showing ${nearest.length} nearest of ${sites.length} sites with known GPS`;
+  statusEl.style.color = 'var(--green)';
+
+  resultsEl.innerHTML = `
+    <div class="tbl">
+      <div class="tbl-hd"><div class="tbl-title">Nearest ATMs</div></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Site</th><th>Distance</th><th>Region</th><th>Cashing Type</th><th>Avg GP p/m</th><th>Avg Trans p/m</th><th>Avg Revenue p/m</th></tr></thead>
+          <tbody>${nearest.map(s => `<tr>
+            <td><div style="font-weight:600">${esc(s.site_name||s.terminal_id)}</div><div style="font-size:11px;color:var(--muted)">${esc(s.business_address||'')}${s.city?', '+esc(s.city):''}</div></td>
+            <td style="font-family:monospace;color:var(--teal)">${s.distanceKm.toFixed(1)} km</td>
+            <td style="color:var(--sub);font-size:12px">${esc(s.region||'—')}</td>
+            <td style="color:var(--sub);font-size:12px">${esc(s.terminal_type||'—')}</td>
+            <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_gp!=null ? 'R'+Number(s.site_stats_6mo.avg_gp).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
+            <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_transactions!=null ? Number(s.site_stats_6mo.avg_transactions).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
+            <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_revenue!=null ? 'R'+Number(s.site_stats_6mo.avg_revenue).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
 }
 
 function getStepHTML(s) {
