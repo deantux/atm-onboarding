@@ -1873,7 +1873,7 @@ async function runSiteScoutWithCoords(lat, lng, label) {
   statusEl.style.color = 'var(--sub)';
   let sites;
   try {
-    const r = await fetch(`${CRE_SUPA}/rest/v1/sites?select=terminal_id,site_name,region,terminal_type,cre_name,business_address,city,gps_lat,gps_lng,site_stats_6mo(avg_gp,avg_transactions,avg_revenue,months_of_data)&gps_lat=not.is.null`, {
+    const r = await fetch(`${CRE_SUPA}/rest/v1/sites?select=terminal_id,site_name,region,terminal_type,cre_name,cit_branch,business_address,city,gps_lat,gps_lng,site_stats_6mo(avg_gp,avg_transactions,avg_revenue,months_of_data)&gps_lat=not.is.null`, {
       headers: { 'apikey': CRE_SKEY, 'Authorization': `Bearer ${CRE_SKEY}` }
     });
     if (!r.ok) throw new Error(`status ${r.status}`);
@@ -1903,12 +1903,14 @@ async function runSiteScoutWithCoords(lat, lng, label) {
       </div>
       <div style="overflow-x:auto">
         <table>
-          <thead><tr><th>Site</th><th>Distance</th><th>Region</th><th>Cashing Type</th><th>Avg GP p/m</th><th>Avg Trans p/m</th><th>Avg Revenue p/m</th></tr></thead>
+          <thead><tr><th>Site</th><th>Distance</th><th>Region</th><th>Cashing Type</th><th>CRE Name</th><th>CIT Vehicle</th><th>Avg GP p/m</th><th>Avg Trans p/m</th><th>Avg Revenue p/m</th></tr></thead>
           <tbody>${nearest.map(s => `<tr>
             <td><div style="font-weight:600">${esc(s.site_name||s.terminal_id)}</div><div style="font-size:11px;color:var(--muted)">${esc(s.business_address||'')}${s.city?', '+esc(s.city):''}</div></td>
             <td style="font-family:monospace;color:var(--teal)">${s.distanceKm.toFixed(1)} km</td>
             <td style="color:var(--sub);font-size:12px">${esc(s.region||'—')}</td>
             <td style="color:var(--sub);font-size:12px">${esc(s.terminal_type||'—')}</td>
+            <td style="color:var(--sub);font-size:12px">${esc(s.cre_name||'—')}</td>
+            <td style="color:var(--sub);font-size:12px">${esc(s.cit_branch||'—')}</td>
             <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_gp!=null ? 'R'+Number(s.site_stats_6mo.avg_gp).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
             <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_transactions!=null ? Number(s.site_stats_6mo.avg_transactions).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
             <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_revenue!=null ? 'R'+Number(s.site_stats_6mo.avg_revenue).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
@@ -1930,12 +1932,14 @@ function exportSiteScoutToExcel() {
     'Distance (km)': Number(s.distanceKm.toFixed(1)),
     Region: s.region || '',
     'Cashing Type': s.terminal_type || '',
+    'CRE Name': s.cre_name || '',
+    'CIT Vehicle': s.cit_branch || '',
     'Avg GP p/m': s.site_stats_6mo?.avg_gp != null ? Number(s.site_stats_6mo.avg_gp) : '',
     'Avg Transactions p/m': s.site_stats_6mo?.avg_transactions != null ? Number(s.site_stats_6mo.avg_transactions) : '',
     'Avg Revenue p/m': s.site_stats_6mo?.avg_revenue != null ? Number(s.site_stats_6mo.avg_revenue) : '',
   }));
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [{wch:26},{wch:14},{wch:30},{wch:18},{wch:12},{wch:16},{wch:14},{wch:12},{wch:16},{wch:14}];
+  ws['!cols'] = [{wch:26},{wch:14},{wch:30},{wch:18},{wch:12},{wch:16},{wch:14},{wch:22},{wch:22},{wch:12},{wch:16},{wch:14}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Nearest ATMs');
   const stamp = new Date().toISOString().slice(0,10);
