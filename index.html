@@ -2825,9 +2825,9 @@ function showBulkResults(results) {
         </select>
       </div>
       <div id="rep-modal-pin-row">
-        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Initial PIN</label>
+        <label id="rep-modal-pin-label" style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Initial PIN</label>
         <input id="rep-modal-pin" type="text" value="1234" maxlength="4" placeholder="1234" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
-        <div style="font-size:11px;color:#64748b;margin-top:4px">Rep can change their PIN after first login</div>
+        <div id="rep-modal-pin-hint" style="font-size:11px;color:#64748b;margin-top:4px">Rep can change their PIN after first login</div>
       </div>
       <div id="rep-modal-status-row" style="display:none">
         <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Status</label>
@@ -2886,6 +2886,8 @@ function openRepModal() {
   document.getElementById('rep-modal-email').value = '';
   document.getElementById('rep-modal-branch').value = 'Head Office';
   document.getElementById('rep-modal-pin').value = '1234';
+  document.getElementById('rep-modal-pin-label').textContent = 'Initial PIN';
+  document.getElementById('rep-modal-pin-hint').textContent = 'Rep can change their PIN after first login';
   document.getElementById('rep-modal-pin-row').style.display = 'block';
   document.getElementById('rep-modal-status-row').style.display = 'none';
   document.getElementById('rep-modal-title').textContent = 'Add New Rep';
@@ -2898,7 +2900,10 @@ function editRep(rep) {
   document.getElementById('rep-modal-name').value = rep.full_name;
   document.getElementById('rep-modal-email').value = rep.email;
   document.getElementById('rep-modal-branch').value = rep.branch || 'Head Office';
-  document.getElementById('rep-modal-pin-row').style.display = 'none';
+  document.getElementById('rep-modal-pin').value = '';
+  document.getElementById('rep-modal-pin-label').textContent = 'Reset PIN (optional)';
+  document.getElementById('rep-modal-pin-hint').textContent = 'Leave blank to keep their current PIN — only fill this in to reset it (e.g. if they’re locked out)';
+  document.getElementById('rep-modal-pin-row').style.display = 'block';
   document.getElementById('rep-modal-status-row').style.display = 'block';
   document.getElementById('rep-modal-status').value = String(rep.is_active);
   document.getElementById('rep-modal-title').textContent = 'Edit Rep';
@@ -2941,7 +2946,7 @@ async function saveRep() {
         full_name: name,
         email,
         branch,
-        pin: pin || '1234',
+        pin: pin || (id ? undefined : '1234'),
         is_active: isActive,
       })
     });
