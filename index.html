@@ -379,7 +379,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
       <div class="sub-tabs">
         <button class="sub-tab-btn active" id="subtab-apps" type="button" onclick="switchRepView('apps')">Site Applications</button>
         <button class="sub-tab-btn" id="subtab-pipeline" type="button" onclick="switchRepView('pipeline')">Pipeline</button>
-        <button class="sub-tab-btn" id="subtab-sitescout" type="button" onclick="switchRepView('sitescout')">📍 Site Scout</button>
+        <button class="sub-tab-btn" id="subtab-sitescout" type="button" onclick="switchRepView('sitescout')">📍 Nearby ATM Finder</button>
         <button class="sub-tab-btn" id="subtab-reps" type="button" onclick="switchRepView('reps')" style="display:none">👥 Manage Reps</button>
       </div>
 
@@ -454,7 +454,7 @@ tr:hover td{background:rgba(0,180,216,.02)}
 
       <div id="view-sitescout" style="display:none">
         <div class="sec" style="margin-bottom:16px">
-          <div class="sec-hd"><div class="sec-ico">📍</div><div><div class="sec-title">Site Scout</div><div class="sec-desc">Find the nearest existing ATMs to a candidate site and see how they perform</div></div></div>
+          <div class="sec-hd"><div class="sec-ico">📍</div><div><div class="sec-title">Nearby ATM Finder</div><div class="sec-desc">Find the closest existing ATMs to any address and see their monthly performance</div></div></div>
           <div class="sec-body">
             <div class="alert alert-i" style="margin-bottom:16px">ℹ️ Enter a candidate site address to see the 10 nearest existing ATMs and their average monthly performance (last 6 months).</div>
             <div class="grid2">
@@ -1873,7 +1873,7 @@ async function runSiteScoutWithCoords(lat, lng, label) {
   statusEl.style.color = 'var(--sub)';
   let sites;
   try {
-    const r = await fetch(`${CRE_SUPA}/rest/v1/sites?select=terminal_id,site_name,region,terminal_type,cre_name,business_address,city,gps_lat,gps_lng,site_stats_6mo(avg_gp,avg_transactions,avg_revenue,months_of_data)&gps_lat=not.is.null`, {
+    const r = await fetch(`${CRE_SUPA}/rest/v1/sites?select=terminal_id,site_name,region,terminal_type,cre_name,cit_branch,business_address,city,gps_lat,gps_lng,site_stats_6mo(avg_gp,avg_transactions,avg_revenue,months_of_data)&gps_lat=not.is.null`, {
       headers: { 'apikey': CRE_SKEY, 'Authorization': `Bearer ${CRE_SKEY}` }
     });
     if (!r.ok) throw new Error(`status ${r.status}`);
@@ -1892,17 +1892,25 @@ async function runSiteScoutWithCoords(lat, lng, label) {
   statusEl.textContent = `✓ Located: ${label} — showing ${nearest.length} nearest of ${sites.length} sites with known GPS`;
   statusEl.style.color = 'var(--green)';
 
+  window._ssLastResults = nearest;
+  window._ssLastLabel = label;
+
   resultsEl.innerHTML = `
     <div class="tbl">
-      <div class="tbl-hd"><div class="tbl-title">Nearest ATMs</div></div>
+      <div class="tbl-hd">
+        <div class="tbl-title">Nearest ATMs</div>
+        <button class="btn btn-dark" style="width:auto;padding:6px 14px;font-size:12px" onclick="exportSiteScoutToExcel()">📊 Export to Excel</button>
+      </div>
       <div style="overflow-x:auto">
         <table>
-          <thead><tr><th>Site</th><th>Distance</th><th>Region</th><th>Cashing Type</th><th>Avg GP p/m</th><th>Avg Trans p/m</th><th>Avg Revenue p/m</th></tr></thead>
+          <thead><tr><th>Site</th><th>Distance</th><th>Region</th><th>Cashing Type</th><th>CRE Name</th><th>CIT Vehicle</th><th>Avg GP p/m</th><th>Avg Trans p/m</th><th>Avg Revenue p/m</th></tr></thead>
           <tbody>${nearest.map(s => `<tr>
             <td><div style="font-weight:600">${esc(s.site_name||s.terminal_id)}</div><div style="font-size:11px;color:var(--muted)">${esc(s.business_address||'')}${s.city?', '+esc(s.city):''}</div></td>
             <td style="font-family:monospace;color:var(--teal)">${s.distanceKm.toFixed(1)} km</td>
             <td style="color:var(--sub);font-size:12px">${esc(s.region||'—')}</td>
             <td style="color:var(--sub);font-size:12px">${esc(s.terminal_type||'—')}</td>
+            <td style="color:var(--sub);font-size:12px">${esc(s.cre_name||'—')}</td>
+            <td style="color:var(--sub);font-size:12px">${esc(s.cit_branch||'—')}</td>
             <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_gp!=null ? 'R'+Number(s.site_stats_6mo.avg_gp).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
             <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_transactions!=null ? Number(s.site_stats_6mo.avg_transactions).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
             <td style="font-family:monospace;font-size:12px">${s.site_stats_6mo?.avg_revenue!=null ? 'R'+Number(s.site_stats_6mo.avg_revenue).toLocaleString('en-ZA',{maximumFractionDigits:0}) : '—'}</td>
@@ -1910,6 +1918,32 @@ async function runSiteScoutWithCoords(lat, lng, label) {
         </table>
       </div>
     </div>`;
+}
+
+function exportSiteScoutToExcel() {
+  const nearest = window._ssLastResults || [];
+  if (!nearest.length) { alert('No results to export — run a search first.'); return; }
+  if (typeof XLSX === 'undefined') { alert('Export library failed to load — check your connection and try again.'); return; }
+  const rows = nearest.map(s => ({
+    Site: s.site_name || s.terminal_id,
+    'Terminal ID': s.terminal_id,
+    Address: s.business_address || '',
+    City: s.city || '',
+    'Distance (km)': Number(s.distanceKm.toFixed(1)),
+    Region: s.region || '',
+    'Cashing Type': s.terminal_type || '',
+    'CRE Name': s.cre_name || '',
+    'CIT Vehicle': s.cit_branch || '',
+    'Avg GP p/m': s.site_stats_6mo?.avg_gp != null ? Number(s.site_stats_6mo.avg_gp) : '',
+    'Avg Transactions p/m': s.site_stats_6mo?.avg_transactions != null ? Number(s.site_stats_6mo.avg_transactions) : '',
+    'Avg Revenue p/m': s.site_stats_6mo?.avg_revenue != null ? Number(s.site_stats_6mo.avg_revenue) : '',
+  }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{wch:26},{wch:14},{wch:30},{wch:18},{wch:12},{wch:16},{wch:14},{wch:22},{wch:22},{wch:12},{wch:16},{wch:14}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Nearest ATMs');
+  const stamp = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `ATM-Site-Scout-${stamp}.xlsx`);
 }
 
 function getStepHTML(s) {
@@ -2791,9 +2825,9 @@ function showBulkResults(results) {
         </select>
       </div>
       <div id="rep-modal-pin-row">
-        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Initial PIN</label>
+        <label id="rep-modal-pin-label" style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Initial PIN</label>
         <input id="rep-modal-pin" type="text" value="1234" maxlength="4" placeholder="1234" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
-        <div style="font-size:11px;color:#64748b;margin-top:4px">Rep can change their PIN after first login</div>
+        <div id="rep-modal-pin-hint" style="font-size:11px;color:#64748b;margin-top:4px">Rep can change their PIN after first login</div>
       </div>
       <div id="rep-modal-status-row" style="display:none">
         <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Status</label>
@@ -2852,6 +2886,8 @@ function openRepModal() {
   document.getElementById('rep-modal-email').value = '';
   document.getElementById('rep-modal-branch').value = 'Head Office';
   document.getElementById('rep-modal-pin').value = '1234';
+  document.getElementById('rep-modal-pin-label').textContent = 'Initial PIN';
+  document.getElementById('rep-modal-pin-hint').textContent = 'Rep can change their PIN after first login';
   document.getElementById('rep-modal-pin-row').style.display = 'block';
   document.getElementById('rep-modal-status-row').style.display = 'none';
   document.getElementById('rep-modal-title').textContent = 'Add New Rep';
@@ -2864,7 +2900,10 @@ function editRep(rep) {
   document.getElementById('rep-modal-name').value = rep.full_name;
   document.getElementById('rep-modal-email').value = rep.email;
   document.getElementById('rep-modal-branch').value = rep.branch || 'Head Office';
-  document.getElementById('rep-modal-pin-row').style.display = 'none';
+  document.getElementById('rep-modal-pin').value = '';
+  document.getElementById('rep-modal-pin-label').textContent = 'Reset PIN (optional)';
+  document.getElementById('rep-modal-pin-hint').textContent = 'Leave blank to keep their current PIN — only fill this in to reset it (e.g. if they’re locked out)';
+  document.getElementById('rep-modal-pin-row').style.display = 'block';
   document.getElementById('rep-modal-status-row').style.display = 'block';
   document.getElementById('rep-modal-status').value = String(rep.is_active);
   document.getElementById('rep-modal-title').textContent = 'Edit Rep';
@@ -2907,7 +2946,7 @@ async function saveRep() {
         full_name: name,
         email,
         branch,
-        pin: pin || '1234',
+        pin: pin || (id ? undefined : '1234'),
         is_active: isActive,
       })
     });
