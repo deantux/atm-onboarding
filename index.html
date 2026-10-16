@@ -369,6 +369,17 @@ tr:hover td{background:rgba(0,180,216,.02)}
         </div>
       </div>
 
+      <div id="docusign-consent-banner" style="display:none;margin-bottom:20px;background:rgba(245,166,35,.1);border:1px solid var(--orange);border-radius:var(--r);padding:14px 18px;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="font-size:13px;color:var(--text)">
+          <strong>⚠️ One-time setup needed:</strong> connect your DocuSign account before you can send contracts.
+          <span style="color:var(--muted)">(Takes 30 seconds — only needed once.)</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-teal" style="width:auto;padding:7px 14px;font-size:12px" onclick="connectDocuSign()">Connect DocuSign</button>
+          <button class="btn btn-dark" style="width:auto;padding:7px 14px;font-size:12px" onclick="recheckDocuSignConsent()" id="ds-recheck-btn">I've done this — check again</button>
+        </div>
+      </div>
+
       <div class="stats">
         <div class="stat"><div class="stat-l">Total</div><div class="stat-v" id="s-tot">0</div></div>
         <div class="stat"><div class="stat-l">Needs Review</div><div class="stat-v o" id="s-rev">0</div></div>
@@ -813,7 +824,47 @@ function finishRepLogin(rep) {
   document.getElementById('hdr-rep-name').textContent=`Signed in: ${rep.name}`;
   document.getElementById('hdr-rep-name').style.display='inline';
   document.getElementById('hdr-settings-btn').style.display='inline';
+  checkDocuSignConsent();
   loadApps();
+}
+
+const DOCUSIGN_FN_URL = 'https://cxyntiiegbwmgslwyfmn.supabase.co/functions/v1/send-docusign';
+
+async function checkDocuSignConsent() {
+  if (!currentRep?.email) return;
+  const banner = document.getElementById('docusign-consent-banner');
+  try {
+    const r = await fetch(`${DOCUSIGN_FN_URL}?test_auth_email=${encodeURIComponent(currentRep.email)}`, {
+      headers: { 'apikey': SKEY }
+    });
+    const data = await r.json();
+    if (data.success && data.consent_ok === false) {
+      window._dsConsentUrl = data.consent_url;
+      banner.style.display = 'flex';
+    } else {
+      banner.style.display = 'none';
+    }
+  } catch(e) {
+    // Network hiccup — don't nag the rep over something we can't confirm either way
+    banner.style.display = 'none';
+  }
+}
+
+function connectDocuSign() {
+  window.open(window._dsConsentUrl || 'https://account.docusign.com/oauth/auth?response_type=code&scope=signature%20impersonation&client_id=b6138055-cc3c-44e8-851a-5a08d6c617e2&redirect_uri=http://localhost', '_blank');
+}
+
+async function recheckDocuSignConsent() {
+  const btn = document.getElementById('ds-recheck-btn');
+  const original = btn.textContent;
+  btn.textContent = '⏳ Checking...'; btn.disabled = true;
+  await checkDocuSignConsent();
+  btn.textContent = original; btn.disabled = false;
+  if (document.getElementById('docusign-consent-banner').style.display === 'none') {
+    alert('✅ DocuSign connected! You can now send contracts.');
+  } else {
+    alert("⚠️ Still not connected. Make sure you clicked Accept on DocuSign's permission screen, then try again.");
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -866,6 +917,7 @@ function repLogout() {
   document.getElementById('r-pin').value='';
   document.getElementById('hdr-rep-name').style.display='none';
   document.getElementById('hdr-settings-btn').style.display='none';
+  document.getElementById('docusign-consent-banner').style.display='none';
 }
 
 // ══════════════════════════════════════════════
