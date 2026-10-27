@@ -253,6 +253,52 @@ tr:hover td{background:rgba(0,160,223,.05)}
 #hdr-rep-name{font-size:14px!important}
 #hdr-settings-btn{font-size:12px!important;padding:8px 16px!important}
 @media(max-width:640px){.hdr{height:68px;padding:0 16px}.logo{width:44px;height:44px;font-size:15px}.hdr-name{font-size:16px}.hdr-sub{font-size:10px}.hdr .badge{font-size:11px;padding:6px 12px}}
+/* Banner layout: logo | tab switch | rep tools. Wide Rep Portal. Phone layout. */
+.hdr{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:24px}
+.hdr .hdr-nav{margin:0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);box-shadow:none}
+.hdr .tab-btn{color:#d6dbee;padding:10px 26px;font-size:14px}
+.hdr .tab-btn:hover:not(.active){color:#fff}
+.hdr .tab-btn.active{background:#fff;color:#0d0c55}
+.hdr-r{display:flex;align-items:center;gap:12px;justify-self:end}
+.hdr-signout{font-size:12px!important;padding:8px 16px!important}
+.only-mobile{display:none}
+.wrap{transition:max-width .2s}
+body.rep-wide .wrap{max-width:1280px}
+body.rep-wide .stats{gap:16px}
+@media(max-width:900px){
+  .hdr{grid-template-columns:1fr auto;grid-template-areas:"brand tools" "nav nav";height:auto;padding:10px 16px 12px;row-gap:10px;column-gap:10px}
+  .hdr-l{grid-area:brand}
+  .hdr-r{grid-area:tools}
+  .hdr .hdr-nav{grid-area:nav;width:100%}
+  .hdr .tab-btn{flex:1;padding:10px 8px;font-size:13px}
+  .hdr-signout,#hdr-settings-btn,#hdr-rep-name{display:none!important}
+  .only-mobile{display:inline-flex}
+  .hdr-sub{display:none}
+  .logo{width:42px;height:42px;font-size:14px}
+  .hdr-name{font-size:17px}
+  .hdr .badge{font-size:10px;padding:5px 10px}
+  body.rep-wide .wrap{max-width:100%}
+}
+@media(max-width:640px){
+  .hdr{height:auto}
+  .sub-tabs{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .sub-tab-btn{white-space:nowrap;padding:8px 14px;flex:0 0 auto}
+  .tbl{overflow-x:auto}
+  .tbl table{min-width:640px}
+  .tbl-hd{flex-wrap:wrap;gap:8px}
+  #rep-dash h1{font-size:22px!important}
+  #rep-dash .btn{padding:10px 14px}
+}
+/* Polish */
+.stat{border-top:3px solid var(--teal)}
+.stat:nth-child(2){border-top-color:#d98a00}
+.stat:nth-child(4){border-top-color:var(--green)}
+.stat-v{letter-spacing:-.5px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #00a0df;outline-offset:2px}
+@media(hover:none){.btn,.tab-btn,.sub-tab-btn{min-height:42px}}
+.hdr-r>*,.hdr .tab-btn,.hdr-name,.hdr .badge{white-space:nowrap}
+@media(max-width:1280px){#hdr-rep-name{display:none!important}.hdr{padding:0 28px}}
+@media(max-width:1100px){.hdr .tab-btn{padding:10px 16px}.hdr-name{font-size:19px}.hdr-sub{display:none}}
 </style>
 </head>
 <body>
@@ -266,20 +312,19 @@ tr:hover td{background:rgba(0,160,223,.05)}
       <div class="hdr-sub">Smart ATM Onboarding</div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px">
+  <nav class="tabs hdr-nav">
+    <button class="tab-btn active" id="tab-client" type="button">Client Application</button>
+    <button class="tab-btn" id="tab-rep" type="button">Rep Portal</button>
+  </nav>
+  <div class="hdr-r">
     <span id="hdr-rep-name" style="font-size:11px;color:var(--sub);display:none"></span>
-    <button class="btn btn-dark" style="font-size:10px;padding:4px 10px;margin-left:12px;display:none" id="hdr-settings-btn" onclick="openPINModal()">⚙️ Settings</button>
+    <button class="btn btn-dark" style="font-size:10px;padding:4px 10px;display:none" id="hdr-settings-btn" onclick="openPINModal()">⚙️ Settings</button>
+    <button class="btn btn-dark hdr-signout" style="display:none" id="hdr-signout-btn" type="button" onclick="repLogout()">Sign Out</button>
     <span class="badge">Pay Your Way</span>
   </div>
 </header>
 
 <div class="wrap">
-
-  <!-- TABS -->
-  <div class="tabs">
-    <button class="tab-btn active" id="tab-client" type="button">Client Application</button>
-    <button class="tab-btn" id="tab-rep" type="button">Rep Portal</button>
-  </div>
 
   <!-- ══════════════ CLIENT PAGE ══════════════ -->
   <div class="page active" id="page-client">
@@ -385,7 +430,7 @@ tr:hover td{background:rgba(0,160,223,.05)}
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
           <button class="btn btn-teal" style="width:auto" onclick="genLink()">+ Generate Client Link</button>
           <button class="btn btn-dark" style="width:auto" onclick="openBulkUpload()">📥 Bulk Upload</button>
-          <button class="btn btn-dark" onclick="repLogout()">Sign Out</button>
+          <button class="btn btn-dark only-mobile" onclick="repLogout()">Sign Out</button>
         </div>
       </div>
 
@@ -718,6 +763,7 @@ function showTab(t) {
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+t).classList.add('active');
   document.getElementById('tab-'+t).classList.add('active');
+  document.body.classList.toggle('rep-wide', t==='rep');
 }
 
 // ══════════════════════════════════════════════
@@ -842,6 +888,7 @@ function finishRepLogin(rep) {
   document.getElementById('hdr-rep-name').textContent=`Signed in: ${rep.name}`;
   document.getElementById('hdr-rep-name').style.display='inline';
   document.getElementById('hdr-settings-btn').style.display='inline';
+  document.getElementById('hdr-signout-btn').style.display='inline-flex';
   loadApps();
 }
 
@@ -895,6 +942,7 @@ function repLogout() {
   document.getElementById('r-pin').value='';
   document.getElementById('hdr-rep-name').style.display='none';
   document.getElementById('hdr-settings-btn').style.display='none';
+  document.getElementById('hdr-signout-btn').style.display='none';
 }
 
 // ══════════════════════════════════════════════
