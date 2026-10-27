@@ -298,17 +298,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 @media(hover:none){.btn,.tab-btn,.sub-tab-btn{min-height:42px}}
 .hdr-r>*,.hdr .tab-btn,.hdr-name,.hdr .badge{white-space:nowrap}
 @media(max-width:1280px){#hdr-rep-name{display:none!important}.hdr{padding:0 28px}}
-@media(max-width:1100px){.hdr .tab-btn{padding:10px 16px}.hdr-name{font-size:19px}.hdr-sub{display:none}}
+@media(max-width:1100px){.hdr .tab-btn{padding:10px 16px}.hdr-name{font-size:19px}}
 /* myATM branding: gradient banner, script wordmark, Montserrat headings */
 .hdr{background:linear-gradient(90deg,#0e0c55 0%,#0e0c55 40%,#0a4a94 100%);border-bottom:0;position:sticky;box-shadow:0 3px 0 0 transparent}
 .hdr::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,#0e0c55,#47c7ef)}
-.hdr-logo{height:62px;width:auto;display:block}
 .hdr-l{align-items:center}
-.hdr-sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;padding-left:16px;border-left:1px solid rgba(255,255,255,.3)}
+.hdr-sub{font-size:12px;letter-spacing:2px;text-transform:uppercase}
 .hdr .tab-btn.active{color:#0e0c55}
 h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 3','Segoe UI',system-ui,sans-serif}
-@media(max-width:900px){.hdr-logo{height:44px}.hdr-sub{display:none}}
-@media(max-width:1100px){.hdr-sub{display:none}}
+@media(max-width:900px){.hdr-sub{display:none}}
 .hdr .badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.45);color:#fff}
 </style>
 </head>
@@ -317,8 +315,11 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
 <!-- HEADER -->
 <header class="hdr">
   <div class="hdr-l">
-    <img class="hdr-logo" src="myatm-logo.png" alt="myATM" />
-    <div class="hdr-sub">Smart ATM Onboarding</div>
+    <div class="logo">ATM</div>
+    <div>
+      <div class="hdr-name">ATM SOLUTIONS</div>
+      <div class="hdr-sub">Smart ATM Onboarding</div>
+    </div>
   </div>
   <nav class="tabs hdr-nav">
     <button class="tab-btn active" id="tab-client" type="button">Client Application</button>
