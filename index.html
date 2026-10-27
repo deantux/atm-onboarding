@@ -4,12 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ATM Solutions — Smart ATM Site Application</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --navy:#f4f6fa;--navy2:#0d0c55;--card:#ffffff;--card2:#f4f6fa;
-  --teal:#00a0df;--teal2:#0087be;--tl:rgba(0,160,223,.10);--tb:rgba(0,160,223,.30);
+  --teal:#0069b5;--teal2:#005a9c;--tl:rgba(0,105,181,.10);--tb:rgba(0,105,181,.30);
   --border:#dbdfec;--border2:#c9cfe2;--text:#14142e;--sub:#5c5f7a;--muted:#8a8fa8;
   --green:#23824a;--orange:#b26a00;--red:#a83a3a;--white:#14142e;--r:8px;
 }
@@ -192,7 +192,7 @@ table{width:100%;border-collapse:collapse}
 th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;padding:9px 18px;border-bottom:1px solid var(--border);background:#f4f6fa}
 td{padding:11px 18px;font-size:13px;border-bottom:1px solid #e7eaf3;vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(0,160,223,.05)}
+tr:hover td{background:rgba(0,105,181,.05)}
 .badge2{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase}
 .b-sub{background:rgba(245,166,35,.1);color:var(--orange);border:1px solid rgba(245,166,35,.2)}
 .b-apr{background:var(--tl);color:var(--teal);border:1px solid var(--tb)}
@@ -237,9 +237,9 @@ tr:hover td{background:rgba(0,160,223,.05)}
 /* Light theme (matches the CRE approvals app) */
 .hdr{background:#0d0c55;border-bottom:1px solid #0d0c55}
 .hdr-name{color:#fff}
-.hdr-sub{color:#7fd3f5}
+.hdr-sub{color:#47c7ef}
 #hdr-rep-name{color:#c9cfe2!important}
-.logo{background:#00a0df;color:#fff}
+.logo{background:#0069b5;color:#fff}
 .sec,.gate-card,.stat,.tabs{box-shadow:0 1px 3px rgba(13,12,85,.07)}
 .tab-btn.active,.sub-tab-btn.active{color:#fff}
 .btn-teal{color:#fff}
@@ -294,11 +294,22 @@ body.rep-wide .stats{gap:16px}
 .stat:nth-child(2){border-top-color:#d98a00}
 .stat:nth-child(4){border-top-color:var(--green)}
 .stat-v{letter-spacing:-.5px}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #00a0df;outline-offset:2px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #0069b5;outline-offset:2px}
 @media(hover:none){.btn,.tab-btn,.sub-tab-btn{min-height:42px}}
 .hdr-r>*,.hdr .tab-btn,.hdr-name,.hdr .badge{white-space:nowrap}
 @media(max-width:1280px){#hdr-rep-name{display:none!important}.hdr{padding:0 28px}}
 @media(max-width:1100px){.hdr .tab-btn{padding:10px 16px}.hdr-name{font-size:19px}.hdr-sub{display:none}}
+/* myATM branding: gradient banner, script wordmark, Montserrat headings */
+.hdr{background:linear-gradient(90deg,#0e0c55 0%,#0e0c55 40%,#0a4a94 100%);border-bottom:0;position:sticky;box-shadow:0 3px 0 0 transparent}
+.hdr::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,#0e0c55,#47c7ef)}
+.hdr-logo{height:62px;width:auto;display:block}
+.hdr-l{align-items:center}
+.hdr-sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;padding-left:16px;border-left:1px solid rgba(255,255,255,.3)}
+.hdr .tab-btn.active{color:#0e0c55}
+h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 3','Segoe UI',system-ui,sans-serif}
+@media(max-width:900px){.hdr-logo{height:44px}.hdr-sub{display:none}}
+@media(max-width:1100px){.hdr-sub{display:none}}
+.hdr .badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.45);color:#fff}
 </style>
 </head>
 <body>
@@ -306,11 +317,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <!-- HEADER -->
 <header class="hdr">
   <div class="hdr-l">
-    <div class="logo">ATM</div>
-    <div>
-      <div class="hdr-name">ATM SOLUTIONS</div>
-      <div class="hdr-sub">Smart ATM Onboarding</div>
-    </div>
+    <img class="hdr-logo" src="myatm-logo.png" alt="myATM" />
+    <div class="hdr-sub">Smart ATM Onboarding</div>
   </div>
   <nav class="tabs hdr-nav">
     <button class="tab-btn active" id="tab-client" type="button">Client Application</button>
@@ -992,7 +1000,7 @@ let CURRENT_LEAD_ID = null;
 let CONVERTING_LEAD_ID = null; // set when the rep is filling in the Client Application on behalf of a lead
 const STAGES = ['Lead Captured','Client Contacted','Client Interested','Meeting scheduled','Proposal Sent','Deal Signed','Client not interested'];
 const STAGE_COLORS = {
-  'Lead Captured':'#5c5f7a','Client Contacted':'#00a0df','Client Interested':'#23824a',
+  'Lead Captured':'#5c5f7a','Client Contacted':'#0069b5','Client Interested':'#23824a',
   'Meeting scheduled':'#F5A623','Proposal Sent':'#9B6DFF','Deal Signed':'#00E676','Client not interested':'#C8102E',
 };
 
@@ -1628,24 +1636,24 @@ function showDataCard(d, docusignURL) {
         </div>
 
         <!-- SIGNERS -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00a0df;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📧 Signers — Enter in DocuSign</div>
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#0069b5;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📧 Signers — Enter in DocuSign</div>
         <div style="background:#f4f6fa;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
             <div>
               <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 1 — ATM Solutions Rep (signs first)</div>
               <div style="font-weight:600;color:#fff">${d.repName}</div>
-              <div style="color:#00a0df;font-family:monospace;font-size:12px">${d.repEmail}</div>
+              <div style="color:#0069b5;font-family:monospace;font-size:12px">${d.repEmail}</div>
             </div>
             <div>
               <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 2 — Merchant (countersigns)</div>
               <div style="font-weight:600;color:#fff">${d.merchantName}</div>
-              <div style="color:#00a0df;font-family:monospace;font-size:12px">${d.merchantEmail}</div>
+              <div style="color:#0069b5;font-family:monospace;font-size:12px">${d.merchantEmail}</div>
             </div>
           </div>
         </div>
 
         <!-- BUSINESS DETAILS -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00a0df;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏢 Business Details</div>
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#0069b5;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏢 Business Details</div>
         <div style="background:#f4f6fa;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           ${dataRow('Trading Name', d.tradingName)}
           ${dataRow('Registration No.', d.regNo)}
@@ -1654,7 +1662,7 @@ function showDataCard(d, docusignURL) {
         </div>
 
         <!-- COMMERCIAL TERMS -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00a0df;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">💰 Commercial Terms</div>
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#0069b5;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">💰 Commercial Terms</div>
         <div style="background:#f4f6fa;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           ${dataRow('Monthly Service Fee (ex VAT)', d.serviceFee)}
           ${dataRow('Annual Escalation', d.escalation)}
@@ -1665,7 +1673,7 @@ function showDataCard(d, docusignURL) {
         </div>
 
         <!-- BANKING -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00a0df;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏦 Banking Details</div>
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#0069b5;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏦 Banking Details</div>
         <div style="background:#f4f6fa;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:20px">
           ${dataRow('Bank', d.bank)}
           ${dataRow('Account Holder', d.accHolder)}
@@ -1674,7 +1682,7 @@ function showDataCard(d, docusignURL) {
 
         <div style="display:flex;gap:10px;justify-content:flex-end">
           <button onclick="document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#f4f6fa;color:#14142e;border:1px solid #243D63;font-size:13px;font-weight:600;cursor:pointer">Cancel</button>
-          <button onclick="window.open('${docusignURL}','_blank');document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#00a0df;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer">✉ Open Pre-filled DocuSign →</button>
+          <button onclick="window.open('${docusignURL}','_blank');document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#0069b5;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer">✉ Open Pre-filled DocuSign →</button>
         </div>
       </div>
     </div>`;
@@ -2526,7 +2534,7 @@ window.addEventListener('click',(e)=>{ if(e.target===document.getElementById('pi
 <!-- PIN Change Modal -->
 <div id="pin-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,12,85,.55);z-index:9999;align-items:center;justify-content:center">
 <div style="background:#ffffff;border:1px solid #dbdfec;border-radius:12px;padding:28px;max-width:420px;width:90%">
-<h3 style="color:#00a0df;margin:0 0 20px;font-size:18px">Change Your PIN</h3>
+<h3 style="color:#0069b5;margin:0 0 20px;font-size:18px">Change Your PIN</h3>
 <div style="margin-bottom:14px"><label style="display:block;font-size:12px;color:#5c5f7a;margin-bottom:5px">Current PIN</label><input type="password" id="pin-current" placeholder="Enter current PIN" style="width:100%;padding:8px 12px;border:1px solid #dbdfec;border-radius:6px;background:#fff;color:#14142e;box-sizing:border-box;font-size:14px"></div>
 <div style="margin-bottom:14px"><label style="display:block;font-size:12px;color:#5c5f7a;margin-bottom:5px">New PIN (4+ chars)</label><input type="password" id="pin-new" placeholder="Enter new PIN" style="width:100%;padding:8px 12px;border:1px solid #dbdfec;border-radius:6px;background:#fff;color:#14142e;box-sizing:border-box;font-size:14px"></div>
 <div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#5c5f7a;margin-bottom:5px">Confirm PIN</label><input type="password" id="pin-confirm" placeholder="Confirm new PIN" style="width:100%;padding:8px 12px;border:1px solid #dbdfec;border-radius:6px;background:#fff;color:#14142e;box-sizing:border-box;font-size:14px"></div>
@@ -2538,14 +2546,14 @@ window.addEventListener('click',(e)=>{ if(e.target===document.getElementById('pi
 <div id="bulk-modal" style="display:none;position:fixed;inset:0;background:rgba(13,12,85,.55);z-index:1000;overflow-y:auto;padding:20px;box-sizing:border-box">
   <div style="max-width:700px;margin:0 auto;background:#f4f6fa;border:1px solid #dbdfec;border-radius:12px;padding:28px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <h3 style="color:#00a0df;margin:0;font-size:18px">📥 Bulk Site Upload</h3>
+      <h3 style="color:#0069b5;margin:0;font-size:18px">📥 Bulk Site Upload</h3>
       <button onclick="closeBulkUpload()" style="background:none;border:none;color:#5c5f7a;font-size:20px;cursor:pointer">✕</button>
     </div>
 
     <!-- Step 1: Download Template -->
     <div id="bulk-step1">
       <div style="background:rgba(0,180,216,.08);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:16px;margin-bottom:16px">
-        <div style="font-size:13px;font-weight:700;color:#00a0df;margin-bottom:8px">How it works</div>
+        <div style="font-size:13px;font-weight:700;color:#0069b5;margin-bottom:8px">How it works</div>
         <div style="font-size:12px;color:#5c5f7a;line-height:1.7">
           1. Download the CSV template below<br>
           2. Fill in your sites in Excel (one row per site)<br>
@@ -2562,7 +2570,7 @@ window.addEventListener('click',(e)=>{ if(e.target===document.getElementById('pi
       <div style="margin-bottom:16px">
         <label style="display:block;font-size:12px;color:#5c5f7a;margin-bottom:8px;font-weight:600">Upload completed CSV</label>
         <input type="file" id="bulk-file-input" accept=".csv" onchange="handleBulkFile(this)" style="display:none">
-        <div onclick="document.getElementById('bulk-file-input').click()" style="border:2px dashed #dbdfec;border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='#00a0df'" onmouseout="this.style.borderColor='#dbdfec'">
+        <div onclick="document.getElementById('bulk-file-input').click()" style="border:2px dashed #dbdfec;border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='#0069b5'" onmouseout="this.style.borderColor='#dbdfec'">
           <div style="font-size:24px;margin-bottom:8px">📂</div>
           <div style="font-size:13px;color:#14142e;font-weight:600">Click to select CSV file</div>
           <div style="font-size:11px;color:#5c5f7a;margin-top:4px">Comma-separated values (.csv)</div>
@@ -2589,7 +2597,7 @@ window.addEventListener('click',(e)=>{ if(e.target===document.getElementById('pi
     <div id="bulk-progress" style="display:none">
       <div style="font-size:13px;color:#14142e;margin-bottom:12px;font-weight:600">Creating applications...</div>
       <div style="background:#fff;border-radius:6px;height:8px;margin-bottom:12px;overflow:hidden">
-        <div id="bulk-progress-bar" style="height:100%;background:#00a0df;transition:width .3s;width:0%"></div>
+        <div id="bulk-progress-bar" style="height:100%;background:#0069b5;transition:width .3s;width:0%"></div>
       </div>
       <div id="bulk-progress-log" style="font-size:11px;color:#5c5f7a;max-height:200px;overflow-y:auto;background:#fff;border-radius:6px;padding:10px;font-family:monospace"></div>
     </div>
@@ -2890,7 +2898,7 @@ function showBulkResults(results) {
       (results.failed.length ? '\n' + results.failed.map(r => `${r.name},,Failed: ${r.error}`).join('\n') : '');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
-    detailEl.innerHTML += `<div style="margin-top:10px"><a href="${url}" download="Bulk_Upload_Results.csv" style="color:#00a0df;font-size:11px">⬇️ Download results CSV</a></div>`;
+    detailEl.innerHTML += `<div style="margin-top:10px"><a href="${url}" download="Bulk_Upload_Results.csv" style="color:#0069b5;font-size:11px">⬇️ Download results CSV</a></div>`;
   }
 }
 </script>
@@ -2900,7 +2908,7 @@ function showBulkResults(results) {
 <div id="rep-modal" style="display:none;position:fixed;inset:0;background:rgba(13,12,85,.55);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px">
   <div style="background:#f4f6fa;border:1px solid #dbdfec;border-radius:12px;padding:28px;width:100%;max-width:480px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <h3 id="rep-modal-title" style="color:#00a0df;margin:0;font-size:18px">Add New Rep</h3>
+      <h3 id="rep-modal-title" style="color:#0069b5;margin:0;font-size:18px">Add New Rep</h3>
       <button onclick="closeRepModal()" style="background:none;border:none;color:#5c5f7a;font-size:20px;cursor:pointer">✕</button>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px">
@@ -2973,7 +2981,7 @@ async function loadReps() {
           </span>
         </td>
         <td style="padding:12px 16px">
-          <button onclick="editRep(${JSON.stringify(rep).replace(/"/g,'&quot;')})" style="background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.3);color:#00a0df;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">Edit</button>
+          <button onclick="editRep(${JSON.stringify(rep).replace(/"/g,'&quot;')})" style="background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.3);color:#0069b5;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">Edit</button>
         </td>
       </tr>
     `).join('');
