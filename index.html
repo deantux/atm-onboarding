@@ -4,22 +4,22 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ATM Solutions — Smart ATM Site Application</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0A1628;--navy2:#112040;--card:#0F1E38;--card2:#142440;
-  --teal:#00B4D8;--teal2:#0096C7;--tl:rgba(0,180,216,.1);--tb:rgba(0,180,216,.25);
-  --border:#1E3555;--border2:#243D63;--text:#E8EDF5;--sub:#8FA3BF;--muted:#4A6080;
-  --green:#00C896;--orange:#F5A623;--red:#C8102E;--white:#fff;--r:8px;
+  --navy:#f4f6fa;--navy2:#0d0c55;--card:#ffffff;--card2:#f4f6fa;
+  --teal:#00a0df;--teal2:#0087be;--tl:rgba(0,160,223,.10);--tb:rgba(0,160,223,.30);
+  --border:#dbdfec;--border2:#c9cfe2;--text:#14142e;--sub:#5c5f7a;--muted:#8a8fa8;
+  --green:#23824a;--orange:#b26a00;--red:#a83a3a;--white:#14142e;--r:8px;
 }
-body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min-height:100vh}
+body{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;background:var(--navy);color:var(--text);min-height:100vh}
 
 /* HEADER */
 .hdr{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:9}
 .hdr-l{display:flex;align-items:center;gap:12px}
-.logo{width:34px;height:34px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:var(--navy);flex-shrink:0}
-.hdr-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;color:var(--white)}
+.logo{width:34px;height:34px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-weight:900;font-size:12px;color:#fff;flex-shrink:0}
+.hdr-name{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-weight:800;font-size:14px;color:var(--white)}
 .hdr-sub{font-size:10px;color:var(--teal);text-transform:uppercase;letter-spacing:1.5px}
 .badge{background:var(--tl);border:1px solid var(--tb);color:var(--teal);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase}
 
@@ -28,8 +28,8 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 
 /* TABS */
 .tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:32px;width:fit-content;position:relative;z-index:20}
-.tab-btn{padding:9px 24px;border-radius:6px;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer!important;color:var(--sub);background:transparent;transition:.15s;position:relative;z-index:21;pointer-events:all}
-.tab-btn.active{background:var(--teal);color:var(--navy)}
+.tab-btn{padding:9px 24px;border-radius:6px;border:none;font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer!important;color:var(--sub);background:transparent;transition:.15s;position:relative;z-index:21;pointer-events:all}
+.tab-btn.active{background:var(--teal);color:#fff}
 .tab-btn:hover:not(.active){color:var(--white)}
 
 /* PAGES */
@@ -39,17 +39,17 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 /* GATE */
 .gate{max-width:420px;margin:40px auto}
 .gate-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px}
-.gate-logo{width:50px;height:50px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:var(--navy);margin-bottom:18px}
-.gate-card h2{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:900;color:var(--white);margin-bottom:4px}
+.gate-logo{width:50px;height:50px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-weight:900;font-size:18px;color:#fff;margin-bottom:18px}
+.gate-card h2{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:20px;font-weight:900;color:var(--white);margin-bottom:4px}
 .gate-card p{font-size:12px;color:var(--sub);margin-bottom:22px;line-height:1.6}
-.sec-note{background:rgba(200,16,46,.05);border:1px solid rgba(200,16,46,.2);border-radius:var(--r);padding:12px 14px;font-size:12px;color:#ffaaaa;margin-bottom:20px;line-height:1.6}
+.sec-note{background:rgba(200,16,46,.05);border:1px solid rgba(200,16,46,.2);border-radius:var(--r);padding:12px 14px;font-size:12px;color:#a83a3a;margin-bottom:20px;line-height:1.6}
 .sec-note strong{color:var(--white);display:block;margin-bottom:3px}
 .access-note{font-size:11px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);line-height:1.7}
 
 /* FIELDS */
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
 .field label{font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
-.field input,.field select,.field textarea{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;transition:.15s}
+.field input,.field select,.field textarea{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;transition:.15s}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,180,216,.1)}
 .field input::placeholder{color:var(--muted)}
 .field select option{background:var(--card2)}
@@ -65,16 +65,16 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .alert{padding:10px 14px;border-radius:var(--r);font-size:12px;margin-bottom:14px;line-height:1.6}
 .alert-w{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:var(--orange)}
 .alert-i{background:var(--tl);border:1px solid var(--tb);color:var(--sub)}
-.alert-r{background:rgba(200,16,46,.08);border:1px solid rgba(200,16,46,.2);color:#ff8a9a}
+.alert-r{background:rgba(200,16,46,.08);border:1px solid rgba(200,16,46,.2);color:#a83a3a}
 .alert-g{background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);color:var(--green)}
 
 /* BUTTONS */
-.btn{padding:11px 24px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s;display:inline-flex;align-items:center;gap:7px}
-.btn-teal{background:var(--teal);color:var(--navy);font-weight:700;width:100%;justify-content:center}
+.btn{padding:11px 24px;border-radius:var(--r);font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn-teal{background:var(--teal);color:#fff;font-weight:700;width:100%;justify-content:center}
 .btn-teal:hover{background:var(--teal2)}
 .btn-dark{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
 .btn-dark:hover{background:var(--border)}
-.btn-green{background:var(--green);color:var(--navy);font-weight:700}
+.btn-green{background:var(--green);color:#fff;font-weight:700}
 .btn-green:hover{background:#00a87d}
 .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}
 
@@ -82,7 +82,7 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .sec{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden}
 .sec-hd{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .sec-ico{width:28px;height:28px;border-radius:6px;background:var(--tl);border:1px solid var(--tb);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.sec-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--white)}
+.sec-title{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px;font-weight:800;color:var(--white)}
 .sec-desc{font-size:11px;color:var(--sub)}
 .sec-body{padding:20px}
 
@@ -90,8 +90,8 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .prog{display:flex;align-items:center;margin-bottom:24px;overflow-x:auto;padding-bottom:4px;gap:0;flex-wrap:nowrap}
 .p-step{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .p-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid var(--border2);background:var(--card);color:var(--muted);flex-shrink:0}
-.p-dot.on{border-color:var(--teal);background:var(--teal);color:var(--navy)}
-.p-dot.done{border-color:var(--green);background:var(--green);color:var(--navy)}
+.p-dot.on{border-color:var(--teal);background:var(--teal);color:#fff}
+.p-dot.done{border-color:var(--green);background:var(--green);color:#fff}
 .p-label{font-size:11px;color:var(--muted);white-space:nowrap}
 .p-label.on{color:var(--white);font-weight:600}
 .p-label.done{color:var(--green)}
@@ -101,7 +101,7 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 /* HERO */
 .hero{margin-bottom:24px}
 .eyebrow{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:2px;margin-bottom:5px}
-.hero h1{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:900;color:var(--white);margin-bottom:6px;letter-spacing:-.5px}
+.hero h1{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:26px;font-weight:900;color:var(--white);margin-bottom:6px;letter-spacing:-.5px}
 .hero h1 span{color:var(--teal)}
 .hero p{font-size:13px;color:var(--sub)}
 
@@ -118,12 +118,12 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .rv-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;min-width:130px}
 .rv-val{color:var(--text);text-align:right}
 .rv-empty{color:var(--muted);font-style:italic;font-size:12px;text-align:right}
-.rv-sec{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:6px}
+.rv-sec{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:6px}
 .rv-sec button{font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--tb);background:var(--tl);color:var(--teal);cursor:pointer;margin-left:8px;font-weight:600}
 
 /* DOC UPLOAD */
 .doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.doc-cat{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px}
+.doc-cat{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px}
 .doc-card{background:var(--card2);border:1.5px dashed var(--border2);border-radius:10px;padding:14px;cursor:pointer;transition:.15s;position:relative;overflow:hidden;min-height:100px}
 .doc-card:hover{border-color:var(--teal)}
 .doc-card.uploaded{border-style:solid;border-color:var(--green);background:rgba(0,200,150,.04)}
@@ -132,25 +132,25 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .doc-title{font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px}
 .doc-sub{font-size:11px;color:var(--sub);line-height:1.4}
 .doc-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;margin-top:5px}
-.tag-r{background:rgba(200,16,46,.15);color:#ff8a9a;border:1px solid rgba(200,16,46,.2)}
+.tag-r{background:rgba(200,16,46,.15);color:#a83a3a;border:1px solid rgba(200,16,46,.2)}
 .tag-o{background:var(--tl);color:var(--teal);border:1px solid var(--tb)}
 .doc-ok{font-size:11px;color:var(--green);margin-top:5px;font-weight:600}
 
 /* SUCCESS */
 .success{text-align:center;padding:60px 30px}
 .s-ico{width:68px;height:68px;background:rgba(0,200,150,.1);border:2px solid var(--green);border-radius:50%;font-size:26px;line-height:68px;margin:0 auto 20px}
-.success h2{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:900;color:var(--white);margin-bottom:8px}
+.success h2{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:24px;font-weight:900;color:var(--white);margin-bottom:8px}
 .success p{color:var(--sub);font-size:13px;max-width:380px;margin:0 auto 8px}
-.ref-pill{display:inline-block;background:var(--card2);border:1px solid var(--tb);border-radius:8px;padding:7px 22px;font-family:'Montserrat',sans-serif;font-size:18px;font-weight:900;color:var(--teal);margin:14px 0;letter-spacing:2px}
+.ref-pill{display:inline-block;background:var(--card2);border:1px solid var(--tb);border-radius:8px;padding:7px 22px;font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:18px;font-weight:900;color:var(--teal);margin:14px 0;letter-spacing:2px}
 .next-steps{max-width:360px;margin:18px auto 0;text-align:left}
 .ns{display:flex;gap:10px;margin-bottom:10px;font-size:12px;color:var(--sub)}
-.ns-num{width:20px;height:20px;background:var(--teal);color:var(--navy);border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ns-num{width:20px;height:20px;background:var(--teal);color:#fff;border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 
 /* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
 .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
 .stat-l{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
-.stat-v{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:900;color:var(--white)}
+.stat-v{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:26px;font-weight:900;color:var(--white)}
 .stat-v.t{color:var(--teal)}.stat-v.g{color:var(--green)}.stat-v.o{color:var(--orange)}
 
 /* TABLE */
@@ -158,8 +158,8 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 
 /* SUB-TABS (Applications / Pipeline toggle) */
 .sub-tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:20px;width:fit-content;gap:2px}
-.sub-tab-btn{padding:8px 20px;border-radius:6px;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--sub);background:transparent}
-.sub-tab-btn.active{background:var(--teal);color:var(--navy)}
+.sub-tab-btn{padding:8px 20px;border-radius:6px;border:none;font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--sub);background:transparent}
+.sub-tab-btn.active{background:var(--teal);color:#fff}
 
 /* KANBAN — vertical accordion, no horizontal scroll */
 .kanban-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
@@ -187,16 +187,16 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .activity-meta{color:var(--muted);font-size:10px;margin-top:3px}
 .followup-item{background:rgba(245,166,35,.08);border:1px solid var(--orange);border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:12px}
 .tbl-hd{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.tbl-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--white)}
+.tbl-title{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px;font-weight:800;color:var(--white)}
 table{width:100%;border-collapse:collapse}
-th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;padding:9px 18px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.15)}
-td{padding:11px 18px;font-size:13px;border-bottom:1px solid rgba(30,53,85,.5);vertical-align:middle}
+th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;padding:9px 18px;border-bottom:1px solid var(--border);background:#f4f6fa}
+td{padding:11px 18px;font-size:13px;border-bottom:1px solid #e7eaf3;vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(0,180,216,.02)}
+tr:hover td{background:rgba(0,160,223,.05)}
 .badge2{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase}
 .b-sub{background:rgba(245,166,35,.1);color:var(--orange);border:1px solid rgba(245,166,35,.2)}
 .b-apr{background:var(--tl);color:var(--teal);border:1px solid var(--tb)}
-.b-ds{background:rgba(100,150,255,.1);color:#7aa4ff;border:1px solid rgba(100,150,255,.2)}
+.b-ds{background:rgba(100,150,255,.1);color:#0d0c55;border:1px solid rgba(100,150,255,.2)}
 .b-sgn{background:rgba(0,200,150,.12);color:var(--green);border:1px solid rgba(0,200,150,.2)}
 .b-crm{background:rgba(0,200,150,.2);color:var(--green);border:1px solid rgba(0,200,150,.3)}
 .abtn{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--card2);color:var(--text);transition:.15s;white-space:nowrap}
@@ -205,10 +205,10 @@ tr:hover td{background:rgba(0,180,216,.02)}
 .abtn.g{border-color:rgba(0,200,150,.3);color:var(--green)}.abtn.g:hover{background:rgba(0,200,150,.08)}
 
 /* MODAL */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.overlay{position:fixed;inset:0;background:rgba(13,12,85,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto}
 .modal-hd{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:1}
-.modal-title{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;color:var(--white)}
+.modal-title{font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:15px;font-weight:800;color:var(--white)}
 .modal-body{padding:22px}
 .close-btn{background:var(--card2);border:1px solid var(--border2);color:var(--sub);border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px}
 
@@ -233,6 +233,16 @@ tr:hover td{background:rgba(0,180,216,.02)}
   .wrap{padding:18px 12px 60px}
   .sec-body{padding:14px}
 }
+
+/* Light theme (matches the CRE approvals app) */
+.hdr{background:#0d0c55;border-bottom:1px solid #0d0c55}
+.hdr-name{color:#fff}
+.hdr-sub{color:#7fd3f5}
+#hdr-rep-name{color:#c9cfe2!important}
+.logo{background:#00a0df;color:#fff}
+.sec,.gate-card,.stat,.tabs{box-shadow:0 1px 3px rgba(13,12,85,.07)}
+.tab-btn.active,.sub-tab-btn.active{color:#fff}
+.btn-teal{color:#fff}
 </style>
 </head>
 <body>
@@ -339,11 +349,11 @@ tr:hover td{background:rgba(0,180,216,.02)}
           <div id="r-err" class="alert alert-r" style="display:none">⚠️ Invalid credentials. Please try again.</div>
           <button class="btn btn-teal" onclick="repLogin()" style="margin-top:4px">Sign In →</button>
           <div style="display:flex;align-items:center;gap:10px;margin:16px 0 12px">
-            <div style="flex:1;height:1px;background:#1e3a5f"></div>
+            <div style="flex:1;height:1px;background:#dbdfec"></div>
             <span style="font-size:11px;color:#64748b">OR</span>
-            <div style="flex:1;height:1px;background:#1e3a5f"></div>
+            <div style="flex:1;height:1px;background:#dbdfec"></div>
           </div>
-          <button class="btn btn-dark" onclick="msLogin()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #1e3a5f">
+          <button class="btn btn-dark" onclick="msLogin()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dbdfec">
             <svg width="16" height="16" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
             Sign in with Microsoft
           </button>
@@ -467,9 +477,9 @@ tr:hover td{background:rgba(0,180,216,.02)}
           <div class="sec-body">
             <div class="alert alert-i" style="margin-bottom:16px">ℹ️ Enter a candidate site address to see the 10 nearest existing ATMs and their average monthly performance (last 6 months).</div>
             <div class="grid2">
-              <input type="text" id="ss-address" placeholder="Street address" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px"/>
-              <input type="text" id="ss-city" placeholder="City / Town" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px"/>
-              <input type="text" id="ss-postal" placeholder="Postal code (optional, improves accuracy)" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px"/>
+              <input type="text" id="ss-address" placeholder="Street address" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px"/>
+              <input type="text" id="ss-city" placeholder="City / Town" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px"/>
+              <input type="text" id="ss-postal" placeholder="Postal code (optional, improves accuracy)" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Source Sans 3','Segoe UI',system-ui,sans-serif;font-size:13px"/>
             </div>
             <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
               <button class="btn btn-teal" style="width:auto" onclick="runSiteScout()">🔍 Find Nearest ATMs</button>
@@ -924,7 +934,7 @@ let CURRENT_LEAD_ID = null;
 let CONVERTING_LEAD_ID = null; // set when the rep is filling in the Client Application on behalf of a lead
 const STAGES = ['Lead Captured','Client Contacted','Client Interested','Meeting scheduled','Proposal Sent','Deal Signed','Client not interested'];
 const STAGE_COLORS = {
-  'Lead Captured':'#8FA3BF','Client Contacted':'#00B4D8','Client Interested':'#00C896',
+  'Lead Captured':'#5c5f7a','Client Contacted':'#00a0df','Client Interested':'#23824a',
   'Meeting scheduled':'#F5A623','Proposal Sent':'#9B6DFF','Deal Signed':'#00E676','Client not interested':'#C8102E',
 };
 
@@ -1263,7 +1273,7 @@ function renderTable() {
     if(a.status==='draft') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:var(--muted)">📝 Incomplete</span><button class="abtn t" onclick="deleteDraftApp('${a.id}')">🗑 Delete Draft</button></div>`;
     else if(a.status==='submitted') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">⚙ Review + Set Fees</button>${crmBtn}</div>`;
     else if(a.status==='rep_approved') act=`<div style="display:flex;gap:5px;align-items:center"><button class="abtn t" onclick="openComm('${a.id}')">✉ Send DocuSign</button>${crmBtn}</div>`;
-    else if(a.status==='docusign_sent') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:#7aa4ff">⏳ Awaiting rep sig</span>${crmBtn}</div>`;
+    else if(a.status==='docusign_sent') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:#0d0c55">⏳ Awaiting rep sig</span>${crmBtn}</div>`;
     else if(a.status==='rep_signed') act=`<div style="display:flex;gap:5px;align-items:center"><span style="font-size:11px;color:var(--orange)">⏳ Awaiting merchant</span>${crmBtn}</div>`;
     else if(a.status==='client_signed') act=`<button class="abtn g" onclick="createCRMLead('${a.id}',event)">↗ Create CRM Lead</button>`;
     else if(a.status==='crm_created') act=`<span style="font-size:11px;color:var(--green)">✅ In CRM</span>`;
@@ -1542,43 +1552,43 @@ function showDataCard(d, docusignURL) {
 
   const modal = document.createElement('div');
   modal.id = 'data-card-modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(13,12,85,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px';
 
   modal.innerHTML = `
     <div style="background:#0F1E38;border:1px solid #1E3555;border-radius:14px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto">
       <div style="padding:18px 22px;border-bottom:1px solid #1E3555;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#0F1E38;z-index:1">
         <div>
           <div style="font-family:Montserrat,sans-serif;font-size:15px;font-weight:800;color:#fff">📋 Merchant Data Card</div>
-          <div style="font-size:11px;color:#8FA3BF;margin-top:2px">${d.ref} · ${d.tradingName} · Copy these details into DocuSign</div>
+          <div style="font-size:11px;color:#5c5f7a;margin-top:2px">${d.ref} · ${d.tradingName} · Copy these details into DocuSign</div>
         </div>
-        <button onclick="document.getElementById('data-card-modal').remove()" style="background:#142440;border:1px solid #243D63;color:#8FA3BF;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px">✕ Close</button>
+        <button onclick="document.getElementById('data-card-modal').remove()" style="background:#f4f6fa;border:1px solid #243D63;color:#5c5f7a;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px">✕ Close</button>
       </div>
       <div style="padding:22px">
 
-        <div style="background:rgba(0,180,216,.08);border:1px solid rgba(0,180,216,.25);border-radius:8px;padding:14px;margin-bottom:18px;font-size:12px;color:#8FA3BF;line-height:1.8">
+        <div style="background:rgba(0,180,216,.08);border:1px solid rgba(0,180,216,.25);border-radius:8px;padding:14px;margin-bottom:18px;font-size:12px;color:#5c5f7a;line-height:1.8">
           ✅ <strong style="color:#fff">Pre-populated!</strong> DocuSign will open with signer names and emails already filled in. Review the data below, then click Open DocuSign. The contract will be sent to the rep first, then the merchant.
         </div>
 
         <!-- SIGNERS -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📧 Signers — Enter in DocuSign</div>
-        <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00a0df;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📧 Signers — Enter in DocuSign</div>
+        <div style="background:#f4f6fa;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
             <div>
               <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 1 — ATM Solutions Rep (signs first)</div>
               <div style="font-weight:600;color:#fff">${d.repName}</div>
-              <div style="color:#00B4D8;font-family:monospace;font-size:12px">${d.repEmail}</div>
+              <div style="color:#00a0df;font-family:monospace;font-size:12px">${d.repEmail}</div>
             </div>
             <div>
               <div style="font-size:10px;color:#4A6080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Signer 2 — Merchant (countersigns)</div>
               <div style="font-weight:600;color:#fff">${d.merchantName}</div>
-              <div style="color:#00B4D8;font-family:monospace;font-size:12px">${d.merchantEmail}</div>
+              <div style="color:#00a0df;font-family:monospace;font-size:12px">${d.merchantEmail}</div>
             </div>
           </div>
         </div>
 
         <!-- BUSINESS DETAILS -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏢 Business Details</div>
-        <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00a0df;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏢 Business Details</div>
+        <div style="background:#f4f6fa;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           ${dataRow('Trading Name', d.tradingName)}
           ${dataRow('Registration No.', d.regNo)}
           ${dataRow('VAT Number', d.vat)}
@@ -1586,8 +1596,8 @@ function showDataCard(d, docusignURL) {
         </div>
 
         <!-- COMMERCIAL TERMS -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">💰 Commercial Terms</div>
-        <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00a0df;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">💰 Commercial Terms</div>
+        <div style="background:#f4f6fa;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:16px">
           ${dataRow('Monthly Service Fee (ex VAT)', d.serviceFee)}
           ${dataRow('Annual Escalation', d.escalation)}
           ${dataRow('Contract Period', d.period)}
@@ -1597,16 +1607,16 @@ function showDataCard(d, docusignURL) {
         </div>
 
         <!-- BANKING -->
-        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00B4D8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏦 Banking Details</div>
-        <div style="background:#142440;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:20px">
+        <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#00a0df;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏦 Banking Details</div>
+        <div style="background:#f4f6fa;border:1px solid #243D63;border-radius:8px;padding:14px;margin-bottom:20px">
           ${dataRow('Bank', d.bank)}
           ${dataRow('Account Holder', d.accHolder)}
           ${dataRow('Account Number', d.accNum)}
         </div>
 
         <div style="display:flex;gap:10px;justify-content:flex-end">
-          <button onclick="document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#142440;color:#E8EDF5;border:1px solid #243D63;font-size:13px;font-weight:600;cursor:pointer">Cancel</button>
-          <button onclick="window.open('${docusignURL}','_blank');document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#00B4D8;color:#0A1628;border:none;font-size:13px;font-weight:700;cursor:pointer">✉ Open Pre-filled DocuSign →</button>
+          <button onclick="document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#f4f6fa;color:#14142e;border:1px solid #243D63;font-size:13px;font-weight:600;cursor:pointer">Cancel</button>
+          <button onclick="window.open('${docusignURL}','_blank');document.getElementById('data-card-modal').remove()" style="padding:11px 22px;border-radius:8px;background:#00a0df;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer">✉ Open Pre-filled DocuSign →</button>
         </div>
       </div>
     </div>`;
@@ -1615,9 +1625,9 @@ function showDataCard(d, docusignURL) {
 }
 
 function dataRow(label, value) {
-  return `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,53,85,.5);font-size:13px;gap:12px">
+  return `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #e7eaf3;font-size:13px;gap:12px">
     <span style="font-size:10px;font-weight:600;color:#4A6080;text-transform:uppercase;letter-spacing:.4px;min-width:140px;padding-top:2px">${label}</span>
-    <span style="color:${value?'#E8EDF5':'#4A6080'};font-style:${value?'normal':'italic'};text-align:right">${value||'Not provided'}</span>
+    <span style="color:${value?'#14142e':'#4A6080'};font-style:${value?'normal':'italic'};text-align:right">${value||'Not provided'}</span>
   </div>`;
 }
 
@@ -2456,29 +2466,29 @@ window.addEventListener('click',(e)=>{ if(e.target===document.getElementById('pi
 
 </script>
 <!-- PIN Change Modal -->
-<div id="pin-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
-<div style="background:#112240;border:1px solid #1e3a5f;border-radius:12px;padding:28px;max-width:420px;width:90%">
-<h3 style="color:#00B4D8;margin:0 0 20px;font-size:18px">Change Your PIN</h3>
-<div style="margin-bottom:14px"><label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:5px">Current PIN</label><input type="password" id="pin-current" placeholder="Enter current PIN" style="width:100%;padding:8px 12px;border:1px solid #1e3a5f;border-radius:6px;background:#0a1628;color:#e2e8f0;box-sizing:border-box;font-size:14px"></div>
-<div style="margin-bottom:14px"><label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:5px">New PIN (4+ chars)</label><input type="password" id="pin-new" placeholder="Enter new PIN" style="width:100%;padding:8px 12px;border:1px solid #1e3a5f;border-radius:6px;background:#0a1628;color:#e2e8f0;box-sizing:border-box;font-size:14px"></div>
-<div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:5px">Confirm PIN</label><input type="password" id="pin-confirm" placeholder="Confirm new PIN" style="width:100%;padding:8px 12px;border:1px solid #1e3a5f;border-radius:6px;background:#0a1628;color:#e2e8f0;box-sizing:border-box;font-size:14px"></div>
-<div id="pin-err" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:10px;border-radius:6px;font-size:12px;margin-bottom:14px"></div>
+<div id="pin-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,12,85,.55);z-index:9999;align-items:center;justify-content:center">
+<div style="background:#ffffff;border:1px solid #dbdfec;border-radius:12px;padding:28px;max-width:420px;width:90%">
+<h3 style="color:#00a0df;margin:0 0 20px;font-size:18px">Change Your PIN</h3>
+<div style="margin-bottom:14px"><label style="display:block;font-size:12px;color:#5c5f7a;margin-bottom:5px">Current PIN</label><input type="password" id="pin-current" placeholder="Enter current PIN" style="width:100%;padding:8px 12px;border:1px solid #dbdfec;border-radius:6px;background:#fff;color:#14142e;box-sizing:border-box;font-size:14px"></div>
+<div style="margin-bottom:14px"><label style="display:block;font-size:12px;color:#5c5f7a;margin-bottom:5px">New PIN (4+ chars)</label><input type="password" id="pin-new" placeholder="Enter new PIN" style="width:100%;padding:8px 12px;border:1px solid #dbdfec;border-radius:6px;background:#fff;color:#14142e;box-sizing:border-box;font-size:14px"></div>
+<div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#5c5f7a;margin-bottom:5px">Confirm PIN</label><input type="password" id="pin-confirm" placeholder="Confirm new PIN" style="width:100%;padding:8px 12px;border:1px solid #dbdfec;border-radius:6px;background:#fff;color:#14142e;box-sizing:border-box;font-size:14px"></div>
+<div id="pin-err" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#c0392b;padding:10px;border-radius:6px;font-size:12px;margin-bottom:14px"></div>
 <div id="pin-success" style="display:none;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#22c55e;padding:10px;border-radius:6px;font-size:12px;margin-bottom:14px"></div>
 <div style="display:flex;gap:10px"><button class="btn btn-dark" onclick="closePINModal()" style="flex:1">Cancel</button><button class="btn btn-teal" onclick="changePIN()" style="flex:1">Update PIN</button></div>
 </div></div>
 <!-- ═══════════════════════════════════════════════════════════ BULK UPLOAD MODAL -->
-<div id="bulk-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;overflow-y:auto;padding:20px;box-sizing:border-box">
-  <div style="max-width:700px;margin:0 auto;background:#0f2035;border:1px solid #1e3a5f;border-radius:12px;padding:28px">
+<div id="bulk-modal" style="display:none;position:fixed;inset:0;background:rgba(13,12,85,.55);z-index:1000;overflow-y:auto;padding:20px;box-sizing:border-box">
+  <div style="max-width:700px;margin:0 auto;background:#f4f6fa;border:1px solid #dbdfec;border-radius:12px;padding:28px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <h3 style="color:#00B4D8;margin:0;font-size:18px">📥 Bulk Site Upload</h3>
-      <button onclick="closeBulkUpload()" style="background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer">✕</button>
+      <h3 style="color:#00a0df;margin:0;font-size:18px">📥 Bulk Site Upload</h3>
+      <button onclick="closeBulkUpload()" style="background:none;border:none;color:#5c5f7a;font-size:20px;cursor:pointer">✕</button>
     </div>
 
     <!-- Step 1: Download Template -->
     <div id="bulk-step1">
       <div style="background:rgba(0,180,216,.08);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:16px;margin-bottom:16px">
-        <div style="font-size:13px;font-weight:700;color:#00B4D8;margin-bottom:8px">How it works</div>
-        <div style="font-size:12px;color:#94a3b8;line-height:1.7">
+        <div style="font-size:13px;font-weight:700;color:#00a0df;margin-bottom:8px">How it works</div>
+        <div style="font-size:12px;color:#5c5f7a;line-height:1.7">
           1. Download the CSV template below<br>
           2. Fill in your sites in Excel (one row per site)<br>
           3. Fields like Owner, Legal Entity, Banking can be the same across all rows<br>
@@ -2492,20 +2502,20 @@ window.addEventListener('click',(e)=>{ if(e.target===document.getElementById('pi
       </div>
 
       <div style="margin-bottom:16px">
-        <label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:8px;font-weight:600">Upload completed CSV</label>
+        <label style="display:block;font-size:12px;color:#5c5f7a;margin-bottom:8px;font-weight:600">Upload completed CSV</label>
         <input type="file" id="bulk-file-input" accept=".csv" onchange="handleBulkFile(this)" style="display:none">
-        <div onclick="document.getElementById('bulk-file-input').click()" style="border:2px dashed #1e3a5f;border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='#00B4D8'" onmouseout="this.style.borderColor='#1e3a5f'">
+        <div onclick="document.getElementById('bulk-file-input').click()" style="border:2px dashed #dbdfec;border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='#00a0df'" onmouseout="this.style.borderColor='#dbdfec'">
           <div style="font-size:24px;margin-bottom:8px">📂</div>
-          <div style="font-size:13px;color:#e2e8f0;font-weight:600">Click to select CSV file</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:4px">Comma-separated values (.csv)</div>
+          <div style="font-size:13px;color:#14142e;font-weight:600">Click to select CSV file</div>
+          <div style="font-size:11px;color:#5c5f7a;margin-top:4px">Comma-separated values (.csv)</div>
         </div>
       </div>
 
       <div id="bulk-preview" style="display:none">
-        <div style="font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:8px">Preview — <span id="bulk-row-count"></span></div>
-        <div style="overflow-x:auto;max-height:200px;overflow-y:auto;border:1px solid #1e3a5f;border-radius:6px">
+        <div style="font-size:12px;font-weight:700;color:#14142e;margin-bottom:8px">Preview — <span id="bulk-row-count"></span></div>
+        <div style="overflow-x:auto;max-height:200px;overflow-y:auto;border:1px solid #dbdfec;border-radius:6px">
           <table style="width:100%;border-collapse:collapse;font-size:11px">
-            <thead id="bulk-preview-head" style="background:#0a1628;position:sticky;top:0"></thead>
+            <thead id="bulk-preview-head" style="background:#fff;position:sticky;top:0"></thead>
             <tbody id="bulk-preview-body"></tbody>
           </table>
         </div>
@@ -2519,17 +2529,17 @@ window.addEventListener('click',(e)=>{ if(e.target===document.getElementById('pi
 
     <!-- Progress -->
     <div id="bulk-progress" style="display:none">
-      <div style="font-size:13px;color:#e2e8f0;margin-bottom:12px;font-weight:600">Creating applications...</div>
-      <div style="background:#0a1628;border-radius:6px;height:8px;margin-bottom:12px;overflow:hidden">
-        <div id="bulk-progress-bar" style="height:100%;background:#00B4D8;transition:width .3s;width:0%"></div>
+      <div style="font-size:13px;color:#14142e;margin-bottom:12px;font-weight:600">Creating applications...</div>
+      <div style="background:#fff;border-radius:6px;height:8px;margin-bottom:12px;overflow:hidden">
+        <div id="bulk-progress-bar" style="height:100%;background:#00a0df;transition:width .3s;width:0%"></div>
       </div>
-      <div id="bulk-progress-log" style="font-size:11px;color:#94a3b8;max-height:200px;overflow-y:auto;background:#0a1628;border-radius:6px;padding:10px;font-family:monospace"></div>
+      <div id="bulk-progress-log" style="font-size:11px;color:#5c5f7a;max-height:200px;overflow-y:auto;background:#fff;border-radius:6px;padding:10px;font-family:monospace"></div>
     </div>
 
     <!-- Results -->
     <div id="bulk-results" style="display:none">
       <div id="bulk-results-summary" style="margin-bottom:16px"></div>
-      <div id="bulk-results-detail" style="font-size:11px;max-height:200px;overflow-y:auto;background:#0a1628;border-radius:6px;padding:10px;font-family:monospace"></div>
+      <div id="bulk-results-detail" style="font-size:11px;max-height:200px;overflow-y:auto;background:#fff;border-radius:6px;padding:10px;font-family:monospace"></div>
       <div style="display:flex;gap:10px;margin-top:16px">
         <button class="btn btn-dark" style="width:auto" onclick="resetBulkUpload()">Upload Another</button>
         <button class="btn btn-teal" style="width:auto" onclick="closeBulkUpload();loadApps()">✓ View Applications</button>
@@ -2661,15 +2671,15 @@ function renderBulkPreview(headers, dataLines) {
   // Headers
   const thead = document.getElementById('bulk-preview-head');
   thead.innerHTML = '<tr>' + headers.slice(0, 8).map(h =>
-    `<th style="padding:6px 8px;text-align:left;color:#94a3b8;font-size:10px;border-bottom:1px solid #1e3a5f;white-space:nowrap">${h}</th>`
-  ).join('') + (headers.length > 8 ? `<th style="padding:6px 8px;color:#94a3b8;font-size:10px">+${headers.length - 8} more</th>` : '') + '</tr>';
+    `<th style="padding:6px 8px;text-align:left;color:#5c5f7a;font-size:10px;border-bottom:1px solid #dbdfec;white-space:nowrap">${h}</th>`
+  ).join('') + (headers.length > 8 ? `<th style="padding:6px 8px;color:#5c5f7a;font-size:10px">+${headers.length - 8} more</th>` : '') + '</tr>';
 
   // Rows
   const tbody = document.getElementById('bulk-preview-body');
   tbody.innerHTML = bulkRows.slice(0, 5).map(row => {
     const vals = Object.values(row).slice(0, 8);
     return '<tr>' + vals.map(v =>
-      `<td style="padding:5px 8px;border-bottom:1px solid #0f2035;color:#e2e8f0;font-size:11px;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis">${v || '—'}</td>`
+      `<td style="padding:5px 8px;border-bottom:1px solid #f4f6fa;color:#14142e;font-size:11px;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis">${v || '—'}</td>`
     ).join('') + '</tr>';
   }).join('');
 
@@ -2681,13 +2691,13 @@ function renderBulkPreview(headers, dataLines) {
 
   const valEl = document.getElementById('bulk-validation');
   if (missing.length) {
-    valEl.innerHTML = `<div style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:10px;border-radius:6px;font-size:11px">
+    valEl.innerHTML = `<div style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#c0392b;padding:10px;border-radius:6px;font-size:11px">
       ⚠️ Validation issues:<br>${missing.slice(0, 5).join('<br>')}${missing.length > 5 ? `<br>...and ${missing.length - 5} more` : ''}
     </div>`;
     document.getElementById('bulk-submit-btn').disabled = true;
     document.getElementById('bulk-submit-btn').style.opacity = '0.5';
   } else {
-    valEl.innerHTML = `<div style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.3);color:#00c896;padding:10px;border-radius:6px;font-size:11px">
+    valEl.innerHTML = `<div style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.3);color:#23824a;padding:10px;border-radius:6px;font-size:11px">
       ✅ All ${bulkRows.length} rows valid — ready to import
     </div>`;
     document.getElementById('bulk-submit-btn').disabled = false;
@@ -2716,7 +2726,7 @@ async function submitBulkUpload() {
     const row = bulkRows[i];
     const pct = Math.round((i / bulkRows.length) * 100);
     bar.style.width = pct + '%';
-    log.innerHTML += `<div style="color:#94a3b8">⏳ ${row.trading_name || 'Row ' + (i+1)} — creating in CRM...</div>`;
+    log.innerHTML += `<div style="color:#5c5f7a">⏳ ${row.trading_name || 'Row ' + (i+1)} — creating in CRM...</div>`;
     log.scrollTop = log.scrollHeight;
 
     try {
@@ -2775,13 +2785,13 @@ async function submitBulkUpload() {
           leadId: data.lead_id,
           url:    data.crm_url
         });
-        log.innerHTML += `<div style="color:#00c896">✅ ${row.trading_name} — Lead ID: ${data.lead_id}</div>`;
+        log.innerHTML += `<div style="color:#23824a">✅ ${row.trading_name} — Lead ID: ${data.lead_id}</div>`;
       } else {
         throw new Error(data.error || 'Unknown error');
       }
     } catch (err) {
       results.failed.push({ name: row.trading_name, error: err.message });
-      log.innerHTML += `<div style="color:#ef4444">❌ ${row.trading_name} — ${err.message}</div>`;
+      log.innerHTML += `<div style="color:#c0392b">❌ ${row.trading_name} — ${err.message}</div>`;
     }
 
     log.scrollTop = log.scrollHeight;
@@ -2800,19 +2810,19 @@ function showBulkResults(results) {
   summaryEl.innerHTML = `
     <div style="display:flex;gap:12px;flex-wrap:wrap">
       <div style="flex:1;min-width:120px;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.3);border-radius:8px;padding:14px;text-align:center">
-        <div style="font-size:28px;font-weight:800;color:#00c896">${results.success.length}</div>
-        <div style="font-size:12px;color:#94a3b8">Created Successfully</div>
+        <div style="font-size:28px;font-weight:800;color:#23824a">${results.success.length}</div>
+        <div style="font-size:12px;color:#5c5f7a">Created Successfully</div>
       </div>
       ${results.failed.length ? `<div style="flex:1;min-width:120px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:14px;text-align:center">
-        <div style="font-size:28px;font-weight:800;color:#ef4444">${results.failed.length}</div>
-        <div style="font-size:12px;color:#94a3b8">Failed</div>
+        <div style="font-size:28px;font-weight:800;color:#c0392b">${results.failed.length}</div>
+        <div style="font-size:12px;color:#5c5f7a">Failed</div>
       </div>` : ''}
     </div>`;
 
   const detailEl = document.getElementById('bulk-results-detail');
   detailEl.innerHTML = [
-    ...results.success.map(r => `<div style="color:#00c896">✅ ${r.name} — ${r.ref}</div>`),
-    ...results.failed.map(r => `<div style="color:#ef4444">❌ ${r.name} — ${r.error}</div>`),
+    ...results.success.map(r => `<div style="color:#23824a">✅ ${r.name} — ${r.ref}</div>`),
+    ...results.failed.map(r => `<div style="color:#c0392b">❌ ${r.name} — ${r.error}</div>`),
   ].join('');
 
   // Download results as CSV
@@ -2822,32 +2832,32 @@ function showBulkResults(results) {
       (results.failed.length ? '\n' + results.failed.map(r => `${r.name},,Failed: ${r.error}`).join('\n') : '');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
-    detailEl.innerHTML += `<div style="margin-top:10px"><a href="${url}" download="Bulk_Upload_Results.csv" style="color:#00B4D8;font-size:11px">⬇️ Download results CSV</a></div>`;
+    detailEl.innerHTML += `<div style="margin-top:10px"><a href="${url}" download="Bulk_Upload_Results.csv" style="color:#00a0df;font-size:11px">⬇️ Download results CSV</a></div>`;
   }
 }
 </script>
 
 
 <!-- ══════════════════════════════════════════ REP MANAGEMENT MODAL -->
-<div id="rep-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#0f2035;border:1px solid #1e3a5f;border-radius:12px;padding:28px;width:100%;max-width:480px">
+<div id="rep-modal" style="display:none;position:fixed;inset:0;background:rgba(13,12,85,.55);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#f4f6fa;border:1px solid #dbdfec;border-radius:12px;padding:28px;width:100%;max-width:480px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <h3 id="rep-modal-title" style="color:#00B4D8;margin:0;font-size:18px">Add New Rep</h3>
-      <button onclick="closeRepModal()" style="background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer">✕</button>
+      <h3 id="rep-modal-title" style="color:#00a0df;margin:0;font-size:18px">Add New Rep</h3>
+      <button onclick="closeRepModal()" style="background:none;border:none;color:#5c5f7a;font-size:20px;cursor:pointer">✕</button>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px">
       <input type="hidden" id="rep-modal-id">
       <div>
-        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Full Name *</label>
-        <input id="rep-modal-name" type="text" placeholder="e.g. Toni Smith" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+        <label style="font-size:12px;color:#5c5f7a;font-weight:600;display:block;margin-bottom:5px">Full Name *</label>
+        <input id="rep-modal-name" type="text" placeholder="e.g. Toni Smith" style="width:100%;background:#fff;border:1px solid #dbdfec;border-radius:6px;padding:10px 12px;color:#14142e;font-size:13px;box-sizing:border-box">
       </div>
       <div>
-        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Email *</label>
-        <input id="rep-modal-email" type="email" placeholder="toni@atmsolutions.co.za" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+        <label style="font-size:12px;color:#5c5f7a;font-weight:600;display:block;margin-bottom:5px">Email *</label>
+        <input id="rep-modal-email" type="email" placeholder="toni@atmsolutions.co.za" style="width:100%;background:#fff;border:1px solid #dbdfec;border-radius:6px;padding:10px 12px;color:#14142e;font-size:13px;box-sizing:border-box">
       </div>
       <div>
-        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Branch</label>
-        <select id="rep-modal-branch" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+        <label style="font-size:12px;color:#5c5f7a;font-weight:600;display:block;margin-bottom:5px">Branch</label>
+        <select id="rep-modal-branch" style="width:100%;background:#fff;border:1px solid #dbdfec;border-radius:6px;padding:10px 12px;color:#14142e;font-size:13px;box-sizing:border-box">
           <option value="Head Office">Head Office</option>
           <option value="Gauteng">Gauteng</option>
           <option value="Western Cape">Western Cape</option>
@@ -2859,18 +2869,18 @@ function showBulkResults(results) {
         </select>
       </div>
       <div id="rep-modal-pin-row">
-        <label id="rep-modal-pin-label" style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Initial PIN</label>
-        <input id="rep-modal-pin" type="text" value="1234" maxlength="4" placeholder="1234" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+        <label id="rep-modal-pin-label" style="font-size:12px;color:#5c5f7a;font-weight:600;display:block;margin-bottom:5px">Initial PIN</label>
+        <input id="rep-modal-pin" type="text" value="1234" maxlength="4" placeholder="1234" style="width:100%;background:#fff;border:1px solid #dbdfec;border-radius:6px;padding:10px 12px;color:#14142e;font-size:13px;box-sizing:border-box">
         <div id="rep-modal-pin-hint" style="font-size:11px;color:#64748b;margin-top:4px">Rep can change their PIN after first login</div>
       </div>
       <div id="rep-modal-status-row" style="display:none">
-        <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:5px">Status</label>
-        <select id="rep-modal-status" style="width:100%;background:#0a1628;border:1px solid #1e3a5f;border-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+        <label style="font-size:12px;color:#5c5f7a;font-weight:600;display:block;margin-bottom:5px">Status</label>
+        <select id="rep-modal-status" style="width:100%;background:#fff;border:1px solid #dbdfec;border-radius:6px;padding:10px 12px;color:#14142e;font-size:13px;box-sizing:border-box">
           <option value="true">Active</option>
           <option value="false">Inactive</option>
         </select>
       </div>
-      <div id="rep-modal-error" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:10px;border-radius:6px;font-size:12px"></div>
+      <div id="rep-modal-error" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#c0392b;padding:10px;border-radius:6px;font-size:12px"></div>
       <div style="display:flex;gap:10px;margin-top:4px">
         <button class="btn btn-dark" style="width:auto" onclick="closeRepModal()">Cancel</button>
         <button class="btn btn-teal" style="flex:1" id="rep-modal-save" onclick="saveRep()">Save Rep</button>
@@ -2900,17 +2910,17 @@ async function loadReps() {
         <td style="padding:12px 16px;font-size:12px;color:var(--sub)">${rep.email}</td>
         <td style="padding:12px 16px;font-size:12px;color:var(--sub)">${rep.branch || '—'}</td>
         <td style="padding:12px 16px">
-          <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${rep.is_active ? 'rgba(0,200,150,.15)' : 'rgba(239,68,68,.15)'};color:${rep.is_active ? '#00c896' : '#ef4444'}">
+          <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${rep.is_active ? 'rgba(0,200,150,.15)' : 'rgba(239,68,68,.15)'};color:${rep.is_active ? '#23824a' : '#c0392b'}">
             ${rep.is_active ? 'Active' : 'Inactive'}
           </span>
         </td>
         <td style="padding:12px 16px">
-          <button onclick="editRep(${JSON.stringify(rep).replace(/"/g,'&quot;')})" style="background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.3);color:#00B4D8;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">Edit</button>
+          <button onclick="editRep(${JSON.stringify(rep).replace(/"/g,'&quot;')})" style="background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.3);color:#00a0df;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">Edit</button>
         </td>
       </tr>
     `).join('');
   } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:#ef4444">Error: ${e.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:#c0392b">Error: ${e.message}</td></tr>`;
   }
 }
 
