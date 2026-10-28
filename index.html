@@ -308,6 +308,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 3','Segoe UI',system-ui,sans-serif}
 @media(max-width:900px){.hdr-sub{display:none}}
 .hdr .badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.45);color:#fff}
+/* ATM Solutions brand assets (from the signature and presentation template) */
+.hdr-l{gap:14px}
+.hdr-word{height:36px;width:auto;display:block}
+.hdr-smile{height:40px;width:auto;display:block;margin-left:2px;margin-top:6px}
+.hdr-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;padding-left:16px;margin-left:8px;border-left:1px solid rgba(255,255,255,.3)}
+.pyw{height:62px;width:62px;display:block}
+.gate-logo{display:flex;align-items:center;justify-content:center}
+@media(max-width:1100px){.hdr-sub{display:none}}
+@media(max-width:900px){.hdr-word{height:26px}.hdr-smile{height:30px;margin-top:4px}.pyw{height:44px;width:44px}}
 </style>
 </head>
 <body>
@@ -315,11 +324,9 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
 <!-- HEADER -->
 <header class="hdr">
   <div class="hdr-l">
-    <div class="logo">ATM</div>
-    <div>
-      <div class="hdr-name">ATM SOLUTIONS</div>
-      <div class="hdr-sub">Smart ATM Onboarding</div>
-    </div>
+    <img class="hdr-word" src="assets/atm-solutions-wordmark.png" alt="atm solutions" />
+    <img class="hdr-smile" src="assets/atm-solutions-smile.png" alt="" />
+    <div class="hdr-sub">Smart ATM Onboarding</div>
   </div>
   <nav class="tabs hdr-nav">
     <button class="tab-btn active" id="tab-client" type="button">Client Application</button>
@@ -329,7 +336,7 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
     <span id="hdr-rep-name" style="font-size:11px;color:var(--sub);display:none"></span>
     <button class="btn btn-dark" style="font-size:10px;padding:4px 10px;display:none" id="hdr-settings-btn" onclick="openPINModal()">⚙️ Settings</button>
     <button class="btn btn-dark hdr-signout" style="display:none" id="hdr-signout-btn" type="button" onclick="repLogout()">Sign Out</button>
-    <span class="badge">Pay Your Way</span>
+    <img class="pyw" src="assets/pay-your-way.png" alt="Pay Your Way" />
   </div>
 </header>
 
@@ -342,7 +349,7 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
     <div id="client-gate">
       <div class="gate">
         <div class="gate-card">
-          <div class="gate-logo">ATM</div>
+          <div class="gate-logo"><img src="assets/atm-solutions-smile.png" alt="atm solutions" style="width:30px;height:auto;display:block" /></div>
           <h2>Smart ATM Application</h2>
           <p>Secure portal for <strong style="color:var(--white)">ATM Solutions clients</strong>. Enter your access code from your sales rep to continue.</p>
           <div class="sec-note">
@@ -395,7 +402,7 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
     <div id="rep-gate">
       <div class="gate">
         <div class="gate-card">
-          <div class="gate-logo">ATM</div>
+          <div class="gate-logo"><img src="assets/atm-solutions-smile.png" alt="atm solutions" style="width:30px;height:auto;display:block" /></div>
           <h2>Rep Portal</h2>
           <p>Secure access for <strong style="color:var(--white)">ATM Solutions staff</strong> only.</p>
           <div class="sec-note">
