@@ -317,6 +317,18 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
 .gate-logo{display:flex;align-items:center;justify-content:center}
 @media(max-width:1100px){.hdr-sub{display:none}}
 @media(max-width:900px){.hdr-word{height:26px}.hdr-smile{height:30px;margin-top:4px}.pyw{height:44px;width:44px}}
+/* Sign-in screens: photo of an installed ATM beside the card on wide screens */
+.gate-photo{display:none}
+@media(min-width:1000px){
+  .gate.has-photo{max-width:1000px;display:grid;grid-template-columns:440px 1fr;border-radius:16px;overflow:hidden;box-shadow:0 10px 34px rgba(13,12,85,.16);background:#fff;border:1px solid var(--border)}
+  .gate.has-photo .gate-card{border:0;border-radius:0;box-shadow:none}
+  .gate-photo{display:block;position:relative;min-height:600px;background:#0e0c55}
+  .gate-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:12% 40%}
+  .gate-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,12,85,0) 55%,rgba(14,12,85,.85) 100%)}
+  .gate-cap{position:absolute;left:28px;right:28px;bottom:26px;z-index:2;color:#fff;display:flex;flex-direction:column;gap:4px}
+  .gate-cap b{font-family:'Montserrat','Source Sans 3',sans-serif;font-size:20px;font-weight:700;line-height:1.25}
+  .gate-cap span{font-size:13px;color:#d6dbee}
+}
 </style>
 </head>
 <body>
@@ -347,7 +359,7 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
 
     <!-- CLIENT GATE -->
     <div id="client-gate">
-      <div class="gate">
+      <div class="gate has-photo">
         <div class="gate-card">
           <div class="gate-logo"><img src="assets/atm-solutions-smile.png" alt="atm solutions" style="width:30px;height:auto;display:block" /></div>
           <h2>Smart ATM Application</h2>
@@ -372,7 +384,7 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
             Your data is processed under POPIA (Act No. 4 of 2013).
           </div>
         </div>
-      </div>
+      <div class="gate-photo"><img src="assets/atm-installed-site.jpg" alt="A Cash Express ATM installed at a retail site" loading="lazy" /><div class="gate-cap"><b>Smart ATMs, installed and supported.</b><span>Cash for your customers, income for your site.</span></div></div></div>
     </div>
 
     <!-- CLIENT FORM -->
@@ -400,7 +412,7 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
 
     <!-- REP GATE -->
     <div id="rep-gate">
-      <div class="gate">
+      <div class="gate has-photo">
         <div class="gate-card">
           <div class="gate-logo"><img src="assets/atm-solutions-smile.png" alt="atm solutions" style="width:30px;height:auto;display:block" /></div>
           <h2>Rep Portal</h2>
@@ -432,7 +444,7 @@ h1,h2,.gate-card h2,.tbl-title,.sec-title{font-family:'Montserrat','Source Sans 
             Microsoft sign-in uses your ATM Solutions 365 account with Authenticator 2FA.
           </div>
         </div>
-      </div>
+      <div class="gate-photo"><img src="assets/atm-installed-site.jpg" alt="A Cash Express ATM installed at a retail site" loading="lazy" /><div class="gate-cap"><b>Smart ATMs, installed and supported.</b><span>Cash for your customers, income for your site.</span></div></div></div>
     </div>
 
     <!-- REP DASHBOARD -->
