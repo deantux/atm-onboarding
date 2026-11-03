@@ -413,6 +413,12 @@ tr:hover td{background:rgba(0,180,216,.02)}
             <div style="display:flex;align-items:center;gap:8px"><div class="tbl-title">Site Applications</div><span id="app-count" style="font-size:11px;color:var(--muted)"></span></div>
             <button class="btn btn-dark" style="width:auto;padding:6px 14px;font-size:12px" onclick="exportToExcel()">📊 Export to Excel</button>
           </div>
+          <div style="padding:10px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <label for="app-rep-filter" style="font-size:11px;color:var(--muted)">Sales Rep</label>
+            <select id="app-rep-filter" onchange="renderTable()" style="background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:6px 10px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px">
+              <option value="">All Reps</option>
+            </select>
+          </div>
           <div style="overflow-x:auto">
             <table>
               <thead><tr>
@@ -941,6 +947,7 @@ async function loadApps() {
         status:a.status||'submitted',
         email:a.signatory_email||'',
         fee:a.service_fee||null,
+        rep:a.rep_name||null,
         submitted_at:a.submitted_at||a.created_at||null,
         crmSynced:!!(a.dynamics_lead_id_prod||a.dynamics_lead_id),
       }));
@@ -1262,7 +1269,19 @@ async function addActivity() {
 // ══════════════════════════════════════════════
 // RENDER TABLE
 // ══════════════════════════════════════════════
+function populateRepFilterOptions() {
+  const sel = document.getElementById('app-rep-filter');
+  if (!sel) return;
+  const current = sel.value;
+  const reps = [...new Set(APPS.map(a => a.rep).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">All Reps</option>' + reps.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join('');
+  if (reps.includes(current)) sel.value = current;
+}
+
 function renderTable() {
+  populateRepFilterOptions();
+  const repFilter = document.getElementById('app-rep-filter')?.value || '';
+  const filtered = repFilter ? APPS.filter(a => a.rep === repFilter) : APPS;
   const STATUS = {
     submitted:`<span class="badge2 b-sub">Submitted</span>`,
     rep_approved:`<span class="badge2 b-apr">Approved</span>`,
@@ -1271,14 +1290,14 @@ function renderTable() {
     client_signed:`<span class="badge2 b-sgn">Client Signed</span>`,
     crm_created:`<span class="badge2 b-crm">CRM Created</span>`,
   };
-  document.getElementById('app-count').textContent=`${APPS.length} total`;
-  const counts=APPS.reduce((a,x)=>{a[x.status]=(a[x.status]||0)+1;return a;},{});
-  document.getElementById('s-tot').textContent=APPS.length;
+  document.getElementById('app-count').textContent = repFilter ? `${filtered.length} of ${APPS.length} total` : `${filtered.length} total`;
+  const counts=filtered.reduce((a,x)=>{a[x.status]=(a[x.status]||0)+1;return a;},{});
+  document.getElementById('s-tot').textContent=filtered.length;
   document.getElementById('s-rev').textContent=(counts.submitted||0)+(counts.rep_approved||0);
   document.getElementById('s-ds').textContent=(counts.docusign_sent||0)+(counts.rep_signed||0);
   document.getElementById('s-sgn').textContent=(counts.client_signed||0)+(counts.crm_created||0);
 
-  document.getElementById('app-tbody').innerHTML = APPS.map(a=>{
+  document.getElementById('app-tbody').innerHTML = filtered.map(a=>{
     let act='';
     const crmBtn=a.crmSynced||a.dynamics_lead_id
       ? `<span style="font-size:11px;color:var(--green)">✓ Synced</span>`
