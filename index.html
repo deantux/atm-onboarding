@@ -1897,6 +1897,40 @@ function docCard(key,title,sub,required) {
 }
 function handleDoc(key,input){if(input.files[0]){uploadedDocs[key]=input.files[0].name;renderStep();}}
 function rv(lbl,val){return `<div class="rv"><span class="rv-lbl">${lbl}</span><span class="${val?'rv-val':'rv-empty'}">${val||'Not provided'}</span></div>`;}
+function extractedFieldsHTML() {
+  const sigRows=[], cipcRows=[], bankRows=[];
+  const fullName=(fv.sig_fname||fv.sig_lname)?(fv.sig_fname+' '+fv.sig_lname).trim():'';
+  if(fullName) sigRows.push(rv('Full Name',fullName));
+  if(fv.sig_id) sigRows.push(rv('ID Number',fv.sig_id));
+  if(fv.sig_pob) sigRows.push(rv('Place of Birth',fv.sig_pob));
+
+  if(fv.registered_name) cipcRows.push(rv('Registered Name',fv.registered_name));
+  if(fv.trading_name) cipcRows.push(rv('Trading Name',fv.trading_name));
+  if(fv.registration_number) cipcRows.push(rv('Registration Number',fv.registration_number));
+  if(fv.entity_type) cipcRows.push(rv('Entity Type',fv.entity_type));
+  if(fv.site_address) cipcRows.push(rv('Registered Address',fv.site_address));
+  for(let n=1;n<=3;n++){
+    const nm=fv[`d${n}_name`], id=fv[`d${n}_id`];
+    if(nm||id) cipcRows.push(rv(`Director ${n} — ID Number`,[nm,id].filter(Boolean).join(' — ')));
+  }
+
+  if(fv.bank) bankRows.push(rv('Bank Name',fv.bank));
+  if(fv.acc_holder) bankRows.push(rv('Account Holder',fv.acc_holder));
+  if(fv.acc_num) bankRows.push(rv('Account Number',fv.acc_num));
+  if(fv.acc_type) bankRows.push(rv('Account Type',fv.acc_type));
+  if(fv.branch_name) bankRows.push(rv('Branch Name',fv.branch_name));
+  if(fv.branch_code) bankRows.push(rv('Branch Code',fv.branch_code));
+
+  if(!sigRows.length && !cipcRows.length && !bankRows.length) return '';
+
+  return `<div style="margin-top:16px;padding:14px 16px;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r)">
+    <div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px">📋 Extracted From Your Documents</div>
+    ${sigRows.length?`<div class="rv-sec">From SA ID</div>${sigRows.join('')}`:''}
+    ${cipcRows.length?`<div class="rv-sec">From CIPC Certificate</div>${cipcRows.join('')}`:''}
+    ${bankRows.length?`<div class="rv-sec">From Bank Statement</div>${bankRows.join('')}`:''}
+    <div style="margin-top:8px;font-size:11px;color:var(--muted)">These values have been filled into the relevant steps (Signatory, Directors, Banking) below — you can still edit them there.</div>
+  </div>`;
+}
 
 // ══════════════════════════════════════════════
 // GPS AUTO-FILL (OpenStreetMap Nominatim — free, no API key)
@@ -2185,6 +2219,7 @@ function getStepHTML(s) {
         </div>
       </div>
       <div id="scan-result" style="display:none;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.2);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--green)"></div>
+      ${extractedFieldsHTML()}
     </div></div>`;
 
   if(s===2) return `
